@@ -11,9 +11,13 @@ public enum ROOMSIZE
 
 public enum ROOMTYPE
 {
+    NECESSARY_START, // 사이에 있는 방들은 무조건 생성됨
     TEST1,
+    NECESSARY_END,
     TEST2,
-    TEST3
+    TEST3,
+    SPECIAL_START,
+    SPECIAL_END
 }
 
 public class Room : MonoBehaviour
