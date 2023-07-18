@@ -6,7 +6,7 @@ public enum ROOMSIZE
 {
     SMALL, // 25 * 25
     MEDIUM, // 40 * 40
-    LARGE // 55 * 55
+    LARGE // 65 * 40
 }
 
 public enum ROOMTYPE

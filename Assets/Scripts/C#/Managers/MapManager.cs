@@ -36,8 +36,8 @@ public class MapManager : MonoBehaviour
                 roomPrefabsDic.Add(roomSize, new List<Room>());
 
             // 추후에 데이터베이스에서 관리 생성하도록 설정
-            roomCountDic.Add(ROOMTYPE.TEST1, new int[] { 0, 1 });
-            roomCountDic.Add(ROOMTYPE.TEST2, new int[] { 0, 2 });
+            roomCountDic.Add(ROOMTYPE.TEST1, new int[] { 0, 10 });
+            roomCountDic.Add(ROOMTYPE.TEST2, new int[] { 0, 10 });
             roomCountDic.Add(ROOMTYPE.TEST3, new int[] { 0, 99 });
 
             var roomPrefabs = Resources.LoadAll<Room>("Room");
