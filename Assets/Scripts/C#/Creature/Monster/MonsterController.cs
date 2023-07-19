@@ -27,12 +27,13 @@ public enum GOTag
     MonsterWeapon
 }
 
-public class MonsterController : Creature
+public class MonsterController : MonoBehaviour, IAttackable
 {
     [SerializeField]
     private BehaviourTree _tree;
     private MonsterBlackBoard _board;
     private MonsterDetect _detect;
+    private Stat _stat;
 
     void Start()
     {
@@ -115,10 +116,15 @@ public class MonsterController : Creature
         _board.Clear();
     }
 
-    public override void OnDamage(int damage)
+    public void OnDamaged(int damage)
     {
         _board.Stat.Hp -= damage;
         _tree.CheckSeq();
+    }
+
+    public void OnHealed(int heal)
+    {
+        _board.Stat.Hp = _board.Stat.Hp + heal < _board.Stat.MaxHp ? _board.Stat.Hp + heal : _board.Stat.MaxHp;
     }
 }
 

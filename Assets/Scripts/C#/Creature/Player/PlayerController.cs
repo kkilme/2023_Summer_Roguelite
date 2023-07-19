@@ -19,29 +19,24 @@ public enum AnimParam
     Dead
 }
 
-public class PlayerController : Creature
+public class PlayerController : MonoBehaviour, IAttackable
 {
     [SerializeField]
     private Animator _anim;
     [SerializeField]
     private PlayerInput _pi;
     [SerializeField]
-    private InputActionReference _action;
-    [SerializeField]
-    private Collider _collider;
+    private Collider _interactionTrigger;
 
     [SerializeField]
     private Gun _weapon;
 
-    private PlayerBlackBoard _board;
-    private BehaviourTree _tree;
+    private List<InputAction> _actions = new List<InputAction>();
+    private Vector3 _moveDir;
 
-    private Vector3 _beforemovedir;
-    IDisposable _moveChar;
-    IDisposable _RotationChar;
-    private double _moveduration;
+    private Stat _stat;
 
-    void Start()
+    void Awake()
     {
         Init();
     }
@@ -49,138 +44,107 @@ public class PlayerController : Creature
     private void Init()
     {
         _stat = new Stat(1, 1, 2, 1, 1, 5);
-
-        _anim = Util.GetOrAddComponent<Animator>(gameObject);
-        _collider = Util.GetOrAddComponent<Collider>(gameObject);
-
-        //_action.action.performed += Move;
-        //_action.action.canceled += Idle;
-        //_pi.actions.FindAction("Dash").performed += Dash;
-        _pi.actions.FindAction("Attack").started += _ => _weapon.StartShoot();
-        _pi.actions.FindAction("Attack").canceled += _ => _weapon.StopShoot();
-        _pi.actions.FindAction("Reload").performed += _ => _weapon.StartReload();
+        _moveDir = Vector3.zero;
         
-        //_pi.actions.FindAction("Attack").canceled += Idle;
+        _pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
+        _anim = Util.GetOrAddComponent<Animator>(gameObject);
 
-        transform.LookAt(Vector3.forward);
-        MakeBehaviour();
+        InitInputSystem();
     }
 
-    private void MakeBehaviour()
+    private void InitInputSystem()
     {
-        _board = new PlayerBlackBoard(transform, _anim, _stat);
-        _tree = new BehaviourTree();
+        _actions.Add(_pi.actions.FindAction("Move"));
+        _actions.Add(_pi.actions.FindAction("Attack"));
+        _actions.Add(_pi.actions.FindAction("Interaction"));
+        _actions.Add(_pi.actions.FindAction("Reload"));
 
-        var deadSeq = new BehaviourSequence(_tree);
-        _tree.AddSeq(deadSeq);
+        _actions[0].performed -= Move;
+        _actions[0].performed += Move;
 
-        var deadcts = new CancellationTokenSource();
-        var deadNode = new BehaviourNormalSelector(deadcts, deadSeq);
-        deadSeq.AddSequenceNode(deadNode);
+        _actions[0].canceled -= Idle;
+        _actions[0].canceled += Idle;
 
-        PlayerDeadLeaf dead = new PlayerDeadLeaf(deadNode, deadcts, _board);
-        PlayerDamagedLeaf damaged = new PlayerDamagedLeaf(deadNode, deadcts, _board);
-        deadNode.AddNode(dead);
-        deadNode.AddNode(damaged);
+        _actions[1].performed -= Attack;
+        _actions[1].performed += Attack;
 
-        var attackSeq = new BehaviourSequence(_tree);
-        _tree.AddSeq(attackSeq);
+        _actions[1].canceled -= Idle;
+        _actions[1].canceled += Idle;
 
-        var attackcts = new CancellationTokenSource();
-        var attackNode = new BehaviourNormalSelector(attackcts, attackSeq);
-        attackSeq.AddSequenceNode(attackNode);
+        _actions[2].performed -= Interaction;
+        _actions[2].performed += Interaction;
 
-        PlayerAttackLeaf attack = new PlayerAttackLeaf(attackNode, attackcts, _board);
-        PlayerDashLeaf dash = new PlayerDashLeaf(attackNode, attackcts, _board);
-        attackNode.AddNode(attack);
-        attackNode.AddNode(dash);
+        _actions[2].canceled -= InteractionCancel;
+        _actions[2].canceled += InteractionCancel;
 
-        var moveSeq = new BehaviourSequence(_tree);
-        _tree.AddSeq(moveSeq);
-
-        var movects = new CancellationTokenSource();
-        var moveNode = new BehaviourNormalSelector(movects, moveSeq);
-        moveSeq.AddSequenceNode(moveNode);
-
-        PlayerMoveLeaf move = new PlayerMoveLeaf(moveNode, movects, _board);
-        PlayerIdleLeaf idle = new PlayerIdleLeaf(moveNode, movects, _board);
-        moveNode.AddNode(move);
-        moveNode.AddNode(idle);
+        _actions[3].performed -= Reload;
+        _actions[3].performed += Reload;
     }
 
     private void Move(InputAction.CallbackContext ctx)
     {
         Vector2 input = ctx.ReadValue<Vector2>();
-        _beforemovedir = _board.MoveDir;
-        _board.MoveDir = new Vector3(input.x, 0, input.y);
-        _moveduration = Time.realtimeSinceStartup;
-        _board.State = States.Move;
-        _tree.CheckSeq();
+        _moveDir = new Vector3(input.x, 0, input.y);
     }
 
     private void Idle(InputAction.CallbackContext ctx)
     {
-        if (ctx.startTime - _moveduration < 0.025f)
-                transform.rotation = Quaternion.LookRotation(_beforemovedir);
-        _board.State = States.Idle;
-        _tree.CheckSeq();
-    }
-
-    private void Dash(InputAction.CallbackContext ctx)
-    {
-        _board.State = States.Dash;
-        _tree.CheckSeq();
+        _moveDir = Vector3.zero;
+        _weapon.StopShoot();
+        //Idle 애니메이션
     }
 
     private void Attack(InputAction.CallbackContext ctx)
     {
-        if (!ctx.performed)
-            return;
-        
-        _board.State = States.Attack;
-        _weapon?.Shoot();
-        _tree.CheckSeq();
+        //Attack 애니메이션, 무기 공격
+        _weapon?.StartShoot();
     }
 
     private void Reload(InputAction.CallbackContext ctx)
     {
-        _board.State = States.Reload;
         _weapon?.StartReload();
-        _tree.CheckSeq();
     }
 
-    private void Clear()
+    private void Interaction(InputAction.CallbackContext ctx)
     {
-        _moveChar.Dispose();
-        _RotationChar.Dispose();
+        _actions[0].performed -= Move;
+        _actions[0].canceled -= Idle;
+        _actions[1].performed -= Attack;
+        _actions[1].canceled -= Idle;
+        _actions[3].performed -= Reload;
     }
 
-    public override void OnDamage(int damage)
+    private void InteractionCancel(InputAction.CallbackContext ctx)
+    {
+        _actions[0].performed -= Move;
+        _actions[0].performed += Move;
+
+        _actions[0].canceled -= Idle;
+        _actions[0].canceled += Idle;
+
+        _actions[1].performed -= Attack;
+        _actions[1].performed += Attack;
+
+        _actions[1].canceled -= Idle;
+        _actions[1].canceled += Idle;
+
+        _actions[3].performed -= Reload;
+        _actions[3].performed += Reload;
+    }
+
+    public void OnDamaged(int damage)
     {
         _stat.Hp -= damage;
-        _board.State = States.Damaged;
-        _tree.CheckSeq();
+        //사운드
+    }
+
+    public void OnHealed(int heal)
+    {
+        _stat.Hp = _stat.Hp + heal < _stat.MaxHp ? _stat.Hp + heal : _stat.MaxHp;
+    }
+
+    private void FixedUpdate()
+    {
+        transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
     }
 }
-
-#region PlayerBlackBoard
-public class PlayerBlackBoard : BlackBoard
-{
-    public States State;
-    public Vector3 MoveDir;
-    public int MaxbulletCount;
-    public int BulletCount;
-
-    public PlayerBlackBoard(Transform creature, Animator anim, Stat stat) : base(creature, anim, stat)
-    {
-        MaxbulletCount = 12;
-        BulletCount = 12;
-    }
-
-    public override void Clear()
-    {
-        base.Clear();
-    }
-}
-
-#endregion

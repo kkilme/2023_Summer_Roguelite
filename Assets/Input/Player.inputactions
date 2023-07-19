@@ -15,18 +15,18 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Dash",
+                    "name": "Attack",
                     "type": "Button",
-                    "id": "1782f646-cd5f-4baf-abb9-0cd5ab0d8b0d",
+                    "id": "8c5ab403-f005-4c2f-9bdc-c14c8ae8f998",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Attack",
+                    "name": "Interaction",
                     "type": "Button",
-                    "id": "8c5ab403-f005-4c2f-9bdc-c14c8ae8f998",
+                    "id": "5445c160-3d85-468c-8859-89be551a4e35",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -100,23 +100,23 @@
                 },
                 {
                     "name": "",
-                    "id": "13254752-98cd-4a1b-a12b-528535d28f68",
-                    "path": "<Keyboard>/shift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "73182dbb-0c7d-4353-bc31-057eb3f279fa",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f2b51757-dae6-4324-9d87-79a56058a64d",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interaction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
