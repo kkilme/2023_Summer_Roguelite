@@ -12,7 +12,7 @@ public class MapManager : MonoBehaviour
 
     private Dictionary<ROOMSIZE, List<Room>> roomPrefabsDic = new Dictionary<ROOMSIZE, List<Room>>();
     private Dictionary<ROOMTYPE, int[]> roomCountDic = new Dictionary<ROOMTYPE, int[]>(); // 0번 인덱스는 현재 룸 카운트. 1번 인덱스는 최대 룸 카운트
-    private Dictionary<ROOMTYPE, int> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, int>(); // 0번 인덱스는 현재 룸 카운트. 1번 인덱스는 최대 룸 카운트
+    private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // 0번 인덱스는 현재 룸 카운트. 1번 인덱스는 최대 룸 카운트
 
     [SerializeField] private RoomPosition[] roomPositions;
     [SerializeField] private Transform[] lifeShipPositions;
@@ -36,9 +36,15 @@ public class MapManager : MonoBehaviour
                 roomPrefabsDic.Add(roomSize, new List<Room>());
 
             // 추후에 데이터베이스에서 관리 생성하도록 설정
-            roomCountDic.Add(ROOMTYPE.TEST1, new int[] { 0, 10 });
-            roomCountDic.Add(ROOMTYPE.TEST2, new int[] { 0, 10 });
-            roomCountDic.Add(ROOMTYPE.TEST3, new int[] { 0, 99 });
+            roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
+            roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
+            roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
+            roomCountDic.Add(ROOMTYPE.BED_ROOM, new int[] { 0, 99 });
+            roomCountDic.Add(ROOMTYPE.LABORATORY, new int[] { 0, 3 });
+            roomCountDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new int[] { 0, 5 });
+            roomCountDic.Add(ROOMTYPE.MEDICAL_ROOM, new int[] { 0, 3 });
+
+            specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
 
             var roomPrefabs = Resources.LoadAll<Room>("Room");
             for (int i = 0; i < roomPrefabs.Length; i++)
