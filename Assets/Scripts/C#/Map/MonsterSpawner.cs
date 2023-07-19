@@ -2,16 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterSpawner : MonoBehaviour
+public class MonsterSpawner
 {
-    [SerializeField] private ROOMSIZE roomSize;
-    [SerializeField] private Transform[] spawnerPoses;
+    private ROOMSIZE roomSize;
+    private Vector3 pos;
+
+    public MonsterSpawner(ROOMSIZE roomSize, Vector3 pos)
+    {
+        this.roomSize = roomSize;
+        this.pos = pos;
+    }
 
     // ·ë¾ÈÀÇ ·£´ýÇÑ ÁÂÇ¥¸¦ ¸®ÅÏÇÔ
     public Vector3 GetRandomRoomPos()
     {
-        Vector3 pos = transform.position;
-
         switch (roomSize)
         {
             case ROOMSIZE.SMALL:
