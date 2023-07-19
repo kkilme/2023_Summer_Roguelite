@@ -3,16 +3,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class MapManager : MonoBehaviour
+public class MapManager : NetworkBehaviour
 {
     private static MapManager _instance;
 
     private Dictionary<ROOMSIZE, List<Room>> roomPrefabsDic = new Dictionary<ROOMSIZE, List<Room>>();
     private Dictionary<ROOMTYPE, int[]> roomCountDic = new Dictionary<ROOMTYPE, int[]>(); // 0번 인덱스는 현재 룸 카운트. 1번 인덱스는 최대 룸 카운트
-    private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // 0번 인덱스는 현재 룸 카운트. 1번 인덱스는 최대 룸 카운트
+    private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // 해당 방 타입이 special 타입일 시 해당 방의 생성확률을 정의해줌 (0 ~ 1)
 
     [SerializeField] private RoomPosition[] roomPositions;
     [SerializeField] private Transform[] lifeShipPositions;
@@ -28,6 +29,19 @@ public class MapManager : MonoBehaviour
 
     private void Awake()
     {
+        NetworkManager.Singleton.OnClientConnectedCallback += Init;
+    }
+
+    private void Init(ulong clientId)
+    {
+        Debug.Log("Connect");
+
+        if (!IsServer)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
         if (_instance == null)
         {
             _instance = this;
@@ -48,7 +62,10 @@ public class MapManager : MonoBehaviour
 
             var roomPrefabs = Resources.LoadAll<Room>("Room");
             for (int i = 0; i < roomPrefabs.Length; i++)
+            {
+                NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
                 roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
+            }
         }
     }
 
@@ -75,7 +92,11 @@ public class MapManager : MonoBehaviour
 
             int idx = Random.Range(0, roomPositionList.Count);
             var roomList = roomPrefabsDic[roomPositionList[idx].roomSize];
-            rooms.Add(Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject);
+
+            var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
+            rooms.Add(obj);
+            obj.GetComponent<NetworkObject>().Spawn();
+
             ++roomCountDic[roomType][0];
             roomPositionList.RemoveAt(idx);
         }
@@ -93,7 +114,11 @@ public class MapManager : MonoBehaviour
             {
                 int idx = Random.Range(0, roomPositionList.Count);
                 var roomList = roomPrefabsDic[roomPositionList[idx].roomSize];
-                rooms.Add(Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject);
+
+                var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
+                rooms.Add(obj);
+                obj.GetComponent<NetworkObject>().Spawn();
+
                 ++roomCountDic[roomType][0];
                 roomPositionList.RemoveAt(idx);
             }
@@ -110,7 +135,10 @@ public class MapManager : MonoBehaviour
                 if (roomCountDic[room.roomType][0] >= roomCountDic[room.roomType][1])
                     continue;
 
-                rooms.Add(Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject);
+                var obj = Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject;
+                rooms.Add(obj);
+                obj.GetComponent<NetworkObject>().Spawn();
+                
                 ++roomCountDic[room.roomType][0];
                 break;
             }
@@ -130,10 +158,10 @@ public class MapManager : MonoBehaviour
     private void ClearMap()
     {
         for (int i = 0; i < rooms.Count; i++)
-            Destroy(rooms[i]);
+            rooms[i].GetComponent<NetworkObject>().Despawn();
 
         for (int i = 0; i < lifeShips.Count; i++)
-            Destroy(lifeShips[i]);
+            lifeShips[i].GetComponent<NetworkObject>().Despawn();
 
         foreach (ROOMTYPE roomType in Enum.GetValues(typeof(ROOMTYPE)))
             if (roomCountDic.ContainsKey(roomType))
