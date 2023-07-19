@@ -95,7 +95,6 @@ public class MapManager : NetworkBehaviour
 
             var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
             rooms.Add(obj);
-            MonsterSpawner monsterSpawner = new MonsterSpawner(roomPositionList[idx].roomSize, obj.transform.position);
             var networkObj = obj.GetComponent<NetworkObject>();
             networkObj.Spawn();
             //networkObj.TrySetParent(roomPositionList[idx].transform);
@@ -120,7 +119,6 @@ public class MapManager : NetworkBehaviour
 
                 var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
                 rooms.Add(obj);
-                MonsterSpawner monsterSpawner = new MonsterSpawner(roomPositionList[idx].roomSize, obj.transform.position);
                 var networkObj = obj.GetComponent<NetworkObject>();
                 networkObj.GetComponent<NetworkObject>().Spawn();
                 //networkObj.TrySetParent(roomPositionList[idx].transform);
@@ -143,7 +141,6 @@ public class MapManager : NetworkBehaviour
 
                 var obj = Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject;
                 rooms.Add(obj);
-                MonsterSpawner monsterSpawner = new MonsterSpawner(roomPositionList[i].roomSize, obj.transform.position);
                 var networkObj = obj.GetComponent<NetworkObject>();
                 networkObj.GetComponent<NetworkObject>().Spawn();
                 //networkObj.TrySetParent(roomPositionList[i].transform);

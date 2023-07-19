@@ -1,21 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class MonsterSpawner
+public class MonsterSpawner : NetworkBehaviour
 {
-    private ROOMSIZE roomSize;
-    private Vector3 pos;
-
-    public MonsterSpawner(ROOMSIZE roomSize, Vector3 pos)
-    {
-        this.roomSize = roomSize;
-        this.pos = pos;
-    }
+    [SerializeField] private ROOMSIZE roomSize;
+    [SerializeField] private Transform[] spawnerPoses;
 
     // ·ë¾ÈÀÇ ·£´ýÇÑ ÁÂÇ¥¸¦ ¸®ÅÏÇÔ
     public Vector3 GetRandomRoomPos()
     {
+        Vector3 pos = transform.position;
+
         switch (roomSize)
         {
             case ROOMSIZE.SMALL:
@@ -27,5 +24,11 @@ public class MonsterSpawner
             default:
                 return Vector3.zero;
         }
+    }
+
+    [ServerRpc]
+    public void SpawnMonsterServerRPC()
+    {
+
     }
 }
