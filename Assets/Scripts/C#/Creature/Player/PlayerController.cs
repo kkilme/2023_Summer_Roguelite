@@ -30,6 +30,9 @@ public class PlayerController : Creature
     [SerializeField]
     private Collider _collider;
 
+    [SerializeField]
+    private Gun _weapon;
+
     private PlayerBlackBoard _board;
     private BehaviourTree _tree;
 
@@ -53,7 +56,10 @@ public class PlayerController : Creature
         //_action.action.performed += Move;
         //_action.action.canceled += Idle;
         //_pi.actions.FindAction("Dash").performed += Dash;
-        //_pi.actions.FindAction("Attack").performed += Attack;
+        _pi.actions.FindAction("Attack").started += _ => _weapon.StartShoot();
+        _pi.actions.FindAction("Attack").canceled += _ => _weapon.StopShoot();
+        _pi.actions.FindAction("Reload").performed += _ => _weapon.StartReload();
+        
         //_pi.actions.FindAction("Attack").canceled += Idle;
 
         transform.LookAt(Vector3.forward);
@@ -128,7 +134,18 @@ public class PlayerController : Creature
 
     private void Attack(InputAction.CallbackContext ctx)
     {
+        if (!ctx.performed)
+            return;
+        
         _board.State = States.Attack;
+        _weapon?.Shoot();
+        _tree.CheckSeq();
+    }
+
+    private void Reload(InputAction.CallbackContext ctx)
+    {
+        _board.State = States.Reload;
+        _weapon?.StartReload();
         _tree.CheckSeq();
     }
 
