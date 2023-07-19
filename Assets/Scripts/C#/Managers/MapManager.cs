@@ -29,18 +29,17 @@ public class MapManager : NetworkBehaviour
 
     private void Awake()
     {
-        NetworkManager.Singleton.OnClientConnectedCallback += Init;
+        Init();
     }
 
-    private void Init(ulong clientId)
+    private void Init()
     {
-        Debug.Log("Connect");
-
-        if (!IsServer)
-        {
-            Destroy(this.gameObject);
-            return;
-        }
+        //Debug.Log("Connect");
+        //if (!IsServer && !IsHost)
+        //{
+        //    Destroy(this.gameObject);
+        //    return;
+        //}
 
         if (_instance == null)
         {
@@ -70,7 +69,8 @@ public class MapManager : NetworkBehaviour
     }
 
     // ¸Ê »ý¼º ÇÔ¼ö
-    public void GenerateMap()
+    [ServerRpc]
+    public void GenerateMapServerRPC()
     {
         ClearMap();
 
@@ -95,7 +95,9 @@ public class MapManager : NetworkBehaviour
 
             var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
             rooms.Add(obj);
-            obj.GetComponent<NetworkObject>().Spawn();
+            var networkObj = obj.GetComponent<NetworkObject>();
+            networkObj.Spawn();
+            //networkObj.TrySetParent(roomPositionList[idx].transform);
 
             ++roomCountDic[roomType][0];
             roomPositionList.RemoveAt(idx);
@@ -117,7 +119,9 @@ public class MapManager : NetworkBehaviour
 
                 var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
                 rooms.Add(obj);
-                obj.GetComponent<NetworkObject>().Spawn();
+                var networkObj = obj.GetComponent<NetworkObject>();
+                networkObj.GetComponent<NetworkObject>().Spawn();
+                //networkObj.TrySetParent(roomPositionList[idx].transform);
 
                 ++roomCountDic[roomType][0];
                 roomPositionList.RemoveAt(idx);
@@ -137,7 +141,9 @@ public class MapManager : NetworkBehaviour
 
                 var obj = Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject;
                 rooms.Add(obj);
-                obj.GetComponent<NetworkObject>().Spawn();
+                var networkObj = obj.GetComponent<NetworkObject>();
+                networkObj.GetComponent<NetworkObject>().Spawn();
+                //networkObj.TrySetParent(roomPositionList[i].transform);
                 
                 ++roomCountDic[room.roomType][0];
                 break;
@@ -149,7 +155,13 @@ public class MapManager : NetworkBehaviour
         for (int i = 0; i < lifeShipCount; i++)
         {
             int idx = Random.Range(0, lifeShipPositionList.Count);
-            lifeShips.Add(Instantiate(lifeShipPrefab, lifeShipPositionList[idx].position, Quaternion.identity, lifeShipPositionList[i].transform));
+
+            var obj = Instantiate(lifeShipPrefab, lifeShipPositionList[idx].position, Quaternion.identity, lifeShipPositionList[i].transform);
+            lifeShips.Add(obj);
+            var networkObj = obj.GetComponent<NetworkObject>();
+            networkObj.GetComponent<NetworkObject>().Spawn();
+            //networkObj.TrySetParent(lifeShipPositionList[i].transform);
+
             lifeShipPositionList.RemoveAt(idx);
         }
     }
@@ -168,5 +180,6 @@ public class MapManager : NetworkBehaviour
                 roomCountDic[roomType][0] = 0;
 
         rooms.Clear();
+        lifeShips.Clear();
     }
 }
