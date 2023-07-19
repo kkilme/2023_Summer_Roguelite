@@ -3,16 +3,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class MapManager : MonoBehaviour
+public class MapManager : NetworkBehaviour
 {
     private static MapManager _instance;
 
     private Dictionary<ROOMSIZE, List<Room>> roomPrefabsDic = new Dictionary<ROOMSIZE, List<Room>>();
     private Dictionary<ROOMTYPE, int[]> roomCountDic = new Dictionary<ROOMTYPE, int[]>(); // 0번 인덱스는 현재 룸 카운트. 1번 인덱스는 최대 룸 카운트
-    private Dictionary<ROOMTYPE, int> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, int>(); // 0번 인덱스는 현재 룸 카운트. 1번 인덱스는 최대 룸 카운트
+    private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // 해당 방 타입이 special 타입일 시 해당 방의 생성확률을 정의해줌 (0 ~ 1)
 
     [SerializeField] private RoomPosition[] roomPositions;
     [SerializeField] private Transform[] lifeShipPositions;
@@ -28,6 +29,18 @@ public class MapManager : MonoBehaviour
 
     private void Awake()
     {
+        Init();
+    }
+
+    private void Init()
+    {
+        //Debug.Log("Connect");
+        //if (!IsServer && !IsHost)
+        //{
+        //    Destroy(this.gameObject);
+        //    return;
+        //}
+
         if (_instance == null)
         {
             _instance = this;
@@ -36,18 +49,28 @@ public class MapManager : MonoBehaviour
                 roomPrefabsDic.Add(roomSize, new List<Room>());
 
             // 추후에 데이터베이스에서 관리 생성하도록 설정
-            roomCountDic.Add(ROOMTYPE.TEST1, new int[] { 0, 1 });
-            roomCountDic.Add(ROOMTYPE.TEST2, new int[] { 0, 2 });
-            roomCountDic.Add(ROOMTYPE.TEST3, new int[] { 0, 99 });
+            roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
+            roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
+            roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
+            roomCountDic.Add(ROOMTYPE.BED_ROOM, new int[] { 0, 99 });
+            roomCountDic.Add(ROOMTYPE.LABORATORY, new int[] { 0, 3 });
+            roomCountDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new int[] { 0, 5 });
+            roomCountDic.Add(ROOMTYPE.MEDICAL_ROOM, new int[] { 0, 3 });
+
+            specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
 
             var roomPrefabs = Resources.LoadAll<Room>("Room");
             for (int i = 0; i < roomPrefabs.Length; i++)
+            {
+                NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
                 roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
+            }
         }
     }
 
     // 맵 생성 함수
-    public void GenerateMap()
+    [ServerRpc]
+    public void GenerateMapServerRPC()
     {
         ClearMap();
 
@@ -69,7 +92,13 @@ public class MapManager : MonoBehaviour
 
             int idx = Random.Range(0, roomPositionList.Count);
             var roomList = roomPrefabsDic[roomPositionList[idx].roomSize];
-            rooms.Add(Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject);
+
+            var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
+            rooms.Add(obj);
+            var networkObj = obj.GetComponent<NetworkObject>();
+            networkObj.Spawn();
+            //networkObj.TrySetParent(roomPositionList[idx].transform);
+
             ++roomCountDic[roomType][0];
             roomPositionList.RemoveAt(idx);
         }
@@ -87,7 +116,13 @@ public class MapManager : MonoBehaviour
             {
                 int idx = Random.Range(0, roomPositionList.Count);
                 var roomList = roomPrefabsDic[roomPositionList[idx].roomSize];
-                rooms.Add(Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject);
+
+                var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
+                rooms.Add(obj);
+                var networkObj = obj.GetComponent<NetworkObject>();
+                networkObj.GetComponent<NetworkObject>().Spawn();
+                //networkObj.TrySetParent(roomPositionList[idx].transform);
+
                 ++roomCountDic[roomType][0];
                 roomPositionList.RemoveAt(idx);
             }
@@ -104,7 +139,12 @@ public class MapManager : MonoBehaviour
                 if (roomCountDic[room.roomType][0] >= roomCountDic[room.roomType][1])
                     continue;
 
-                rooms.Add(Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject);
+                var obj = Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject;
+                rooms.Add(obj);
+                var networkObj = obj.GetComponent<NetworkObject>();
+                networkObj.GetComponent<NetworkObject>().Spawn();
+                //networkObj.TrySetParent(roomPositionList[i].transform);
+                
                 ++roomCountDic[room.roomType][0];
                 break;
             }
@@ -115,7 +155,13 @@ public class MapManager : MonoBehaviour
         for (int i = 0; i < lifeShipCount; i++)
         {
             int idx = Random.Range(0, lifeShipPositionList.Count);
-            lifeShips.Add(Instantiate(lifeShipPrefab, lifeShipPositionList[idx].position, Quaternion.identity, lifeShipPositionList[i].transform));
+
+            var obj = Instantiate(lifeShipPrefab, lifeShipPositionList[idx].position, Quaternion.identity, lifeShipPositionList[i].transform);
+            lifeShips.Add(obj);
+            var networkObj = obj.GetComponent<NetworkObject>();
+            networkObj.GetComponent<NetworkObject>().Spawn();
+            //networkObj.TrySetParent(lifeShipPositionList[i].transform);
+
             lifeShipPositionList.RemoveAt(idx);
         }
     }
@@ -124,15 +170,16 @@ public class MapManager : MonoBehaviour
     private void ClearMap()
     {
         for (int i = 0; i < rooms.Count; i++)
-            Destroy(rooms[i]);
+            rooms[i].GetComponent<NetworkObject>().Despawn();
 
         for (int i = 0; i < lifeShips.Count; i++)
-            Destroy(lifeShips[i]);
+            lifeShips[i].GetComponent<NetworkObject>().Despawn();
 
         foreach (ROOMTYPE roomType in Enum.GetValues(typeof(ROOMTYPE)))
             if (roomCountDic.ContainsKey(roomType))
                 roomCountDic[roomType][0] = 0;
 
         rooms.Clear();
+        lifeShips.Clear();
     }
 }
