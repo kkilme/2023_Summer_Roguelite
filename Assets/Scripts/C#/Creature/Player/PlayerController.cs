@@ -26,20 +26,14 @@ public class PlayerController : MonoBehaviour, IAttackable
     [SerializeField]
     private PlayerInput _pi;
     [SerializeField]
-    private InputActionReference _action;
-    [SerializeField]
-    private Collider _collider;
+    private Collider _interactionTrigger;
 
+    private List<InputAction> _actions = new List<InputAction>();
     private Vector3 _moveDir;
-    IDisposable _moveChar;
-    IDisposable _RotationChar;
 
     private Stat _stat;
 
-    [SerializeField]
-    private Transform[] _sightTransforms;
-
-    void Start()
+    void Awake()
     {
         Init();
     }
@@ -51,59 +45,34 @@ public class PlayerController : MonoBehaviour, IAttackable
         
         _pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
         _anim = Util.GetOrAddComponent<Animator>(gameObject);
-        _collider = Util.GetOrAddComponent<Collider>(gameObject);
 
-        _pi.actions.FindAction("Move").performed += Move;
-        _pi.actions.FindAction("Move").canceled += Idle;
-        _pi.actions.FindAction("Attack").performed += Attack;
-        _pi.actions.FindAction("Attack").canceled += Idle;
-
-        transform.LookAt(Vector3.forward);
+        InitInputSystem();
     }
 
-#region Behaviour_tree
-    //private void MakeBehaviour()
-    //{
-    //    _board = new PlayerBlackBoard(transform, _anim, _stat);
-    //    _tree = new BehaviourTree();
-    //
-    //    var deadSeq = new BehaviourSequence(_tree);
-    //    _tree.AddSeq(deadSeq);
-    //
-    //    var deadcts = new CancellationTokenSource();
-    //    var deadNode = new BehaviourNormalSelector(deadcts, deadSeq);
-    //    deadSeq.AddSequenceNode(deadNode);
-    //
-    //    PlayerDeadLeaf dead = new PlayerDeadLeaf(deadNode, deadcts, _board);
-    //    PlayerDamagedLeaf damaged = new PlayerDamagedLeaf(deadNode, deadcts, _board);
-    //    deadNode.AddNode(dead);
-    //    deadNode.AddNode(damaged);
-    //
-    //    var attackSeq = new BehaviourSequence(_tree);
-    //    _tree.AddSeq(attackSeq);
-    //
-    //    var attackcts = new CancellationTokenSource();
-    //    var attackNode = new BehaviourNormalSelector(attackcts, attackSeq);
-    //    attackSeq.AddSequenceNode(attackNode);
-    //
-    //    PlayerAttackLeaf attack = new PlayerAttackLeaf(attackNode, attackcts, _board);
-    //    PlayerDashLeaf dash = new PlayerDashLeaf(attackNode, attackcts, _board);
-    //    attackNode.AddNode(attack);
-    //    attackNode.AddNode(dash);
-    //
-    //    var moveSeq = new BehaviourSequence(_tree);
-    //    _tree.AddSeq(moveSeq);
-    //
-    //    var movects = new CancellationTokenSource();
-    //    var moveNode = new BehaviourNormalSelector(movects, moveSeq);
-    //    moveSeq.AddSequenceNode(moveNode);
-    //
-    //    PlayerMoveLeaf move = new PlayerMoveLeaf(moveNode, movects, _board);
-    //    PlayerIdleLeaf idle = new PlayerIdleLeaf(moveNode, movects, _board);
-    //    moveNode.AddNode(move);
-    //    moveNode.AddNode(idle);
-    //}
-#endregion
+    private void InitInputSystem()
+    {
+        _actions.Add(_pi.actions.FindAction("Move"));
+        _actions.Add(_pi.actions.FindAction("Attack"));
+        _actions.Add(_pi.actions.FindAction("Interaction"));
+
+        _actions[0].performed -= Move;
+        _actions[0].performed += Move;
+
+        _actions[0].canceled -= Idle;
+        _actions[0].canceled += Idle;
+
+        _actions[1].performed -= Attack;
+        _actions[1].performed += Attack;
+
+        _actions[1].canceled -= Idle;
+        _actions[1].canceled += Idle;
+
+        _actions[2].performed -= Interaction;
+        _actions[2].performed += Interaction;
+
+        _actions[2].canceled -= InteractionCancel;
+        _actions[2].canceled += InteractionCancel;
+    }
 
     private void Move(InputAction.CallbackContext ctx)
     {
@@ -122,20 +91,33 @@ public class PlayerController : MonoBehaviour, IAttackable
         //Attack 애니메이션, 무기 공격
     }
 
-    private void Clear()
+    private void Interaction(InputAction.CallbackContext ctx)
     {
-        _moveChar.Dispose();
-        _RotationChar.Dispose();
+        _actions[0].performed -= Move;
+        _actions[0].canceled -= Idle;
+        _actions[1].performed -= Attack;
+        _actions[1].canceled -= Idle;
     }
 
-    public void OnDamage(int damage)
+    private void InteractionCancel(InputAction.CallbackContext ctx)
     {
-        _stat.Hp -= damage;
+        _actions[0].performed -= Move;
+        _actions[0].performed += Move;
+
+        _actions[0].canceled -= Idle;
+        _actions[0].canceled += Idle;
+
+        _actions[1].performed -= Attack;
+        _actions[1].performed += Attack;
+
+        _actions[1].canceled -= Idle;
+        _actions[1].canceled += Idle;
     }
 
     public void OnDamaged(int damage)
     {
         _stat.Hp -= damage;
+        //사운드
     }
 
     public void OnHealed(int heal)
@@ -145,28 +127,6 @@ public class PlayerController : MonoBehaviour, IAttackable
 
     private void FixedUpdate()
     {
-        transform.position += _moveDir * Time.deltaTime * _stat.Speed;
+        transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
     }
 }
-
-#region PlayerBlackBoard
-public class PlayerBlackBoard : BlackBoard
-{
-    public States State;
-    public Vector3 MoveDir;
-    public int MaxbulletCount;
-    public int BulletCount;
-
-    public PlayerBlackBoard(Transform creature, Animator anim, Stat stat) : base(creature, anim, stat)
-    {
-        MaxbulletCount = 12;
-        BulletCount = 12;
-    }
-
-    public override void Clear()
-    {
-        base.Clear();
-    }
-}
-
-#endregion
