@@ -20,4 +20,15 @@ public abstract class Item
 
     public virtual void Use() { }
     public virtual void Use(ref Stat stat) { }
+
+    public static Item GetItem(ITEM_NAME item)
+    {
+        switch (item)
+        {
+            case ITEM_NAME.BANDAGE:
+                return new Bandage();
+            default:
+                return null;
+        }
+    }
 }
