@@ -27,7 +27,6 @@ public class BlackBoard
     public virtual void Clear()
     {
         Anim = null;
-        Stat = null;
     }
 }
 
