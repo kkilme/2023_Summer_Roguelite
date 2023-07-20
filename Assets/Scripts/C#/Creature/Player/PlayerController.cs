@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour, IAttackable
     [SerializeField]
     private Collider _interactionTrigger;
 
+    [SerializeField]
+    private Gun _weapon;
+
     private List<InputAction> _actions = new List<InputAction>();
     private Vector3 _moveDir;
 
@@ -54,6 +57,7 @@ public class PlayerController : MonoBehaviour, IAttackable
         _actions.Add(_pi.actions.FindAction("Move"));
         _actions.Add(_pi.actions.FindAction("Attack"));
         _actions.Add(_pi.actions.FindAction("Interaction"));
+        _actions.Add(_pi.actions.FindAction("Reload"));
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
@@ -72,6 +76,9 @@ public class PlayerController : MonoBehaviour, IAttackable
 
         _actions[2].canceled -= InteractionCancel;
         _actions[2].canceled += InteractionCancel;
+
+        _actions[3].performed -= Reload;
+        _actions[3].performed += Reload;
     }
 
     private void Move(InputAction.CallbackContext ctx)
@@ -83,12 +90,19 @@ public class PlayerController : MonoBehaviour, IAttackable
     private void Idle(InputAction.CallbackContext ctx)
     {
         _moveDir = Vector3.zero;
+        _weapon.StopShoot();
         //Idle 애니메이션
     }
 
     private void Attack(InputAction.CallbackContext ctx)
     {
         //Attack 애니메이션, 무기 공격
+        _weapon?.StartShoot();
+    }
+
+    private void Reload(InputAction.CallbackContext ctx)
+    {
+        _weapon?.StartReload();
     }
 
     private void Interaction(InputAction.CallbackContext ctx)
@@ -97,6 +111,7 @@ public class PlayerController : MonoBehaviour, IAttackable
         _actions[0].canceled -= Idle;
         _actions[1].performed -= Attack;
         _actions[1].canceled -= Idle;
+        _actions[3].performed -= Reload;
     }
 
     private void InteractionCancel(InputAction.CallbackContext ctx)
@@ -112,6 +127,9 @@ public class PlayerController : MonoBehaviour, IAttackable
 
         _actions[1].canceled -= Idle;
         _actions[1].canceled += Idle;
+
+        _actions[3].performed -= Reload;
+        _actions[3].performed += Reload;
     }
 
     public void OnDamaged(int damage)
