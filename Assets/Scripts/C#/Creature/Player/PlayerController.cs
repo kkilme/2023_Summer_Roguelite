@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour, IAttackable
     private void Idle(InputAction.CallbackContext ctx)
     {
         _moveDir = Vector3.zero;
-        _weapon.StopShoot();
+        _weapon?.StopShoot();
         //Idle 애니메이션
     }
 

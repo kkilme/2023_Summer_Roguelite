@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class MapManager : NetworkBehaviour
@@ -21,6 +22,7 @@ public class MapManager : NetworkBehaviour
 
     [SerializeField] private List<GameObject> rooms = new List<GameObject>(); // 현재 배치된 방들 리스트
     [SerializeField] private List<GameObject> lifeShips = new List<GameObject>(); // 현재 배치된 구명선들 리스트
+    [SerializeField] private NavMeshSurface _testMap;
 
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;
@@ -164,6 +166,8 @@ public class MapManager : NetworkBehaviour
 
             lifeShipPositionList.RemoveAt(idx);
         }
+
+        _testMap.AddData();
     }
 
     // 기존 맵 초기화 함수
