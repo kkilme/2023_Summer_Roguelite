@@ -7,9 +7,9 @@ public struct ConditionStruct
 {
     public float time;
     public int sizeX, sizeY;
-    public ITEM_TYPE[] items;
+    public ITEM_NAME[] items;
 
-    public ConditionStruct(float time, int sizeX, int sizeY, ITEM_TYPE[] items)
+    public ConditionStruct(float time, int sizeX, int sizeY, ITEM_NAME[] items)
     {
         this.time = time;
         this.sizeX = sizeX;

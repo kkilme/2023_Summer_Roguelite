@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bandage : Item
 {
     [SerializeField] private int healAmount;
+    [SerializeField] private Stat healStat;
 
     private void Awake()
     {
@@ -13,11 +14,6 @@ public class Bandage : Item
 
     public override void Use(ref Stat stat)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Use()
-    {
-        throw new System.NotImplementedException();
+        stat += healStat;
     }
 }
