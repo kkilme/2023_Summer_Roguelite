@@ -54,10 +54,12 @@ public class PlayerController : MonoBehaviour, IAttackable
 
     private void InitInputSystem()
     {
+
         _actions.Add(_pi.actions.FindAction("Move"));
         _actions.Add(_pi.actions.FindAction("Attack"));
         _actions.Add(_pi.actions.FindAction("Interaction"));
         _actions.Add(_pi.actions.FindAction("Reload"));
+
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
@@ -65,11 +67,11 @@ public class PlayerController : MonoBehaviour, IAttackable
         _actions[0].canceled -= Idle;
         _actions[0].canceled += Idle;
 
-        _actions[1].performed -= Attack;
-        _actions[1].performed += Attack;
+        _actions[1].started -= Attack;
+        _actions[1].started += Attack;
 
-        _actions[1].canceled -= Idle;
-        _actions[1].canceled += Idle;
+        _actions[1].canceled -= StopAttack;
+        _actions[1].canceled += StopAttack;
 
         _actions[2].performed -= Interaction;
         _actions[2].performed += Interaction;
@@ -79,10 +81,11 @@ public class PlayerController : MonoBehaviour, IAttackable
 
         _actions[3].performed -= Reload;
         _actions[3].performed += Reload;
+
     }
 
     private void Move(InputAction.CallbackContext ctx)
-    {
+    {   
         Vector2 input = ctx.ReadValue<Vector2>();
         _moveDir = new Vector3(input.x, 0, input.y);
     }
@@ -90,7 +93,7 @@ public class PlayerController : MonoBehaviour, IAttackable
     private void Idle(InputAction.CallbackContext ctx)
     {
         _moveDir = Vector3.zero;
-        _weapon?.StopShoot();
+        //_weapon?.StopShoot();
         //Idle 애니메이션
     }
 
@@ -98,6 +101,11 @@ public class PlayerController : MonoBehaviour, IAttackable
     {
         //Attack 애니메이션, 무기 공격
         _weapon?.StartShoot();
+    }
+
+    private void StopAttack(InputAction.CallbackContext ctx)
+    {
+        _weapon?.StopShoot();
     }
 
     private void Reload(InputAction.CallbackContext ctx)
@@ -109,8 +117,8 @@ public class PlayerController : MonoBehaviour, IAttackable
     {
         _actions[0].performed -= Move;
         _actions[0].canceled -= Idle;
-        _actions[1].performed -= Attack;
-        _actions[1].canceled -= Idle;
+        _actions[1].started -= Attack;
+        //_actions[1].canceled -= Idle;
         _actions[3].performed -= Reload;
     }
 
@@ -122,11 +130,11 @@ public class PlayerController : MonoBehaviour, IAttackable
         _actions[0].canceled -= Idle;
         _actions[0].canceled += Idle;
 
-        _actions[1].performed -= Attack;
-        _actions[1].performed += Attack;
+        _actions[1].started -= Attack;
+        _actions[1].started += Attack;
 
-        _actions[1].canceled -= Idle;
-        _actions[1].canceled += Idle;
+        //_actions[1].canceled -= Idle;
+        //_actions[1].canceled += Idle;
 
         _actions[3].performed -= Reload;
         _actions[3].performed += Reload;

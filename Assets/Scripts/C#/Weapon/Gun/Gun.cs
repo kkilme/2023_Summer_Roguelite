@@ -3,7 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 public class Gun : MonoBehaviour
 {
@@ -13,7 +15,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private Transform cam;
     [SerializeField] private GameObject bulletHole;
     [SerializeField] private GameObject effectparent;
-
+    [SerializeField] private TextMeshProUGUI AmmoleftText;
     private CancellationTokenSource cancellationTokenSource;
 
     private float timeSinceLastShot;
@@ -56,7 +58,7 @@ public class Gun : MonoBehaviour
         Debug.Log("Reload finish");
     }
 
-    private bool CanShoot() => !gunData.reloading && gunData.currentAmmo > 0 && timeSinceLastShot > 1f / gunData.fireRate;
+    private bool CanShoot() => !gunData.reloading && gunData.currentAmmo > 0 && (timeSinceLastShot > 1f / gunData.fireRate || gunData.isRapidFire);
 
     public void Shoot()
     {   
@@ -73,7 +75,7 @@ public class Gun : MonoBehaviour
                 {
                     //IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
                     //damageable?.TakeDamage(gunData.damage);
-                    Debug.Log(hitInfo.transform.name);
+                    //Debug.Log(hitInfo.transform.name);
                     GameObject effect = Instantiate(bulletHole,
                         hitInfo.point + (hitInfo.normal * .01f),
                         Quaternion.LookRotation(hitInfo.normal));
@@ -82,14 +84,14 @@ public class Gun : MonoBehaviour
             }
             timeSinceLastShot = 0;
             gunData.currentAmmo -= gunData.bulletsPerShoot;
-            Debug.Log($"Cur ammo: {gunData.currentAmmo}");
+            AmmoleftText.text = $"Ammo left: {gunData.currentAmmo}";
         }
     }
     public async UniTask RapidFire(CancellationToken fireCancellationToken)
     {   
         while (true)
         {
-            Debug.Log("shoot");
+            //Debug.Log("shoot");
             for (int i = 0; i < gunData.bulletsPerShoot; i++)
             {
                 Shoot();
@@ -106,6 +108,7 @@ public class Gun : MonoBehaviour
 
     public void StartShoot()
     {
+        //Debug.Log("StartShoot");
         if (gunData.isRapidFire)
         {
             if (cancellationTokenSource != null && !cancellationTokenSource.Token.IsCancellationRequested)
@@ -121,16 +124,14 @@ public class Gun : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < gunData.bulletsPerShoot; i++)
-            {
-                Shoot();
-            }
+            Shoot();
         }
         
     }
     
     public void StopShoot()
     {
+        //Debug.Log("StopShoot");
         cancellationTokenSource?.Cancel();
     }
 
