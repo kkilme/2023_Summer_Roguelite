@@ -31,6 +31,10 @@ public class MapManager : NetworkBehaviour
 
     private void Awake()
     {
+        Vector3 vector = Vector3.zero;
+        vector.x -= 1;
+        Debug.Log(vector);
+
         Init();
     }
 
