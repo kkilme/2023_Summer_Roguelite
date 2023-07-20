@@ -95,7 +95,7 @@ public class MapManager : NetworkBehaviour
             int idx = Random.Range(0, roomPositionList.Count);
             var roomList = roomPrefabsDic[roomPositionList[idx].roomSize];
 
-            var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
+            var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0)).gameObject;
             rooms.Add(obj);
             var networkObj = obj.GetComponent<NetworkObject>();
             networkObj.Spawn();
@@ -122,7 +122,8 @@ public class MapManager : NetworkBehaviour
                 var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
                 rooms.Add(obj);
                 var networkObj = obj.GetComponent<NetworkObject>();
-                networkObj.GetComponent<NetworkObject>().Spawn();
+                networkObj.Spawn();
+
                 //networkObj.TrySetParent(roomPositionList[idx].transform);
 
                 ++roomCountDic[roomType][0];
@@ -144,7 +145,7 @@ public class MapManager : NetworkBehaviour
                 var obj = Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject;
                 rooms.Add(obj);
                 var networkObj = obj.GetComponent<NetworkObject>();
-                networkObj.GetComponent<NetworkObject>().Spawn();
+                networkObj.Spawn();
                 //networkObj.TrySetParent(roomPositionList[i].transform);
                 
                 ++roomCountDic[room.roomType][0];
@@ -167,7 +168,7 @@ public class MapManager : NetworkBehaviour
             lifeShipPositionList.RemoveAt(idx);
         }
 
-        _testMap.AddData();
+        _testMap.BuildNavMesh();
     }
 
     // 기존 맵 초기화 함수

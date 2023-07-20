@@ -74,10 +74,8 @@ public class MonsterWanderLeaf : BehaviourLeaf
 
     private async UniTaskVoid Wandering()
     {
-        int xrand = _rand.Next(1, 100) * (_rand.Next(0, 2) != 0 ? 1 : -1);
-        int zrand = _rand.Next(1, 100) * (_rand.Next(0, 2) != 0 ? 1 : -1);
-        Vector3 next = new Vector3(xrand, 0, zrand).normalized * _rand.Next(1, 100);
-        _board.Agent.destination = _board.CurCreature.position + next;
+        Vector3 next = _board.Spawner.GetRandomRoomPos();
+        _board.Agent.destination = next;
 
         _board.CurCreature.rotation = Quaternion.LookRotation(next);
         //_board.Anim.SetBool(_animHash, true);

@@ -2,18 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class MonsterSpawner : NetworkBehaviour
 {
-    [SerializeField] private ROOMSIZE roomSize;
-    [SerializeField] private Transform[] spawnerPoses;
+    [SerializeField] private ROOMSIZE _roomSize;
+    [SerializeField] private Transform[] _spawnerPoses;
+    [SerializeField] private GameObject[] _monsterObject;
 
     // ·ë¾ÈÀÇ ·£´ýÇÑ ÁÂÇ¥¸¦ ¸®ÅÏÇÏ´Â ÇÔ¼ö
     public Vector3 GetRandomRoomPos()
     {
         Vector3 pos = transform.position;
 
-        switch (roomSize)
+        switch (_roomSize)
         {
             case ROOMSIZE.SMALL:
                 return new Vector3(Random.Range(pos.x - 12, pos.x + 12), 1, Random.Range(pos.z - 12, pos.z + 12));
@@ -31,7 +33,7 @@ public class MonsterSpawner : NetworkBehaviour
     {
         Vector3 roomPos = transform.position;
 
-        switch (roomSize)
+        switch (_roomSize)
         {
             case ROOMSIZE.SMALL:
                 return roomPos.x - 12 <= pos.x && pos.x <= roomPos.x + 12 && roomPos.z - 12 <= pos.z && pos.z <= roomPos.z + 12;
@@ -47,6 +49,30 @@ public class MonsterSpawner : NetworkBehaviour
     [ServerRpc]
     public void SpawnMonsterServerRPC()
     {
+        switch (_roomSize)
+        {
+            case ROOMSIZE.SMALL://2
+                SpawnMonsterRandom(2);
+                break;
+            case ROOMSIZE.MEDIUM://4
+                SpawnMonsterRandom(4);
+                break;
+            case ROOMSIZE.LARGE://5
+                SpawnMonsterRandom(5);
+                break;
+        }
+    }
 
+    private void SpawnMonsterRandom(int count)
+    {
+        System.Random _rand = new System.Random();
+
+        for (short i = 0; i < count; ++i)
+        {
+            var monster = Instantiate(_monsterObject[_rand.Next(0, _monsterObject.Length)]);
+            var monsterController = Util.GetOrAddComponent<MonsterController>(monster);
+            monsterController.Init(this);
+            monster.transform.position = GetRandomRoomPos();
+        }
     }
 }

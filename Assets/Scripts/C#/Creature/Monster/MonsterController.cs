@@ -35,15 +35,10 @@ public class MonsterController : MonoBehaviour, IAttackable
     private MonsterDetect _detect;
     private Stat _stat;
 
-    void Start()
-    {
-        Init();
-    }
-
-    private void Init()
+    public void Init(MonsterSpawner spawner)
     {
         _stat = new Stat(1, 1, 5, 1, 1, 1);
-        MakeBehaviour();
+        MakeBehaviour(spawner);
         ChildInit();
         _tree.CheckSeq();
     }
@@ -54,12 +49,12 @@ public class MonsterController : MonoBehaviour, IAttackable
         //_detect.Init(_tree, _board);
     }
 
-    private void MakeBehaviour()
+    private void MakeBehaviour(MonsterSpawner spawner)
     {
         _tree = new BehaviourTree();
         var agent = Util.GetOrAddComponent<NavMeshAgent>(gameObject);
         Animator animator = Util.GetOrAddComponent<Animator>(gameObject);
-        _board = new MonsterBlackBoard(transform, animator, agent, _stat);
+        _board = new MonsterBlackBoard(transform, animator, agent, _stat, spawner);
 
         agent.speed = _stat.Speed;
         //데미지를 입는 경우
@@ -132,15 +127,13 @@ public class MonsterController : MonoBehaviour, IAttackable
 
 public class MonsterBlackBoard : BlackBoard{
     public Transform Target = null;
-    public Vector3 Spawner { get; }
-    public Vector3 RoomTopLeft { get; }
+    public MonsterSpawner Spawner { get; private set; } = null;
     public NavMeshAgent Agent;
 
-    public MonsterBlackBoard(Transform creature, Animator anim, NavMeshAgent agent, Stat stat) : base(creature, anim, stat)
+    public MonsterBlackBoard(Transform creature, Animator anim, NavMeshAgent agent, Stat stat, MonsterSpawner spawner) : base(creature, anim, stat)
     {
         Agent = agent;
-        Spawner = creature.position;
-        RoomTopLeft = new Vector3(-12.5f, 0, 10);
+        Spawner = spawner;
     }
 
     public override void Clear()
@@ -148,6 +141,7 @@ public class MonsterBlackBoard : BlackBoard{
         base.Clear();
         Agent = null;
         Target = null;
+        Spawner = null;
     }
 }
 
