@@ -151,11 +151,31 @@ public abstract class BehaviourSequenceNode
 
     public abstract SeqStates CheckNode();
 
-    public abstract void CancelNode();
+    public virtual void CancelNode() 
+    {
+        if (SeqState == SeqStates.Running)
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
+            _curLeaf.CancelBehaviour(_cts);
+            _curLeaf = null;
+            SeqState = SeqStates.Fail;
+        }
+    }
 
     public abstract void CompleteSeq();
 
-    public abstract void Clear();
+    public virtual void Clear()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+        for (int i = 0; i < _nodes.Count; ++i)
+        {
+            _nodes[i].Clear();
+            _nodes[i] = null;
+        }
+    }
 }
 
 public abstract class BehaviourLeaf
@@ -190,15 +210,7 @@ public class BehaviourNormalSelector : BehaviourSequenceNode
 
     public override void CancelNode()
     {
-        if (SeqState == SeqStates.Running)
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = new CancellationTokenSource();
-            _curLeaf.CancelBehaviour(_cts);
-            _curLeaf = null;
-            SeqState = SeqStates.Fail;
-        }
+        base.CancelNode();
     }
 
     public override SeqStates CheckNode()
@@ -226,13 +238,7 @@ public class BehaviourNormalSelector : BehaviourSequenceNode
 
     public override void Clear()
     {
-        _cts.Cancel();
-        _cts.Dispose();
-        for (int i = 0; i < _nodes.Count; ++i)
-        {
-            _nodes[i].Clear();
-            _nodes[i] = null;
-        }
+        base.Clear();
     }
 }
 
@@ -247,16 +253,7 @@ public class BehaviourRandomSelector : BehaviourSequenceNode
 
     public override void CancelNode()
     {
-        if (SeqState == SeqStates.Running)
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = new CancellationTokenSource();
-            for (short i = 0; i < _nodes.Count; ++i) 
-                _nodes[i].CancelBehaviour(_cts);
-
-            SeqState = SeqStates.Fail;
-        }
+        base.CancelNode();
     }
 
     public void AddNode(BehaviourLeaf node)
@@ -292,13 +289,7 @@ public class BehaviourRandomSelector : BehaviourSequenceNode
 
     public override void Clear()
     {
+        base.Clear();
         _rand = null;
-        _cts.Cancel();
-        _cts.Dispose();
-        for (int i = 0; i < _nodes.Count; ++i)
-        {
-            _nodes[i].Clear();
-            _nodes[i] = null;
-        }
     }
 }

@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour, IAttackable
 
     private void Init()
     {
-        _stat = new Stat(1, 1, 2, 1, 1, 5);
+        _stat = new Stat(1, 1, 10, 1, 1, 5);
         _moveDir = Vector3.zero;
         
         _pi = Util.GetOrAddComponent<PlayerInput>(gameObject);

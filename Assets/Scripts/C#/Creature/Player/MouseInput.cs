@@ -70,7 +70,7 @@ public class MouseInput : MonoBehaviour
                 new Vector3(anglex, _playerUpperBody[i].localEulerAngles.y, _playerUpperBody[i].localEulerAngles.z);
         }
 
-        Mouse.current.WarpCursorPosition(_screenMid);
+        //Mouse.current.WarpCursorPosition(_screenMid);
     }
 
     private void OnOffSettingUI(bool bOpen)

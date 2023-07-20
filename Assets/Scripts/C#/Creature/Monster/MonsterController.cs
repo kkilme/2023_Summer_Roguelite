@@ -42,7 +42,7 @@ public class MonsterController : MonoBehaviour, IAttackable
 
     private void Init()
     {
-        _stat = new Stat(1, 1, 0.5f, 1, 1, 1);
+        _stat = new Stat(1, 1, 5, 1, 1, 1);
         MakeBehaviour();
         ChildInit();
         _tree.CheckSeq();
@@ -132,11 +132,15 @@ public class MonsterController : MonoBehaviour, IAttackable
 
 public class MonsterBlackBoard : BlackBoard{
     public Transform Target = null;
+    public Vector3 Spawner { get; }
+    public Vector3 RoomTopLeft { get; }
     public NavMeshAgent Agent;
 
     public MonsterBlackBoard(Transform creature, Animator anim, NavMeshAgent agent, Stat stat) : base(creature, anim, stat)
     {
         Agent = agent;
+        Spawner = creature.position;
+        RoomTopLeft = new Vector3(-12.5f, 0, 10);
     }
 
     public override void Clear()

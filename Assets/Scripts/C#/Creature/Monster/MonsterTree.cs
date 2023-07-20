@@ -62,7 +62,7 @@ public class MonsterWanderLeaf : BehaviourLeaf
     public override void CancelBehaviour(CancellationTokenSource cts)
     {
         _cts = cts;
-        _board.Anim.SetBool(_animHash, false);
+        //_board.Anim.SetBool(_animHash, false);
     }
 
     public override SeqStates CheckLeaf()
@@ -76,11 +76,11 @@ public class MonsterWanderLeaf : BehaviourLeaf
     {
         int xrand = _rand.Next(1, 100) * (_rand.Next(0, 2) != 0 ? 1 : -1);
         int zrand = _rand.Next(1, 100) * (_rand.Next(0, 2) != 0 ? 1 : -1);
-        Vector3 next = new Vector3(xrand, 0, zrand).normalized * _rand.Next(1, 4);
+        Vector3 next = new Vector3(xrand, 0, zrand).normalized * _rand.Next(1, 100);
         _board.Agent.destination = _board.CurCreature.position + next;
 
         _board.CurCreature.rotation = Quaternion.LookRotation(next);
-        _board.Anim.SetBool(_animHash, true);
+        //_board.Anim.SetBool(_animHash, true);
         _board.Agent.speed = _board.Stat.Speed;
         _board.Agent.isStopped = false;
 
@@ -90,7 +90,7 @@ public class MonsterWanderLeaf : BehaviourLeaf
         _board.Agent.isStopped = true;
         _board.Agent.velocity = Vector3.zero;
 
-        _board.Anim.SetBool(_animHash, false);
+        //_board.Anim.SetBool(_animHash, false);
         
         await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: _cts.Token);
 
