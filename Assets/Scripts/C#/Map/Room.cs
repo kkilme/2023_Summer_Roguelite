@@ -29,4 +29,5 @@ public class Room : MonoBehaviour
     public Transform[] itemPlaces; // 아이템들을 배치하기 위한 위치들
     public ROOMSIZE roomSize;
     public ROOMTYPE roomType;
+    public MonsterSpawner monsterSpawners;
 }
