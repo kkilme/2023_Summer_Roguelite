@@ -6,8 +6,7 @@ using UnityEngine;
 public abstract class GettableItem : MonoBehaviour, IInteraction
 {
     [SerializeField] protected ITEM_NAME item; // 획득하는 아이템
-    [SerializeField] protected ConditionStruct condition; // 해당 아이템을 획득하는데에 필요한 조건
 
-    public virtual ConditionStruct Interact() { return  condition; }
+    public abstract void Interact(Player player);
     public abstract void InteractComplete(bool bSuccess);
 }

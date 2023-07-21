@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bandage_Gettable : GettableItem
+public class GettableItem_Bandage : GettableItem
 {
+    public override void Interact(Player player)
+    {
+     
+    }
+
     public override void InteractComplete(bool bSuccess)
     {
  
