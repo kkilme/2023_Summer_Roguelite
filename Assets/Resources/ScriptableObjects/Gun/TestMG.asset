@@ -10,22 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df55e78659259044d81fe6242be65688, type: 3}
-  m_Name: TestSG
+  m_Name: TestMG
   m_EditorClassIdentifier: 
-  name: Shotgun
-  damage: 10
+  name: Machinegun
+  damage: 1
   maxDistance: 100
-  bulletsPerShoot: 5
-  spread: 1
-  fireRate: 0.5
-  isAutofire: 0
-  availableAttachmentTypes: 
-  recoilX: 0
-  recoilY: 0
+  bulletsPerShoot: 1
+  spread: 0.7
+  fireRate: 15
+  isAutofire: 1
+  recoilX: -2
+  recoilY: 1
   recoilZ: 0
-  currentAmmo: 60
-  magSize: 100
-  reloadTime: 2
+  currentAmmo: 152
+  magSize: 300
+  reloadTime: 4
   bullethole: {fileID: 100002, guid: 957385c45b877e645a128e11a3efb2f9, type: 3}
   reloading: 0
-  isFirstRef: 0

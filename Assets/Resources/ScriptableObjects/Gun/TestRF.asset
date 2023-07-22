@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df55e78659259044d81fe6242be65688, type: 3}
-  m_Name: TestSG
+  m_Name: TestRF
   m_EditorClassIdentifier: 
-  name: Shotgun
+  name: Rifle
   damage: 10
   maxDistance: 100
   bulletsPerShoot: 5
-  spread: 1
+  spread: 0.1
   fireRate: 0.5
   isAutofire: 0
-  availableAttachmentTypes: 
+  AvailableAttachmentTypes: 
   recoilX: 0
   recoilY: 0
   recoilZ: 0
@@ -28,4 +28,3 @@ MonoBehaviour:
   reloadTime: 2
   bullethole: {fileID: 100002, guid: 957385c45b877e645a128e11a3efb2f9, type: 3}
   reloading: 0
-  isFirstRef: 0

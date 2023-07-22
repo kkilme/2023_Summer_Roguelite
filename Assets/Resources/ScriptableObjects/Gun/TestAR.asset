@@ -17,9 +17,16 @@ MonoBehaviour:
   maxDistance: 100
   bulletsPerShoot: 1
   spread: 0
+  aimingZoomrate: 1
   fireRate: 5
-  isRapidFire: 1
-  currentAmmo: 81
+  isAutofire: 1
+  availableAttachmentTypes: 000000000100000002000000030000000400000005000000
+  recoilX: -1
+  recoilY: 1
+  recoilZ: 0
+  currentAmmo: 180
   magSize: 180
   reloadTime: 1.5
+  bullethole: {fileID: 100002, guid: 957385c45b877e645a128e11a3efb2f9, type: 3}
   reloading: 0
+  isFirstRef: 0

@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour, IAttackable
     }
 
     private void Move(InputAction.CallbackContext ctx)
-    {   
+    {
         Vector2 input = ctx.ReadValue<Vector2>();
         _moveDir = new Vector3(input.x, 0, input.y);
     }
@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour, IAttackable
         _actions[0].performed -= Move;
         _actions[0].canceled -= Idle;
         _actions[1].started -= Attack;
-        //_actions[1].canceled -= Idle;
+        _actions[1].canceled -= StopAttack;
         _actions[3].performed -= Reload;
     }
 
@@ -133,8 +133,8 @@ public class PlayerController : MonoBehaviour, IAttackable
         _actions[1].started -= Attack;
         _actions[1].started += Attack;
 
-        //_actions[1].canceled -= Idle;
-        //_actions[1].canceled += Idle;
+        _actions[1].canceled -= StopAttack;
+        _actions[1].canceled += StopAttack;
 
         _actions[3].performed -= Reload;
         _actions[3].performed += Reload;
@@ -154,5 +154,14 @@ public class PlayerController : MonoBehaviour, IAttackable
     private void FixedUpdate()
     {
         transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
+    }
+
+    private void OnDestroy()
+    {
+        _actions[0].performed -= Move;
+        _actions[0].canceled -= Idle;
+        _actions[1].started -= Attack;
+        _actions[3].performed -= Reload;
+
     }
 }
