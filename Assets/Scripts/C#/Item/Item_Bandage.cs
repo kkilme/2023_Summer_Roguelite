@@ -9,10 +9,13 @@ public class Item_Bandage : Item
     public Item_Bandage()
     {
         itemStat = new ItemStat("Bandage", "Heal Player", null, 1, 1);
+        healStat = new Stat();
+        itemName = ITEM_NAME.BANDAGE;
+        healStat.Hp = healAmount;
     }
 
-    public override void Use(ref Stat stat)
+    public override void Use(Player player)
     {
-        stat += healStat;
+
     }
 }

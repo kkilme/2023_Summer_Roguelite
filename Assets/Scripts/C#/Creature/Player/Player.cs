@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private Stat stat;
-    private Inventory inventory;
+    public Stat PlayerStat { get; private set; }
+    public Inventory Inventory { get; private set; }
 }

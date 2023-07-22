@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// ÇÃ·¹ÀÌ¾î°¡ È¹µæÇÏ´Â ¾ÆÀÌÅÛ. ÇÁ¸®ÆÕ ÇüÅÂ·Î Á¸Àç
+// í”Œë ˆì´ì–´ê°€ íšë“í•˜ëŠ” ì•„ì´í…œ. í”„ë¦¬íŒ¹ í˜•íƒœë¡œ ì¡´ì¬
 public abstract class GettableItem : MonoBehaviour, IInteraction
 {
-    [SerializeField] protected ITEM_NAME item; // È¹µæÇÏ´Â ¾ÆÀÌÅÛ
+    [SerializeField] protected ITEM_NAME itemName; // íšë“í•˜ëŠ” ì•„ì´í…œ
 
     public abstract void Interact(Player player);
     public abstract void InteractComplete(bool bSuccess);
