@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static UnityEngine.Rendering.DebugUI;
 
 public enum ROTATION_TYPE
@@ -11,18 +14,32 @@ public enum ROTATION_TYPE
     RIGHT
 }
 
-public class Inventory
+public class Inventory : NetworkBehaviour
 {
     private int sizeX, sizeY; // 인벤토리창 크기
     private Item[,] inventorySpace; // 인벤토리 공간을 Item 타입의 이차원 배열로 저장해 해당 좌표의 공간이 비어있는지 채워져 있는지 판단
     private List<Item> items = new List<Item>(); // 현재 갖고있는 아이템들
     private Dictionary<Item, ROTATION_TYPE> itemRotationDic = new Dictionary<Item, ROTATION_TYPE>(); // 해당 아이템의 회전 정보를 저장. 기본값은 RIGHT
 
+    public event EventHandler<InventoryEventHandlerArgs> OnInventoryChanged;
+    public class InventoryEventHandlerArgs
+    {
+        public List<Item> Items { get; private set; }
+        public Dictionary<Item, ROTATION_TYPE> ItemRotationDic { get; private set; }
+
+        public InventoryEventHandlerArgs(List<Item> items)
+        {
+            Items = items;
+        }
+    }
+    private InventoryEventHandlerArgs inventoryEventHandlerArgs;
+
     public Inventory(int sizeX, int sizeY)
     {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         inventorySpace = new Item[sizeX, sizeY];
+        inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items);
     }
 
     // 인벤토리안에 아이템을 넣는 함수. 매개변수인 x,y가 기준점으로 좌하단에 위치함
@@ -44,6 +61,7 @@ public class Inventory
 
                 items.Add(item);
                 itemRotationDic.Add(item, rotationType);
+                OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
                 return true;
             }
         }
@@ -68,6 +86,7 @@ public class Inventory
 
             items.Add(item);
             itemRotationDic.Add(item, rotationType);
+            OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
             return true;
         }
 
@@ -89,6 +108,8 @@ public class Inventory
             itemRotationDic[item] = ROTATION_TYPE.TOP;
         else
             itemRotationDic[item] = ROTATION_TYPE.RIGHT;
+
+        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
     }
 
     // 인벤토리에있는 아이템을 제거함
@@ -104,6 +125,7 @@ public class Inventory
 
         items.Remove(item);
         itemRotationDic.Remove(item);
+        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
     }
 
     // 인벤토리에 존재하는 아이템의 기준점을 반환하는 함수
