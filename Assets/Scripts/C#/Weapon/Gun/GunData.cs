@@ -17,6 +17,9 @@ public class GunData : ScriptableObject
     public float maxDistance;
     public int bulletsPerShoot;
     public float spread;
+
+    [Header("Aiming")]
+    public float aimSpeed; // 우클릭시 조준으로 전환되는 속도
     public float aimingZoomrate = 1;
     
     [Tooltip("1초 당 발사 수")] public float fireRate;
@@ -31,6 +34,9 @@ public class GunData : ScriptableObject
     public float recoilX;
     public float recoilY;
     public float recoilZ;
+    public float aimRecoilX; // 조준 시 반동
+    public float aimRecoilY;
+    public float aimRecoilZ;
 
     [Header("Reloading")]
     public int currentAmmo;
@@ -57,10 +63,6 @@ public class GunData : ScriptableObject
         foreach (var attachmentType in availableAttachmentTypes)
         {
             attachments.Add(attachmentType, null); // 부착물 딕셔너리 초기화
-        }
-        foreach (var attachment in attachments)
-        {
-            Debug.Log(attachment.Key, attachment.Value);
         }
     }
 

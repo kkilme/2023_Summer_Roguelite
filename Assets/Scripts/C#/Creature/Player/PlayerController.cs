@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UniRx;
 using UniRx.Triggers;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,7 +20,7 @@ public enum AnimParam
     Dead
 }
 
-public class PlayerController : MonoBehaviour, IAttackable
+public class PlayerController : NetworkBehaviour, IAttackable
 {
     [SerializeField]
     private Animator _anim;
@@ -49,16 +50,24 @@ public class PlayerController : MonoBehaviour, IAttackable
         _pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
         _anim = Util.GetOrAddComponent<Animator>(gameObject);
 
-        InitInputSystem();
+
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner) { 
+            InitInputSystem();
+        }
     }
 
     private void InitInputSystem()
     {
-
+        
         _actions.Add(_pi.actions.FindAction("Move"));
         _actions.Add(_pi.actions.FindAction("Attack"));
         _actions.Add(_pi.actions.FindAction("Interaction"));
         _actions.Add(_pi.actions.FindAction("Reload"));
+        _actions.Add(_pi.actions.FindAction("Aim"));
 
 
         _actions[0].performed -= Move;
@@ -82,6 +91,12 @@ public class PlayerController : MonoBehaviour, IAttackable
         _actions[3].performed -= Reload;
         _actions[3].performed += Reload;
 
+        _actions[4].started -= Aim;
+        _actions[4].started += Aim;
+
+        _actions[4].canceled -= StopAttack;
+        _actions[4].canceled += StopAttack;
+
     }
 
     private void Move(InputAction.CallbackContext ctx)
@@ -94,12 +109,12 @@ public class PlayerController : MonoBehaviour, IAttackable
     {
         _moveDir = Vector3.zero;
         //_weapon?.StopShoot();
-        //Idle æ÷¥œ∏ﬁ¿Ãº«
+        //Idle Ïï†ÎãàÎ©îÏù¥ÏÖò
     }
 
     private void Attack(InputAction.CallbackContext ctx)
     {
-        //Attack æ÷¥œ∏ﬁ¿Ãº«, π´±‚ ∞¯∞›
+        //Attack Ïï†ÎãàÎ©îÏù¥ÏÖò, Î¨¥Í∏∞ Í≥µÍ≤©
         _weapon?.StartShoot();
     }
 
@@ -111,6 +126,11 @@ public class PlayerController : MonoBehaviour, IAttackable
     private void Reload(InputAction.CallbackContext ctx)
     {
         _weapon?.StartReload();
+    }
+
+    private void Aim(InputAction.CallbackContext ctx)
+    {
+
     }
 
     private void Interaction(InputAction.CallbackContext ctx)
@@ -143,7 +163,7 @@ public class PlayerController : MonoBehaviour, IAttackable
     public void OnDamaged(int damage)
     {
         _stat.Hp -= damage;
-        //ªÁøÓµÂ
+        //ÏÇ¨Ïö¥Îìú
     }
 
     public void OnHealed(int heal)
@@ -158,10 +178,12 @@ public class PlayerController : MonoBehaviour, IAttackable
 
     private void OnDestroy()
     {
+        if (_actions.Count == 0) return;
         _actions[0].performed -= Move;
         _actions[0].canceled -= Idle;
         _actions[1].started -= Attack;
         _actions[3].performed -= Reload;
+        _actions[4].started -= Aim;
 
     }
 }

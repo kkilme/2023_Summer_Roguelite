@@ -16,16 +16,21 @@ MonoBehaviour:
   damage: 10
   maxDistance: 100
   bulletsPerShoot: 5
-  spread: 1
-  fireRate: 0.5
+  spread: 0.7
+  aimSpeed: 0
+  aimingZoomrate: 1
+  fireRate: 0.4
   isAutofire: 0
   availableAttachmentTypes: 
-  recoilX: 0
+  recoilX: -6
   recoilY: 0
   recoilZ: 0
-  currentAmmo: 60
-  magSize: 100
+  aimRecoilX: 0
+  aimRecoilY: 0
+  aimRecoilZ: 0
+  currentAmmo: 30
+  magSize: 30
   reloadTime: 2
-  bullethole: {fileID: 100002, guid: 957385c45b877e645a128e11a3efb2f9, type: 3}
+  bullethole: {fileID: 100002, guid: 73a9f9f0ffac08c449b5d9988697a6e8, type: 3}
   reloading: 0
   isFirstRef: 0
