@@ -47,7 +47,6 @@ public class MonsterIdleLeaf : BehaviourLeaf
 
 public class MonsterWanderLeaf : BehaviourLeaf
 {
-    private System.Random _rand;
     private MonsterBlackBoard _board;
 
     public MonsterWanderLeaf(
@@ -56,7 +55,6 @@ public class MonsterWanderLeaf : BehaviourLeaf
     {
         _board = board;
         _animHash = Animator.StringToHash(MonsterStates.Wander.ToString());
-        _rand = new System.Random();
     }
 
     public override void CancelBehaviour(CancellationTokenSource cts)
@@ -98,7 +96,51 @@ public class MonsterWanderLeaf : BehaviourLeaf
 
     public override void Clear()
     {
-        _rand = null;
+        _board = null;
+    }
+}
+
+public class MonsterComeBackLeaf : BehaviourLeaf
+{
+    private MonsterBlackBoard _board;
+
+    public MonsterComeBackLeaf(BehaviourSequenceNode parent, CancellationTokenSource cts,
+        MonsterBlackBoard board) : base(parent, cts)
+    {
+        _board = board;
+        //°È´Â ¸ð¼Ç
+    }
+
+    public override void CancelBehaviour(CancellationTokenSource cts)
+    {
+        _cts = cts;
+    }
+
+    public override SeqStates CheckLeaf()
+    {
+        if (!_board.Spawner.IsPosInRoom(_board.CurCreature.position))
+        {
+            ComeBack().Forget();
+            return SeqStates.Running;
+        }
+
+        return SeqStates.Fail;
+    }
+
+    private async UniTaskVoid ComeBack()
+    {
+        _board.Agent.destination = _board.Spawner.GetRandomRoomPos();
+        _board.Agent.isStopped = false;
+
+        await UniTask.WaitUntil(() => Vector3.Distance(_board.Agent.destination, _board.CurCreature.position) < 0.5f,
+            cancellationToken: _cts.Token);
+
+        _board.Agent.isStopped = true;
+        _board.Agent.velocity = Vector3.zero;
+    }
+
+    public override void Clear()
+    {
         _board = null;
     }
 }
@@ -251,11 +293,10 @@ public class MonsterDamagedLeaf : BehaviourLeaf
 
     private async UniTaskVoid Damaged()
     {
-        _board.Anim.SetBool(_animHash, true);
+        _board.CurCreature.LookAt(_board.HitDir);
         await UniTask.WhenAll(UniTask.WaitUntil(() => _parent.SeqState == SeqStates.Running, cancellationToken: _cts.Token),
             UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: _cts.Token));
-        _board.Anim.SetBool(_animHash, false);
-        await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: _cts.Token);
+
         _parent.SeqState = SeqStates.Success;
         _beforeHp = _board.Stat.Hp;
         _parent.CompleteSeq();

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -31,6 +32,7 @@ public class MonsterController : MonoBehaviour, IAttackable
 {
     [SerializeField]
     private BehaviourTree _tree;
+    [SerializeField]
     private MonsterBlackBoard _board;
     private MonsterDetect _detect;
     private Stat _stat;
@@ -57,16 +59,15 @@ public class MonsterController : MonoBehaviour, IAttackable
         _board = new MonsterBlackBoard(transform, animator, agent, _stat, spawner);
 
         agent.speed = _stat.Speed;
+        
         //데미지를 입는 경우
         BehaviourSequence deadSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(deadSeq);
         var deadSeqcts = new CancellationTokenSource();
         var deadNode = new BehaviourNormalSelector(deadSeqcts, deadSeq);
         MonsterDeadLeaf dead = new MonsterDeadLeaf(deadNode, deadSeqcts, _board);
-        MonsterDamagedLeaf damage = new MonsterDamagedLeaf(deadNode, deadSeqcts, _board);
         deadSeq.AddSequenceNode(deadNode);
         deadNode.AddNode(dead);
-        deadNode.AddNode(damage);
 
         //플레이어 발견 시, 여기 시퀸스에는 공격 노드도 포함할 것
         BehaviourSequence chaseSeq = new BehaviourSequence(_tree);
@@ -85,6 +86,29 @@ public class MonsterController : MonoBehaviour, IAttackable
 
         chaseSeq.AddSequenceNode(chaseNode);
         chaseSeq.AddSequenceNode(attackNode);
+
+        //방으로 되돌아오는 seq
+        BehaviourSequence comeBackSeq = new BehaviourSequence(_tree);
+        _tree.AddSeq(comeBackSeq);
+
+        var comeBackSeqcts = new CancellationTokenSource();
+        var comeBackSeqNormalSelector = new BehaviourNormalSelector(comeBackSeqcts, comeBackSeq);
+
+        MonsterComeBackLeaf comeBack =
+            new MonsterComeBackLeaf(
+            comeBackSeqNormalSelector, comeBackSeqcts, _board);
+
+        comeBackSeqNormalSelector.AddNode(comeBack);
+        comeBackSeq.AddSequenceNode(comeBackSeqNormalSelector);
+
+        //맞으면 해당 방향을 바라본다
+        BehaviourSequence LookSeq = new BehaviourSequence(_tree);
+        _tree.AddSeq(deadSeq);
+        var LookSeqcts = new CancellationTokenSource();
+        var LookNode = new BehaviourNormalSelector(LookSeqcts, LookSeq);
+
+        MonsterDamagedLeaf damage = new MonsterDamagedLeaf(LookNode, LookSeqcts, _board);
+        LookNode.AddNode(damage);
 
         //평소 상태의 시퀸스
         BehaviourSequence normalSeq = new BehaviourSequence(_tree);
@@ -124,16 +148,20 @@ public class MonsterController : MonoBehaviour, IAttackable
 }
 
 #region MonsterBehaviourBlackBoard
-
+[Serializable]
 public class MonsterBlackBoard : BlackBoard{
     public Transform Target = null;
+    [field:SerializeField]
     public MonsterSpawner Spawner { get; private set; } = null;
     public NavMeshAgent Agent;
+    public Vector3 SpawnerPos;
+    public Vector3 HitDir;
 
     public MonsterBlackBoard(Transform creature, Animator anim, NavMeshAgent agent, Stat stat, MonsterSpawner spawner) : base(creature, anim, stat)
     {
         Agent = agent;
         Spawner = spawner;
+        SpawnerPos = Spawner.transform.position;
     }
 
     public override void Clear()

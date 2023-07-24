@@ -645,14 +645,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cc3639c71de32242859f513786cbf52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomSize: 2
-  spawnerPoses:
-  - {fileID: 7189387164316932254}
-  - {fileID: 1923420592266133238}
-  - {fileID: 5087950987437819996}
-  - {fileID: 7027462864721588986}
-  - {fileID: 3884346193552400748}
-  - {fileID: 2710624888142289063}
+  _roomSize: 0
+  _spawnerPoses: []
+  _monsterObject: []
 --- !u!114 &4496235377486826542
 MonoBehaviour:
   m_ObjectHideFlags: 0

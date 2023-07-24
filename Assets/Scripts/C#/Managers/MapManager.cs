@@ -22,6 +22,7 @@ public class MapManager : NetworkBehaviour
 
     [SerializeField] private List<GameObject> rooms = new List<GameObject>(); // 현재 배치된 방들 리스트
     [SerializeField] private List<GameObject> lifeShips = new List<GameObject>(); // 현재 배치된 구명선들 리스트
+
     [SerializeField] private NavMeshSurface _testMap;
 
     [Header("Stat")]
@@ -31,10 +32,6 @@ public class MapManager : NetworkBehaviour
 
     private void Awake()
     {
-        Vector3 vector = Vector3.zero;
-        vector.x -= 1;
-        Debug.Log(vector);
-
         Init();
     }
 
@@ -101,7 +98,8 @@ public class MapManager : NetworkBehaviour
 
             var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0)).gameObject;
             rooms.Add(obj);
-            var networkObj = obj.GetComponent<NetworkObject>();
+
+            var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
             networkObj.Spawn();
             //networkObj.TrySetParent(roomPositionList[idx].transform);
 
@@ -125,7 +123,8 @@ public class MapManager : NetworkBehaviour
 
                 var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
                 rooms.Add(obj);
-                var networkObj = obj.GetComponent<NetworkObject>();
+
+                var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
                 networkObj.Spawn();
 
                 //networkObj.TrySetParent(roomPositionList[idx].transform);
@@ -148,10 +147,11 @@ public class MapManager : NetworkBehaviour
 
                 var obj = Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject;
                 rooms.Add(obj);
-                var networkObj = obj.GetComponent<NetworkObject>();
-                networkObj.Spawn();
+                //var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
+                //networkObj.Spawn();
+
                 //networkObj.TrySetParent(roomPositionList[i].transform);
-                
+
                 ++roomCountDic[room.roomType][0];
                 break;
             }
@@ -167,12 +167,24 @@ public class MapManager : NetworkBehaviour
             lifeShips.Add(obj);
             var networkObj = obj.GetComponent<NetworkObject>();
             networkObj.GetComponent<NetworkObject>().Spawn();
-            //networkObj.TrySetParent(lifeShipPositionList[i].transform);
+
+            networkObj.TrySetParent(lifeShipPositionList[i].transform);
 
             lifeShipPositionList.RemoveAt(idx);
         }
 
         _testMap.BuildNavMesh();
+
+        for (int i = 0; i < rooms.Count; ++i)
+        {
+            int rand = Random.Range(0, 100);
+            if (rand >= 66)
+            {
+                var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
+                spawner.Init();
+                spawner.SpawnMonster();
+            }
+        }
     }
 
     // 기존 맵 초기화 함수

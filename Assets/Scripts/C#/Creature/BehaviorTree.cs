@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -30,11 +31,12 @@ public class BlackBoard
     }
 }
 
-[System.Serializable]
+[Serializable]
 public class BehaviourTree
 {
-    [SerializeField]
     private List<BehaviourSequence> _seqList = null;
+
+    public string CurLeaf = null;
 
     public BehaviourTree() 
     {
@@ -44,6 +46,7 @@ public class BehaviourTree
     public void AddSeq(BehaviourSequence seq)
     {
         _seqList.Add(seq);
+        
     }
 
     public void CheckSeq()
@@ -58,6 +61,7 @@ public class BehaviourTree
             {
                 for (int j = i + 1; j < _seqList.Count; ++j)
                     _seqList[j].CancelSeq();
+                
                 break;
             }
             
@@ -76,10 +80,13 @@ public class BehaviourTree
     }
 }
 
+[Serializable]
 public class BehaviourSequence
 {
     private List<BehaviourSequenceNode> _nodeList = null;
     private BehaviourTree _parent = null;
+
+    public BehaviourSequenceNode CurNode = null;
 
     public BehaviourSequence(BehaviourTree parent)
     {
@@ -100,7 +107,10 @@ public class BehaviourSequence
         {
             state = _nodeList[i].CheckNode();
             if (state != SeqStates.Success)
+            {
+                _parent.CurLeaf = _nodeList[i].CurLeaf;
                 return state;
+            }
         }
 
         //완료 시 초기화
@@ -133,6 +143,7 @@ public class BehaviourSequence
 
 public abstract class BehaviourSequenceNode
 {
+    public string CurLeaf;
     protected BehaviourLeaf _curLeaf;
     protected BehaviourSequence _parent;
     protected List<BehaviourLeaf> _nodes = null;
@@ -196,6 +207,7 @@ public abstract class BehaviourLeaf
     public abstract void Clear();
 }
 
+[Serializable]
 public class BehaviourNormalSelector : BehaviourSequenceNode
 {
     public BehaviourNormalSelector(CancellationTokenSource cts, BehaviourSequence parent) : base(cts, parent)
@@ -221,6 +233,7 @@ public class BehaviourNormalSelector : BehaviourSequenceNode
                 SeqState = _nodes[i].CheckLeaf();
                 if (SeqState != SeqStates.Fail)
                 {
+                    CurLeaf = _nodes[i].ToString();
                     _curLeaf = _nodes[i];
                     break;
                 }
@@ -267,6 +280,7 @@ public class BehaviourRandomSelector : BehaviourSequenceNode
             int rand = _rand.Next(0, _nodes.Count);
             SeqState = _nodes[rand].CheckLeaf();
             _curLeaf = _nodes[rand];
+            CurLeaf = _nodes[rand].ToString();
             //for (int i = 0; i < _nodes.Count; ++i)
             //{
             //    SeqState = _nodes[i].CheckLeaf();

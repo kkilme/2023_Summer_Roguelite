@@ -21,10 +21,9 @@ public enum AnimParam
 
 public class PlayerController : MonoBehaviour, IAttackable
 {
-    [SerializeField]
-    private Animator _anim;
-    [SerializeField]
-    private PlayerInput _pi;
+    public Animator Anim { get; private set; }
+    public PlayerInput Pi { get; private set; }
+
     [SerializeField]
     private Collider _interactionTrigger;
 
@@ -46,18 +45,18 @@ public class PlayerController : MonoBehaviour, IAttackable
         _stat = new Stat(1, 1, 10, 1, 1, 5);
         _moveDir = Vector3.zero;
         
-        _pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
-        _anim = Util.GetOrAddComponent<Animator>(gameObject);
+        Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
+        Anim = Util.GetOrAddComponent<Animator>(gameObject);
 
         InitInputSystem();
     }
 
     private void InitInputSystem()
     {
-        _actions.Add(_pi.actions.FindAction("Move"));
-        _actions.Add(_pi.actions.FindAction("Attack"));
-        _actions.Add(_pi.actions.FindAction("Interaction"));
-        _actions.Add(_pi.actions.FindAction("Reload"));
+        _actions.Add(Pi.actions.FindAction("Move"));
+        _actions.Add(Pi.actions.FindAction("Attack"));
+        _actions.Add(Pi.actions.FindAction("Interaction"));
+        _actions.Add(Pi.actions.FindAction("Reload"));
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;

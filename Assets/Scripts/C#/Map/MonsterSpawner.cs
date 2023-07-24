@@ -10,6 +10,12 @@ public class MonsterSpawner : NetworkBehaviour
     [SerializeField] private Transform[] _spawnerPoses;
     [SerializeField] private GameObject[] _monsterObject;
 
+    public void Init()
+    {
+        _monsterObject = new GameObject[5];
+        _monsterObject = Resources.LoadAll<GameObject>("Monster");
+    }
+
     // ·ë¾ÈÀÇ ·£´ýÇÑ ÁÂÇ¥¸¦ ¸®ÅÏÇÏ´Â ÇÔ¼ö
     public Vector3 GetRandomRoomPos()
     {
@@ -46,8 +52,8 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    public void SpawnMonsterServerRPC()
+    //[ServerRpc]
+    public void SpawnMonster()//ServerRPC
     {
         switch (_roomSize)
         {
@@ -71,8 +77,8 @@ public class MonsterSpawner : NetworkBehaviour
         {
             var monster = Instantiate(_monsterObject[_rand.Next(0, _monsterObject.Length)]);
             var monsterController = Util.GetOrAddComponent<MonsterController>(monster);
-            monsterController.Init(this);
             monster.transform.position = GetRandomRoomPos();
+            monsterController.Init(this);
         }
     }
 }
