@@ -13,16 +13,15 @@ public class MapManager : NetworkBehaviour
     private static MapManager _instance;
 
     private Dictionary<ROOMSIZE, List<Room>> roomPrefabsDic = new Dictionary<ROOMSIZE, List<Room>>();
-    private Dictionary<ROOMTYPE, int[]> roomCountDic = new Dictionary<ROOMTYPE, int[]>(); // 0¹ø ÀÎµ¦½º´Â ÇöÀç ·ë Ä«¿îÆ®. 1¹ø ÀÎµ¦½º´Â ÃÖ´ë ·ë Ä«¿îÆ®
-    private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // ÇØ´ç ¹æ Å¸ÀÔÀÌ special Å¸ÀÔÀÏ ½Ã ÇØ´ç ¹æÀÇ »ı¼ºÈ®·üÀ» Á¤ÀÇÇØÁÜ (0 ~ 1)
+    private Dictionary<ROOMTYPE, int[]> roomCountDic = new Dictionary<ROOMTYPE, int[]>(); // 0ë²ˆ ì¸ë±ìŠ¤ëŠ” í˜„ì¬ ë£¸ ì¹´ìš´íŠ¸. 1ë²ˆ ì¸ë±ìŠ¤ëŠ” ìµœëŒ€ ë£¸ ì¹´ìš´íŠ¸
+    private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // í•´ë‹¹ ë°© íƒ€ì…ì´ special íƒ€ì…ì¼ ì‹œ í•´ë‹¹ ë°©ì˜ ìƒì„±í™•ë¥ ì„ ì •ì˜í•´ì¤Œ (0 ~ 1)
 
     [SerializeField] private RoomPosition[] roomPositions;
     [SerializeField] private Transform[] lifeShipPositions;
     [SerializeField] private GameObject lifeShipPrefab;
 
-    [SerializeField] private List<GameObject> rooms = new List<GameObject>(); // ÇöÀç ¹èÄ¡µÈ ¹æµé ¸®½ºÆ®
-    [SerializeField] private List<GameObject> lifeShips = new List<GameObject>(); // ÇöÀç ¹èÄ¡µÈ ±¸¸í¼±µé ¸®½ºÆ®
-
+    [SerializeField] private List<GameObject> rooms = new List<GameObject>(); // í˜„ì¬ ë°°ì¹˜ëœ ë°©ë“¤ ë¦¬ìŠ¤íŠ¸
+    [SerializeField] private List<GameObject> lifeShips = new List<GameObject>(); // í˜„ì¬ ë°°ì¹˜ëœ êµ¬ëª…ì„ ë“¤ ë¦¬ìŠ¤íŠ¸
     [SerializeField] private NavMeshSurface _testMap;
 
     [Header("Stat")]
@@ -51,7 +50,7 @@ public class MapManager : NetworkBehaviour
             foreach (ROOMSIZE roomSize in Enum.GetValues(typeof(ROOMSIZE)))
                 roomPrefabsDic.Add(roomSize, new List<Room>());
 
-            // ÃßÈÄ¿¡ µ¥ÀÌÅÍº£ÀÌ½º¿¡¼­ °ü¸® »ı¼ºÇÏµµ·Ï ¼³Á¤
+            // ì¶”í›„ì— ë°ì´í„°ë² ì´ìŠ¤ì—ì„œ ê´€ë¦¬ ìƒì„±í•˜ë„ë¡ ì„¤ì •
             roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
             roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
             roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
@@ -71,20 +70,20 @@ public class MapManager : NetworkBehaviour
         }
     }
 
-    // ¸Ê »ı¼º ÇÔ¼ö
+    // ë§µ ìƒì„± í•¨ìˆ˜
     [ServerRpc]
     public void GenerateMapServerRPC()
     {
         ClearMap();
 
         /*
-        1. °¢°¢ÀÇ À§Ä¡¿¡ ¹æ Á¾·ù¸¦ ·£´ıÀ¸·Î ¹èÁ¤
-        2. ÇØ´ç À§Ä¡ÀÇ Å©±â¿¡ ÇØ´çÇÏ´Â ¹æÀ» ¹èÄ¡
+        1. ê°ê°ì˜ ìœ„ì¹˜ì— ë°© ì¢…ë¥˜ë¥¼ ëœë¤ìœ¼ë¡œ ë°°ì •
+        2. í•´ë‹¹ ìœ„ì¹˜ì˜ í¬ê¸°ì— í•´ë‹¹í•˜ëŠ” ë°©ì„ ë°°ì¹˜
         */
 
         var roomPositionList = roomPositions.ToList();
 
-        // ÇÊ¼ö ¹æºÎÅÍ ¹èÄ¡
+        // í•„ìˆ˜ ë°©ë¶€í„° ë°°ì¹˜
         foreach (ROOMTYPE roomType in Enum.GetValues(typeof(ROOMTYPE)))
         {
             if (roomType.Equals(ROOMTYPE.NECESSARY_START))
@@ -107,7 +106,7 @@ public class MapManager : NetworkBehaviour
             roomPositionList.RemoveAt(idx);
         }
 
-        // Æ¯º°¹æ ¹èÄ¡ (È®·ü¿¡ ÀÇÁ¸ÇÏ¹Ç·Î ¹èÄ¡°¡ ¾ÈµÉ ¼öµµ ÀÖÀ½)
+        // íŠ¹ë³„ë°© ë°°ì¹˜ (í™•ë¥ ì— ì˜ì¡´í•˜ë¯€ë¡œ ë°°ì¹˜ê°€ ì•ˆë  ìˆ˜ë„ ìˆìŒ)
         foreach (ROOMTYPE roomType in Enum.GetValues(typeof(ROOMTYPE)))
         {
             if (roomType <= ROOMTYPE.SPECIAL_START)
@@ -134,7 +133,7 @@ public class MapManager : NetworkBehaviour
             }
         }
 
-        // ÀÏ¹İ ¹æµé ¹èÄ¡
+        // ì¼ë°˜ ë°©ë“¤ ë°°ì¹˜
         for (int i = 0; i < roomPositionList.Count; i++)
         {
             var roomList = roomPrefabsDic[roomPositionList[i].roomSize];
@@ -147,8 +146,8 @@ public class MapManager : NetworkBehaviour
 
                 var obj = Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject;
                 rooms.Add(obj);
-                //var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
-                //networkObj.Spawn();
+                var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
+                networkObj.Spawn();
 
                 //networkObj.TrySetParent(roomPositionList[i].transform);
 
@@ -157,7 +156,7 @@ public class MapManager : NetworkBehaviour
             }
         }
 
-        // ±¸¸í¼± ¹èÄ¡
+        // êµ¬ëª…ì„  ë°°ì¹˜
         var lifeShipPositionList = lifeShipPositions.ToList(); 
         for (int i = 0; i < lifeShipCount; i++)
         {
@@ -187,7 +186,7 @@ public class MapManager : NetworkBehaviour
         }
     }
 
-    // ±âÁ¸ ¸Ê ÃÊ±âÈ­ ÇÔ¼ö
+    // ê¸°ì¡´ ë§µ ì´ˆê¸°í™” í•¨ìˆ˜
     private void ClearMap()
     {
         for (int i = 0; i < rooms.Count; i++)

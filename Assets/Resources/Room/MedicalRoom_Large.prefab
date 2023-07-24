@@ -328,7 +328,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6299652405657736364}
   - component: {fileID: 1473733228562712081}
-  - component: {fileID: 222461501653531846}
   m_Layer: 0
   m_Name: MonsterSpawner
   m_TagString: Untagged
@@ -369,6 +368,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cc3639c71de32242859f513786cbf52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   _roomSize: 0
   _spawnerPoses: []
   _monsterObject: []
@@ -388,6 +388,16 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+=======
+  roomSize: 2
+  spawnerPoses:
+  - {fileID: 2508639662499261246}
+  - {fileID: 366508627385475744}
+  - {fileID: 4314205935449030345}
+  - {fileID: 2045068850438490747}
+  - {fileID: 5969842869257725383}
+  - {fileID: 6444106506010454286}
+>>>>>>> e5fdf9dbbada3d8f84af918921a329abca6516a5
 --- !u!1 &3088235084191886161
 GameObject:
   m_ObjectHideFlags: 0

@@ -311,7 +311,7 @@ MonoBehaviour:
   - {fileID: 7215973360157591894}
   roomSize: 2
   roomType: 1
-  monsterSpawners: {fileID: 3301097003293737905}
+  monsterSpawners: {fileID: 0}
 --- !u!114 &8786173196037793433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3703,8 +3703,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2309241889503568625}
-  - component: {fileID: 3301097003293737905}
-  - component: {fileID: 7270881339820668432}
   m_Layer: 0
   m_Name: MonsterSpawner
   m_TagString: Untagged
@@ -3733,6 +3731,7 @@ Transform:
   m_Father: {fileID: 1579026402016821135}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+<<<<<<< HEAD
 --- !u!114 &3301097003293737905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3764,6 +3763,8 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+=======
+>>>>>>> e5fdf9dbbada3d8f84af918921a329abca6516a5
 --- !u!1 &8754984887729837985
 GameObject:
   m_ObjectHideFlags: 0
