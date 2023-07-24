@@ -91,12 +91,12 @@ public class PlayerController : MonoBehaviour, IAttackable
     {
         _moveDir = Vector3.zero;
         _weapon?.StopShoot();
-        //Idle ¾Ö´Ï¸ŞÀÌ¼Ç
+        //Idle ì• ë‹ˆë©”ì´ì…˜
     }
 
     private void Attack(InputAction.CallbackContext ctx)
     {
-        //Attack ¾Ö´Ï¸ŞÀÌ¼Ç, ¹«±â °ø°İ
+        //Attack ì• ë‹ˆë©”ì´ì…˜, ë¬´ê¸° ê³µê²©
         _weapon?.StartShoot();
     }
 
@@ -135,7 +135,7 @@ public class PlayerController : MonoBehaviour, IAttackable
     public void OnDamaged(int damage)
     {
         _stat.Hp -= damage;
-        //»ç¿îµå
+        //ì‚¬ìš´ë“œ
     }
 
     public void OnHealed(int heal)
@@ -146,5 +146,18 @@ public class PlayerController : MonoBehaviour, IAttackable
     private void FixedUpdate()
     {
         transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
+    }
+
+    private void OnDestroy()
+    {
+        _actions[0].performed -= Move;
+
+        _actions[0].canceled -= Idle;
+
+        _actions[1].performed -= Attack;
+
+        _actions[1].canceled -= Idle;
+
+        _actions[3].performed -= Reload;
     }
 }
