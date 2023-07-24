@@ -60,7 +60,7 @@ public class MonsterController : MonoBehaviour, IAttackable
 
         agent.speed = _stat.Speed;
         
-        //µ¥¹ÌÁö¸¦ ÀÔ´Â °æ¿ì
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´ï¿½ ï¿½ï¿½ï¿½
         BehaviourSequence deadSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(deadSeq);
         var deadSeqcts = new CancellationTokenSource();
@@ -69,7 +69,7 @@ public class MonsterController : MonoBehaviour, IAttackable
         deadSeq.AddSequenceNode(deadNode);
         deadNode.AddNode(dead);
 
-        //ÇÃ·¹ÀÌ¾î ¹ß°ß ½Ã, ¿©±â ½ÃÄý½º¿¡´Â °ø°Ý ³ëµåµµ Æ÷ÇÔÇÒ °Í
+        //ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½åµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         BehaviourSequence chaseSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(chaseSeq);
 
@@ -87,7 +87,7 @@ public class MonsterController : MonoBehaviour, IAttackable
         chaseSeq.AddSequenceNode(chaseNode);
         chaseSeq.AddSequenceNode(attackNode);
 
-        //¹æÀ¸·Î µÇµ¹¾Æ¿À´Â seq
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½Æ¿ï¿½ï¿½ï¿½ seq
         BehaviourSequence comeBackSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(comeBackSeq);
 
@@ -101,7 +101,7 @@ public class MonsterController : MonoBehaviour, IAttackable
         comeBackSeqNormalSelector.AddNode(comeBack);
         comeBackSeq.AddSequenceNode(comeBackSeqNormalSelector);
 
-        //¸ÂÀ¸¸é ÇØ´ç ¹æÇâÀ» ¹Ù¶óº»´Ù
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶óº»´ï¿½
         BehaviourSequence LookSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(deadSeq);
         var LookSeqcts = new CancellationTokenSource();
@@ -110,7 +110,7 @@ public class MonsterController : MonoBehaviour, IAttackable
         MonsterDamagedLeaf damage = new MonsterDamagedLeaf(LookNode, LookSeqcts, _board);
         LookNode.AddNode(damage);
 
-        //Æò¼Ò »óÅÂÀÇ ½ÃÄý½º
+        //ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         BehaviourSequence normalSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(normalSeq);
 
