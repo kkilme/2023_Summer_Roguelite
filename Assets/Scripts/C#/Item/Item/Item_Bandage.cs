@@ -16,6 +16,6 @@ public class Item_Bandage : Item
 
     public override void Use(Player player)
     {
-
+        player.SetPlayerStatServerRPC(player.PlayerStat + healStat);
     }
 }
