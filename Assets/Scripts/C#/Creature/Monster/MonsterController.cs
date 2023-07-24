@@ -35,6 +35,7 @@ public class MonsterController : MonoBehaviour, IAttackable
     [SerializeField]
     private MonsterBlackBoard _board;
     private MonsterDetect _detect;
+    private MonsterAttack _attack;
     private Stat _stat;
 
     public void Init(MonsterSpawner spawner)
@@ -47,8 +48,11 @@ public class MonsterController : MonoBehaviour, IAttackable
 
     private void ChildInit()
     {
-        //_detect = gameObject.GetComponentInChildren<MonsterDetect>();
-        //_detect.Init(_tree, _board);
+        _detect = gameObject.GetComponentInChildren<MonsterDetect>();
+        _detect.Init(_tree, _board);
+
+        //_attack = gameObject.GetComponentInChildren<MonsterAttack>();
+        //_attack.Init(_stat);
     }
 
     private void MakeBehaviour(MonsterSpawner spawner)
@@ -60,7 +64,7 @@ public class MonsterController : MonoBehaviour, IAttackable
 
         agent.speed = _stat.Speed;
         
-        //�������� �Դ� ���
+        //데미지를 입고 죽을 경우
         BehaviourSequence deadSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(deadSeq);
         var deadSeqcts = new CancellationTokenSource();
@@ -69,7 +73,7 @@ public class MonsterController : MonoBehaviour, IAttackable
         deadSeq.AddSequenceNode(deadNode);
         deadNode.AddNode(dead);
 
-        //�÷��̾� �߰� ��, ���� ���������� ���� ��嵵 ������ ��
+        //플레이어가 시야에 있다면 쫒고 이후 범위 안에 들어오면 공격까지
         BehaviourSequence chaseSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(chaseSeq);
 
@@ -87,7 +91,7 @@ public class MonsterController : MonoBehaviour, IAttackable
         chaseSeq.AddSequenceNode(chaseNode);
         chaseSeq.AddSequenceNode(attackNode);
 
-        //������ �ǵ��ƿ��� seq
+        //플레이어를 놓치면 다시 스포너 근처로 돌아가기
         BehaviourSequence comeBackSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(comeBackSeq);
 
@@ -101,7 +105,7 @@ public class MonsterController : MonoBehaviour, IAttackable
         comeBackSeqNormalSelector.AddNode(comeBack);
         comeBackSeq.AddSequenceNode(comeBackSeqNormalSelector);
 
-        //������ �ش� ������ �ٶ󺻴�
+        //피격 시 그 방향을 돌아본다
         BehaviourSequence LookSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(deadSeq);
         var LookSeqcts = new CancellationTokenSource();
@@ -110,7 +114,7 @@ public class MonsterController : MonoBehaviour, IAttackable
         MonsterDamagedLeaf damage = new MonsterDamagedLeaf(LookNode, LookSeqcts, _board);
         LookNode.AddNode(damage);
 
-        //��� ������ ������
+        //기본 상태. 방을 배회하거나 가만히 있음
         BehaviourSequence normalSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(normalSeq);
 
@@ -153,15 +157,15 @@ public class MonsterBlackBoard : BlackBoard{
     public Transform Target = null;
     [field:SerializeField]
     public MonsterSpawner Spawner { get; private set; } = null;
-    public NavMeshAgent Agent;
-    public Vector3 SpawnerPos;
+    public NavMeshAgent Agent { get; private set; } = null;
+    //public Vector3 SpawnerPos { get; private set; }
     public Vector3 HitDir;
 
     public MonsterBlackBoard(Transform creature, Animator anim, NavMeshAgent agent, Stat stat, MonsterSpawner spawner) : base(creature, anim, stat)
     {
         Agent = agent;
         Spawner = spawner;
-        SpawnerPos = Spawner.transform.position;
+        //SpawnerPos = Spawner.transform.position;
     }
 
     public override void Clear()

@@ -164,8 +164,8 @@ public class MapManager : NetworkBehaviour
 
             var obj = Instantiate(lifeShipPrefab, lifeShipPositionList[idx].position, Quaternion.identity, lifeShipPositionList[i].transform);
             lifeShips.Add(obj);
-            var networkObj = obj.GetComponent<NetworkObject>();
-            networkObj.GetComponent<NetworkObject>().Spawn();
+            var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
+            networkObj.Spawn();
 
             networkObj.TrySetParent(lifeShipPositionList[i].transform);
 
@@ -176,8 +176,8 @@ public class MapManager : NetworkBehaviour
 
         for (int i = 0; i < rooms.Count; ++i)
         {
-            int rand = Random.Range(0, 100);
-            if (rand >= 66)
+            //int rand = Random.Range(0, 100);
+            //if (rand >= 66)
             {
                 var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
                 spawner.Init();

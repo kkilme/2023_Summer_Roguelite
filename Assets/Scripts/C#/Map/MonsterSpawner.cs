@@ -7,16 +7,20 @@ using static UnityEditor.PlayerSettings;
 public class MonsterSpawner : NetworkBehaviour
 {
     [SerializeField] private ROOMSIZE _roomSize;
-    [SerializeField] private Transform[] _spawnerPoses;
+    [SerializeField] private List<Vector3> _spawnerPoses;
     [SerializeField] private GameObject[] _monsterObject;
 
     public void Init()
     {
         _monsterObject = new GameObject[5];
+        _spawnerPoses = new List<Vector3>();
         _monsterObject = Resources.LoadAll<GameObject>("Monster");
+
+        for (short i = 0; i < transform.childCount; ++i) 
+            _spawnerPoses.Add(transform.GetChild(i).transform.position);
     }
 
-    // ·ë¾ÈÀÇ ·£´ýÇÑ ÁÂÇ¥¸¦ ¸®ÅÏÇÏ´Â ÇÔ¼ö
+    // ë£¸ì•ˆì˜ ëžœë¤í•œ ì¢Œí‘œë¥¼ ë¦¬í„´í•˜ëŠ” í•¨ìˆ˜
     public Vector3 GetRandomRoomPos()
     {
         Vector3 pos = transform.position;
@@ -34,7 +38,7 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    // ÇØ´ç ÁÂÇ¥°¡ ¹æ¾È¿¡ ÇØ´çÇÏ´ÂÁö ¸®ÅÏÇÏ´Â ÇÔ¼ö
+    // í•´ë‹¹ ì¢Œí‘œê°€ ë°©ì•ˆì— í•´ë‹¹í•˜ëŠ”ì§€ ë¦¬í„´í•˜ëŠ” í•¨ìˆ˜
     public bool IsPosInRoom(Vector3 pos)
     {
         Vector3 roomPos = transform.position;
@@ -52,32 +56,15 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    //[ServerRpc]
-    public void SpawnMonster()//ServerRPC
-    {
-        switch (_roomSize)
-        {
-            case ROOMSIZE.SMALL://2
-                SpawnMonsterRandom(2);
-                break;
-            case ROOMSIZE.MEDIUM://4
-                SpawnMonsterRandom(4);
-                break;
-            case ROOMSIZE.LARGE://5
-                SpawnMonsterRandom(5);
-                break;
-        }
-    }
-
-    private void SpawnMonsterRandom(int count)
+    public void SpawnMonster()
     {
         System.Random _rand = new System.Random();
 
-        for (short i = 0; i < count; ++i)
+        for (short i = 0; i < _spawnerPoses.Count; ++i)
         {
-            var monster = Instantiate(_monsterObject[_rand.Next(0, _monsterObject.Length)]);
+            var monster = Instantiate(_monsterObject[_rand.Next(0, _monsterObject.Length)], transform);
             var monsterController = Util.GetOrAddComponent<MonsterController>(monster);
-            monster.transform.position = GetRandomRoomPos();
+            monsterController.transform.position = _spawnerPoses[i];
             monsterController.Init(this);
         }
     }

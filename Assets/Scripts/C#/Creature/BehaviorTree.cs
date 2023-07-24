@@ -14,8 +14,8 @@ public enum SeqStates
 
 public class BlackBoard
 {
-    public Transform CurCreature;
-    public Animator Anim;
+    public Transform CurCreature { get; private set; } = null;
+    public Animator Anim { get; private set; } = null;
     public Stat Stat;
 
     public BlackBoard(Transform creature, Animator anim, Stat stat)
@@ -113,7 +113,7 @@ public class BehaviourSequence
             }
         }
 
-        //¿Ï·á ½Ã ÃÊ±âÈ­
+        //ì™„ë£Œ ì‹œ ì´ˆê¸°í™”
         for (int i = 0; i < _nodeList.Count; ++i)
             _nodeList[i].SeqState = SeqStates.Fail;
 

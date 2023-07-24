@@ -25,17 +25,23 @@ public class MonsterDetect : MonoBehaviour
     {
         if (other.CompareTag(GOTag.Player.ToString()))
         {
-            _playerT.Add(other.transform);
+            RaycastHit hit;
 
-            if (_board.Target == null)
-                _board.Target = other.transform;
-
-            else
+            if (Physics.Raycast(transform.position, other.transform.position - transform.position, out hit))
             {
-                if (Vector3.Distance(_board.Target.position, transform.position) > Vector3.Distance(transform.position, other.transform.position))
-                    _board.Target = other.transform;
+                if (hit.transform == other.transform)
+                {
+                    _playerT.Add(other.transform);
+
+                    if (_board.Target == null)
+                        _board.Target = other.transform;
+
+                    else if (Vector3.Distance(_board.Target.position, transform.position) > Vector3.Distance(transform.position, other.transform.position))
+                        _board.Target = other.transform;
+
+                    _tree.CheckSeq();
+                }
             }
-            _tree.CheckSeq();
         }
     }
 
@@ -49,15 +55,30 @@ public class MonsterDetect : MonoBehaviour
             {
                 if (_playerT.Count == 0)
                 {
-
-
+                    _board.Target = null;
                 }
+
                 else
                 {
+                    Transform temp = _playerT[0];
+                    float tempdis = Vector3.Distance(transform.position, temp.position);
+                    float comparedis;
 
+                    for (int i = 0; i <  _playerT.Count; ++i)
+                    {
+                        comparedis = Vector3.Distance(transform.position, _playerT[i].position);
+                        if (comparedis < tempdis)
+                        {
+                            tempdis = comparedis;
+                            temp = _playerT[i];
+                        }
+                    }
+
+                    _board.Target = temp;
                 }
-                _bCheck = true;
-                MissTarget().Forget();
+
+                //_bCheck = true;
+                //MissTarget().Forget();
             }
         }
     }
