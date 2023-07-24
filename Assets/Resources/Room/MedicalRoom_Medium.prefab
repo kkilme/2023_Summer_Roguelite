@@ -235,7 +235,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1361766409120975727}
   - component: {fileID: 7197789221275945482}
-  - component: {fileID: 8024827318399212716}
   m_Layer: 0
   m_Name: MonsterSpawner
   m_TagString: Untagged
@@ -280,22 +279,6 @@ MonoBehaviour:
   - {fileID: 5153869384017873556}
   - {fileID: 8459575774620821066}
   - {fileID: 1721713564928262557}
---- !u!114 &8024827318399212716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2556154082607644201}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &2844878833894630087
 GameObject:
   m_ObjectHideFlags: 0
