@@ -16,10 +16,21 @@ MonoBehaviour:
   damage: 10
   maxDistance: 100
   bulletsPerShoot: 5
-  spread: 0.1
-  fireRate: 0.5
-  isRapidFire: 0
-  currentAmmo: 60
-  magSize: 100
+  spread: 0.7
+  zoomSpeed: 0
+  aimingZoomrate: 1
+  fireRate: 0.4
+  isAutofire: 0
+  availableAttachmentTypes: 
+  recoilX: -6
+  recoilY: 0
+  recoilZ: 0
+  aimRecoilX: 0
+  aimRecoilY: 0
+  aimRecoilZ: 0
+  currentAmmo: 30
+  magSize: 30
   reloadTime: 2
+  bulletprefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
   reloading: 0
+  isFirstRef: 0
