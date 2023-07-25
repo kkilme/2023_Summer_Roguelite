@@ -9,6 +9,15 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+
+public enum AMMOTYPE
+{
+    AMMO_9,
+    AMMO_556,
+    AMMO_762,
+    GAUGE_12
+}
+
 public class Gun : NetworkBehaviour
 {
     [SerializeField] private GunData _gunData; // 총의 모든 정보 보유

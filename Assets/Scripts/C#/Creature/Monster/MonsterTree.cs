@@ -47,7 +47,6 @@ public class MonsterIdleLeaf : BehaviourLeaf
 
 public class MonsterWanderLeaf : BehaviourLeaf
 {
-    private System.Random _rand;
     private MonsterBlackBoard _board;
 
     public MonsterWanderLeaf(
@@ -55,8 +54,7 @@ public class MonsterWanderLeaf : BehaviourLeaf
         MonsterBlackBoard board) : base(parent, cts)
     {
         _board = board;
-        _animHash = Animator.StringToHash(MonsterStates.Wander.ToString());
-        _rand = new System.Random();
+        _animHash = Animator.StringToHash(MonsterStates.Walk.ToString());
     }
 
     public override void CancelBehaviour(CancellationTokenSource cts)
@@ -67,30 +65,29 @@ public class MonsterWanderLeaf : BehaviourLeaf
 
     public override SeqStates CheckLeaf()
     {
-        //Á¶°Ç È®ÀÎ ÈÄ ³» state Á¤ÇÏ±â
+        //ì¡°ê±´ í™•ì¸ í›„ ë‚´ state ì •í•˜ê¸°
         Wandering().Forget();
         return SeqStates.Running;
     }
 
     private async UniTaskVoid Wandering()
     {
-        int xrand = _rand.Next(1, 100) * (_rand.Next(0, 2) != 0 ? 1 : -1);
-        int zrand = _rand.Next(1, 100) * (_rand.Next(0, 2) != 0 ? 1 : -1);
-        Vector3 next = new Vector3(xrand, 0, zrand).normalized * _rand.Next(1, 100);
-        _board.Agent.destination = _board.CurCreature.position + next;
+        Vector3 next = _board.Spawner.GetRandomRoomPos();
+        _board.Agent.destination = next;
 
         _board.CurCreature.rotation = Quaternion.LookRotation(next);
-        //_board.Anim.SetBool(_animHash, true);
-        _board.Agent.speed = _board.Stat.Speed;
+        _board.Anim.SetBool(_animHash, true);
+        _board.Agent.speed = _board.Stat.Speed / 2;
         _board.Agent.isStopped = false;
 
         await UniTask.WaitUntil(() => Vector3.Distance(_board.Agent.destination, _board.CurCreature.position) < 0.5f,
             cancellationToken: _cts.Token);
 
         _board.Agent.isStopped = true;
+        _board.Agent.speed = _board.Stat.Speed;
         _board.Agent.velocity = Vector3.zero;
 
-        //_board.Anim.SetBool(_animHash, false);
+        _board.Anim.SetBool(_animHash, false);
         
         await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: _cts.Token);
 
@@ -100,7 +97,55 @@ public class MonsterWanderLeaf : BehaviourLeaf
 
     public override void Clear()
     {
-        _rand = null;
+        _board = null;
+    }
+}
+
+public class MonsterComeBackLeaf : BehaviourLeaf
+{
+    private MonsterBlackBoard _board;
+
+    public MonsterComeBackLeaf(BehaviourSequenceNode parent, CancellationTokenSource cts,
+        MonsterBlackBoard board) : base(parent, cts)
+    {
+        _board = board;
+        _animHash = Animator.StringToHash(MonsterStates.Walk.ToString());
+        //ê±·ëŠ” ëª¨ì…˜
+    }
+
+    public override void CancelBehaviour(CancellationTokenSource cts)
+    {
+        _cts = cts;
+    }
+
+    public override SeqStates CheckLeaf()
+    {
+        if (!_board.Spawner.IsPosInRoom(_board.CurCreature.position))
+        {
+            ComeBack().Forget();
+            return SeqStates.Running;
+        }
+
+        return SeqStates.Fail;
+    }
+
+    private async UniTaskVoid ComeBack()
+    {
+        _board.Agent.destination = _board.Spawner.GetRandomRoomPos();
+        _board.Agent.isStopped = false;
+        _board.Anim.SetBool(_animHash, true);
+
+        await UniTask.WaitUntil(() => Vector3.Distance(_board.Agent.destination, _board.CurCreature.position) < 0.5f,
+            cancellationToken: _cts.Token);
+
+        _board.Agent.isStopped = true;
+        _board.Agent.velocity = Vector3.zero;
+        _board.Anim.SetBool(_animHash, false);
+        _parent.CompleteSeq();
+    }
+
+    public override void Clear()
+    {
         _board = null;
     }
 }
@@ -113,7 +158,7 @@ public class MonsterChaseLeaf : BehaviourLeaf
         MonsterBlackBoard board) : base(parent, cts)
     {
         _board = board;
-        _animHash = Animator.StringToHash(MonsterStates.Chase.ToString());
+        _animHash = Animator.StringToHash(MonsterStates.Run.ToString());
     }
 
     public override void CancelBehaviour(CancellationTokenSource cts)
@@ -231,7 +276,6 @@ public class MonsterDamagedLeaf : BehaviourLeaf
     {
         _board = board;
         _beforeHp = _board.Stat.Hp;
-        _animHash = Animator.StringToHash(MonsterStates.Damaged.ToString());
     }
 
     public override void CancelBehaviour(CancellationTokenSource cts)
@@ -253,11 +297,10 @@ public class MonsterDamagedLeaf : BehaviourLeaf
 
     private async UniTaskVoid Damaged()
     {
-        _board.Anim.SetBool(_animHash, true);
+        _board.CurCreature.LookAt(_board.HitDir);
         await UniTask.WhenAll(UniTask.WaitUntil(() => _parent.SeqState == SeqStates.Running, cancellationToken: _cts.Token),
             UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: _cts.Token));
-        _board.Anim.SetBool(_animHash, false);
-        await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: _cts.Token);
+
         _parent.SeqState = SeqStates.Success;
         _beforeHp = _board.Stat.Hp;
         _parent.CompleteSeq();

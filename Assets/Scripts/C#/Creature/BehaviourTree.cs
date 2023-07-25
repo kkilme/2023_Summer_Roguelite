@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,30 +13,14 @@ public enum SeqStates
     Success
 }
 
-public class BlackBoard
-{
-    public Transform CurCreature;
-    public Animator Anim;
-    public Stat Stat;
-
-    public BlackBoard(Transform creature, Animator anim, Stat stat)
-    {
-        CurCreature = creature;
-        Anim = anim;
-        Stat = stat;
-    }
-
-    public virtual void Clear()
-    {
-        Anim = null;
-    }
-}
-
-[System.Serializable]
+[Serializable]
 public class BehaviourTree
 {
-    [SerializeField]
     private List<BehaviourSequence> _seqList = null;
+    [SerializeField]
+    private int seqcount;
+
+    public string CurLeaf = null;
 
     public BehaviourTree() 
     {
@@ -44,6 +30,7 @@ public class BehaviourTree
     public void AddSeq(BehaviourSequence seq)
     {
         _seqList.Add(seq);
+        seqcount = _seqList.Count;
     }
 
     public void CheckSeq()
@@ -58,6 +45,7 @@ public class BehaviourTree
             {
                 for (int j = i + 1; j < _seqList.Count; ++j)
                     _seqList[j].CancelSeq();
+                
                 break;
             }
             
@@ -76,10 +64,13 @@ public class BehaviourTree
     }
 }
 
+[Serializable]
 public class BehaviourSequence
 {
     private List<BehaviourSequenceNode> _nodeList = null;
     private BehaviourTree _parent = null;
+
+    public BehaviourSequenceNode CurNode = null;
 
     public BehaviourSequence(BehaviourTree parent)
     {
@@ -100,10 +91,13 @@ public class BehaviourSequence
         {
             state = _nodeList[i].CheckNode();
             if (state != SeqStates.Success)
+            {
+                _parent.CurLeaf = _nodeList[i].CurLeaf;
                 return state;
+            }
         }
 
-        //¿Ï·á ½Ã ÃÊ±âÈ­
+        //ì™„ë£Œ ì‹œ ì´ˆê¸°í™”
         for (int i = 0; i < _nodeList.Count; ++i)
             _nodeList[i].SeqState = SeqStates.Fail;
 
@@ -133,6 +127,7 @@ public class BehaviourSequence
 
 public abstract class BehaviourSequenceNode
 {
+    public string CurLeaf;
     protected BehaviourLeaf _curLeaf;
     protected BehaviourSequence _parent;
     protected List<BehaviourLeaf> _nodes = null;
@@ -196,6 +191,7 @@ public abstract class BehaviourLeaf
     public abstract void Clear();
 }
 
+[Serializable]
 public class BehaviourNormalSelector : BehaviourSequenceNode
 {
     public BehaviourNormalSelector(CancellationTokenSource cts, BehaviourSequence parent) : base(cts, parent)
@@ -221,6 +217,7 @@ public class BehaviourNormalSelector : BehaviourSequenceNode
                 SeqState = _nodes[i].CheckLeaf();
                 if (SeqState != SeqStates.Fail)
                 {
+                    CurLeaf = _nodes[i].ToString();
                     _curLeaf = _nodes[i];
                     break;
                 }
@@ -267,6 +264,7 @@ public class BehaviourRandomSelector : BehaviourSequenceNode
             int rand = _rand.Next(0, _nodes.Count);
             SeqState = _nodes[rand].CheckLeaf();
             _curLeaf = _nodes[rand];
+            CurLeaf = _nodes[rand].ToString();
             //for (int i = 0; i < _nodes.Count; ++i)
             //{
             //    SeqState = _nodes[i].CheckLeaf();
@@ -290,5 +288,24 @@ public class BehaviourRandomSelector : BehaviourSequenceNode
     {
         base.Clear();
         _rand = null;
+    }
+}
+
+public class BlackBoard
+{
+    public Transform CurCreature { get; private set; } = null;
+    public Animator Anim { get; private set; } = null;
+    public Stat Stat;
+
+    public BlackBoard(Transform creature, Animator anim, Stat stat)
+    {
+        CurCreature = creature;
+        Anim = anim;
+        Stat = stat;
+    }
+
+    public virtual void Clear()
+    {
+        Anim = null;
     }
 }

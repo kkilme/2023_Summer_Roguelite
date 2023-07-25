@@ -2,18 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class MonsterSpawner : NetworkBehaviour
 {
-    [SerializeField] private ROOMSIZE roomSize;
-    [SerializeField] private Transform[] spawnerPoses;
+    [SerializeField] private ROOMSIZE _roomSize;
+    [SerializeField] private List<Vector3> _spawnerPoses;
 
-    // ·ë¾ÈÀÇ ·£´ýÇÑ ÁÂÇ¥¸¦ ¸®ÅÏÇÏ´Â ÇÔ¼ö
+    public void Init()
+    {
+        _spawnerPoses = new List<Vector3>();
+
+        for (short i = 0; i < transform.childCount; ++i) 
+            _spawnerPoses.Add(transform.GetChild(i).transform.position);
+    }
+
+    // ë£¸ì•ˆì˜ ëžœë¤í•œ ì¢Œí‘œë¥¼ ë¦¬í„´í•˜ëŠ” í•¨ìˆ˜
     public Vector3 GetRandomRoomPos()
     {
         Vector3 pos = transform.position;
 
-        switch (roomSize)
+        switch (_roomSize)
         {
             case ROOMSIZE.SMALL:
                 return new Vector3(Random.Range(pos.x - 12, pos.x + 12), 1, Random.Range(pos.z - 12, pos.z + 12));
@@ -26,12 +35,12 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    // ÇØ´ç ÁÂÇ¥°¡ ¹æ¾È¿¡ ÇØ´çÇÏ´ÂÁö ¸®ÅÏÇÏ´Â ÇÔ¼ö
+    // í•´ë‹¹ ì¢Œí‘œê°€ ë°©ì•ˆì— í•´ë‹¹í•˜ëŠ”ì§€ ë¦¬í„´í•˜ëŠ” í•¨ìˆ˜
     public bool IsPosInRoom(Vector3 pos)
     {
         Vector3 roomPos = transform.position;
 
-        switch (roomSize)
+        switch (_roomSize)
         {
             case ROOMSIZE.SMALL:
                 return roomPos.x - 12 <= pos.x && pos.x <= roomPos.x + 12 && roomPos.z - 12 <= pos.z && pos.z <= roomPos.z + 12;
@@ -44,9 +53,17 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    public void SpawnMonsterServerRPC()
+    public void SpawnMonster(GameObject[] monsterObject)
     {
+        System.Random _rand = new System.Random();
 
+        for (short i = 0; i < _spawnerPoses.Count; ++i)
+        {
+            var monster = Instantiate(monsterObject[_rand.Next(0, monsterObject.Length)], transform);
+            var monsterController = Util.GetOrAddComponent<MonsterController>(monster);
+            monsterController.transform.position = _spawnerPoses[i];
+            monsterController.Init(this);
+            Util.GetOrAddComponent<NetworkObject>(monster).Spawn();
+        }
     }
 }

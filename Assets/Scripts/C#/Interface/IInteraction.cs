@@ -5,7 +5,7 @@ using UnityEngine;
 public interface IInteraction
 {
     //아이템의 정보를 전달(아이템 사용 조건, 사용 시간 등)
-    public ConditionStruct Interact();
+    public void Interact(Player player);
 
     public void InteractComplete(bool bSuccess);
 }

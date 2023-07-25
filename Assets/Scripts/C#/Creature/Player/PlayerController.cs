@@ -22,10 +22,9 @@ public enum AnimParam
 
 public class PlayerController : NetworkBehaviour, IAttackable
 {
-    [SerializeField]
-    private Animator _anim;
-    [SerializeField]
-    private PlayerInput _pi;
+    public Animator Anim { get; private set; }
+    public PlayerInput Pi { get; private set; }
+
     [SerializeField]
     private Collider _interactionTrigger;
 
@@ -47,8 +46,8 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _stat = new Stat(1, 1, 10, 1, 1, 5);
         _moveDir = Vector3.zero;
         
-        _pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
-        _anim = Util.GetOrAddComponent<Animator>(gameObject);
+        Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
+        Anim = Util.GetOrAddComponent<Animator>(gameObject);
 
     }
 
@@ -61,13 +60,12 @@ public class PlayerController : NetworkBehaviour, IAttackable
 
     private void InitInputSystem()
     {
-        
+       
         _actions.Add(_pi.actions.FindAction("Move"));
         _actions.Add(_pi.actions.FindAction("Attack"));
         _actions.Add(_pi.actions.FindAction("Interaction"));
         _actions.Add(_pi.actions.FindAction("Reload"));
         _actions.Add(_pi.actions.FindAction("Aim"));
-
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
@@ -190,6 +188,5 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[3].performed -= Reload;
         _actions[4].started -= Aim;
         _actions[4].canceled -= StopAim;
-
     }
 }

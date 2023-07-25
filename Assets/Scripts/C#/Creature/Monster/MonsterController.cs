@@ -1,9 +1,11 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UniRx;
 using UniRx.Triggers;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,10 +14,9 @@ using UnityEngine.XR;
 public enum MonsterStates
 {
     Dead,
-    Damaged,
     Attack,
-    Chase,
-    Wander,
+    Run,
+    Walk,
     Idle
 }
 
@@ -27,53 +28,52 @@ public enum GOTag
     MonsterWeapon
 }
 
-public class MonsterController : MonoBehaviour, IAttackable
+public class MonsterController : NetworkBehaviour, IAttackable
 {
     [SerializeField]
     private BehaviourTree _tree;
+    [SerializeField]
     private MonsterBlackBoard _board;
     private MonsterDetect _detect;
+    private MonsterAttack _attack;
     private Stat _stat;
 
-    void Start()
-    {
-        Init();
-    }
-
-    private void Init()
+    public void Init(MonsterSpawner spawner)
     {
         _stat = new Stat(1, 1, 5, 1, 1, 1);
-        MakeBehaviour();
+        MakeBehaviour(spawner);
         ChildInit();
         _tree.CheckSeq();
     }
 
     private void ChildInit()
     {
-        //_detect = gameObject.GetComponentInChildren<MonsterDetect>();
-        //_detect.Init(_tree, _board);
+        _detect = gameObject.GetComponentInChildren<MonsterDetect>();
+        _detect.Init(_tree, _board);
+
+        //_attack = gameObject.GetComponentInChildren<MonsterAttack>();
+        //_attack.Init(_stat);
     }
 
-    private void MakeBehaviour()
+    private void MakeBehaviour(MonsterSpawner spawner)
     {
         _tree = new BehaviourTree();
         var agent = Util.GetOrAddComponent<NavMeshAgent>(gameObject);
         Animator animator = Util.GetOrAddComponent<Animator>(gameObject);
-        _board = new MonsterBlackBoard(transform, animator, agent, _stat);
+        _board = new MonsterBlackBoard(transform, animator, agent, _stat, spawner);
 
         agent.speed = _stat.Speed;
-        //µ¥¹ÌÁö¸¦ ÀÔ´Â °æ¿ì
+        
+        //ë°ë¯¸ì§€ë¥¼ ì…ê³  ì£½ì„ ê²½ìš°
         BehaviourSequence deadSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(deadSeq);
         var deadSeqcts = new CancellationTokenSource();
         var deadNode = new BehaviourNormalSelector(deadSeqcts, deadSeq);
         MonsterDeadLeaf dead = new MonsterDeadLeaf(deadNode, deadSeqcts, _board);
-        MonsterDamagedLeaf damage = new MonsterDamagedLeaf(deadNode, deadSeqcts, _board);
         deadSeq.AddSequenceNode(deadNode);
         deadNode.AddNode(dead);
-        deadNode.AddNode(damage);
 
-        //ÇÃ·¹ÀÌ¾î ¹ß°ß ½Ã, ¿©±â ½ÃÄı½º¿¡´Â °ø°İ ³ëµåµµ Æ÷ÇÔÇÒ °Í
+        //í”Œë ˆì´ì–´ê°€ ì‹œì•¼ì— ìˆë‹¤ë©´ ì«’ê³  ì´í›„ ë²”ìœ„ ì•ˆì— ë“¤ì–´ì˜¤ë©´ ê³µê²©ê¹Œì§€
         BehaviourSequence chaseSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(chaseSeq);
 
@@ -91,7 +91,30 @@ public class MonsterController : MonoBehaviour, IAttackable
         chaseSeq.AddSequenceNode(chaseNode);
         chaseSeq.AddSequenceNode(attackNode);
 
-        //Æò¼Ò »óÅÂÀÇ ½ÃÄı½º
+        //í”Œë ˆì´ì–´ë¥¼ ë†“ì¹˜ë©´ ë‹¤ì‹œ ìŠ¤í¬ë„ˆ ê·¼ì²˜ë¡œ ëŒì•„ê°€ê¸°
+        BehaviourSequence comeBackSeq = new BehaviourSequence(_tree);
+        _tree.AddSeq(comeBackSeq);
+
+        var comeBackSeqcts = new CancellationTokenSource();
+        var comeBackSeqNormalSelector = new BehaviourNormalSelector(comeBackSeqcts, comeBackSeq);
+
+        MonsterComeBackLeaf comeBack =
+            new MonsterComeBackLeaf(
+            comeBackSeqNormalSelector, comeBackSeqcts, _board);
+
+        comeBackSeqNormalSelector.AddNode(comeBack);
+        comeBackSeq.AddSequenceNode(comeBackSeqNormalSelector);
+
+        //í”¼ê²© ì‹œ ê·¸ ë°©í–¥ì„ ëŒì•„ë³¸ë‹¤
+        BehaviourSequence LookSeq = new BehaviourSequence(_tree);
+        _tree.AddSeq(deadSeq);
+        var LookSeqcts = new CancellationTokenSource();
+        var LookNode = new BehaviourNormalSelector(LookSeqcts, LookSeq);
+
+        MonsterDamagedLeaf damage = new MonsterDamagedLeaf(LookNode, LookSeqcts, _board);
+        LookNode.AddNode(damage);
+
+        //ê¸°ë³¸ ìƒíƒœ. ë°©ì„ ë°°íšŒí•˜ê±°ë‚˜ ê°€ë§Œíˆ ìˆìŒ
         BehaviourSequence normalSeq = new BehaviourSequence(_tree);
         _tree.AddSeq(normalSeq);
 
@@ -126,21 +149,30 @@ public class MonsterController : MonoBehaviour, IAttackable
     {
         _board.Stat.Hp = _board.Stat.Hp + heal < _board.Stat.MaxHp ? _board.Stat.Hp + heal : _board.Stat.MaxHp;
     }
+
+    public override void OnDestroy()
+    {
+        if (NetworkManager.Singleton.IsServer)
+            Clear();
+        base.OnDestroy();
+    }
 }
 
 #region MonsterBehaviourBlackBoard
-
+[Serializable]
 public class MonsterBlackBoard : BlackBoard{
     public Transform Target = null;
-    public Vector3 Spawner { get; }
-    public Vector3 RoomTopLeft { get; }
-    public NavMeshAgent Agent;
+    [field:SerializeField]
+    public MonsterSpawner Spawner { get; private set; } = null;
+    public NavMeshAgent Agent { get; private set; } = null;
+    //public Vector3 SpawnerPos { get; private set; }
+    public Vector3 HitDir;
 
-    public MonsterBlackBoard(Transform creature, Animator anim, NavMeshAgent agent, Stat stat) : base(creature, anim, stat)
+    public MonsterBlackBoard(Transform creature, Animator anim, NavMeshAgent agent, Stat stat, MonsterSpawner spawner) : base(creature, anim, stat)
     {
         Agent = agent;
-        Spawner = creature.position;
-        RoomTopLeft = new Vector3(-12.5f, 0, 10);
+        Spawner = spawner;
+        //SpawnerPos = Spawner.transform.position;
     }
 
     public override void Clear()
@@ -148,6 +180,7 @@ public class MonsterBlackBoard : BlackBoard{
         base.Clear();
         Agent = null;
         Target = null;
+        Spawner = null;
     }
 }
 
