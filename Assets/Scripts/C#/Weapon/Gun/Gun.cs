@@ -1,10 +1,19 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
+
+public enum AMMOTYPE
+{
+    AMMO_9,
+    AMMO_556,
+    AMMO_762,
+    GAUGE_12
+}
+
 public class Gun : MonoBehaviour
 {
 
