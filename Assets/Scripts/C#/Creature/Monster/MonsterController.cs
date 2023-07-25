@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UniRx;
 using UniRx.Triggers;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,10 +14,9 @@ using UnityEngine.XR;
 public enum MonsterStates
 {
     Dead,
-    Damaged,
     Attack,
-    Chase,
-    Wander,
+    Run,
+    Walk,
     Idle
 }
 
@@ -28,7 +28,7 @@ public enum GOTag
     MonsterWeapon
 }
 
-public class MonsterController : MonoBehaviour, IAttackable
+public class MonsterController : NetworkBehaviour, IAttackable
 {
     [SerializeField]
     private BehaviourTree _tree;
@@ -148,6 +148,13 @@ public class MonsterController : MonoBehaviour, IAttackable
     public void OnHealed(int heal)
     {
         _board.Stat.Hp = _board.Stat.Hp + heal < _board.Stat.MaxHp ? _board.Stat.Hp + heal : _board.Stat.MaxHp;
+    }
+
+    public override void OnDestroy()
+    {
+        if (NetworkManager.Singleton.IsServer)
+            Clear();
+        base.OnDestroy();
     }
 }
 

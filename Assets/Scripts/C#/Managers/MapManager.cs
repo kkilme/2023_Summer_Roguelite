@@ -23,6 +23,7 @@ public class MapManager : NetworkBehaviour
     [SerializeField] private List<GameObject> rooms = new List<GameObject>(); // 현재 배치된 방들 리스트
     [SerializeField] private List<GameObject> lifeShips = new List<GameObject>(); // 현재 배치된 구명선들 리스트
     [SerializeField] private NavMeshSurface _testMap;
+    private GameObject[] _monsterObjects;
 
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;
@@ -62,11 +63,18 @@ public class MapManager : NetworkBehaviour
             specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
 
             var roomPrefabs = Resources.LoadAll<Room>("Room");
+            _monsterObjects = Resources.LoadAll<GameObject>("Monster");
+
+            NetworkManager.AddNetworkPrefab(lifeShipPrefab);
+
             for (int i = 0; i < roomPrefabs.Length; i++)
             {
                 NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
                 roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
             }
+
+            for (int i = 0; i < _monsterObjects.Length; i++)
+                NetworkManager.AddNetworkPrefab(_monsterObjects[i].gameObject);
         }
     }
 
@@ -181,7 +189,7 @@ public class MapManager : NetworkBehaviour
             {
                 var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
                 spawner.Init();
-                spawner.SpawnMonster();
+                spawner.SpawnMonster(_monsterObjects);
             }
         }
     }

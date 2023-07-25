@@ -8,13 +8,10 @@ public class MonsterSpawner : NetworkBehaviour
 {
     [SerializeField] private ROOMSIZE _roomSize;
     [SerializeField] private List<Vector3> _spawnerPoses;
-    [SerializeField] private GameObject[] _monsterObject;
 
     public void Init()
     {
-        _monsterObject = new GameObject[5];
         _spawnerPoses = new List<Vector3>();
-        _monsterObject = Resources.LoadAll<GameObject>("Monster");
 
         for (short i = 0; i < transform.childCount; ++i) 
             _spawnerPoses.Add(transform.GetChild(i).transform.position);
@@ -56,16 +53,17 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public void SpawnMonster()
+    public void SpawnMonster(GameObject[] monsterObject)
     {
         System.Random _rand = new System.Random();
 
         for (short i = 0; i < _spawnerPoses.Count; ++i)
         {
-            var monster = Instantiate(_monsterObject[_rand.Next(0, _monsterObject.Length)], transform);
+            var monster = Instantiate(monsterObject[_rand.Next(0, monsterObject.Length)], transform);
             var monsterController = Util.GetOrAddComponent<MonsterController>(monster);
             monsterController.transform.position = _spawnerPoses[i];
             monsterController.Init(this);
+            Util.GetOrAddComponent<NetworkObject>(monster).Spawn();
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.Netcode;
 using UnityEngine;
 
 public class MonsterDetect : MonoBehaviour
@@ -23,7 +24,7 @@ public class MonsterDetect : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(GOTag.Player.ToString()))
+        if (NetworkManager.Singleton.IsServer && other.CompareTag(GOTag.Player.ToString()))
         {
             RaycastHit hit;
 
@@ -47,51 +48,55 @@ public class MonsterDetect : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(GOTag.Player.ToString()))
+        if (NetworkManager.Singleton.IsServer && other.CompareTag(GOTag.Player.ToString()))
         {
             _playerT.Remove(other.transform);
 
             if (other.transform == _board.Target)
             {
-                if (_playerT.Count == 0)
+                if (_playerT.Count == 0 && !_bCheck)
                 {
-                    _board.Target = null;
+                    _bCheck = true;
+                    MissTarget(other.transform).Forget();
                 }
 
-                else
-                {
-                    Transform temp = _playerT[0];
-                    float tempdis = Vector3.Distance(transform.position, temp.position);
-                    float comparedis;
-
-                    for (int i = 0; i <  _playerT.Count; ++i)
-                    {
-                        comparedis = Vector3.Distance(transform.position, _playerT[i].position);
-                        if (comparedis < tempdis)
-                        {
-                            tempdis = comparedis;
-                            temp = _playerT[i];
-                        }
-                    }
-
-                    _board.Target = temp;
-                }
-
-                //_bCheck = true;
-                //MissTarget().Forget();
+                else if (_playerT.Count != 0)
+                    DecideTarget();
             }
         }
     }
 
-    private async UniTaskVoid MissTarget()
+    private void DecideTarget()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: _cts.Token);
-        
-        if (Vector3.Distance(_board.Target.position, transform.position) > 3)
+        Transform temp = _playerT[0];
+        float tempdis = Vector3.Distance(transform.position, temp.position);
+        float comparedis;
+
+        for (int i = 1; i < _playerT.Count; ++i)
+        {
+            comparedis = Vector3.Distance(transform.position, _playerT[i].position);
+            if (comparedis < tempdis)
+            {
+                tempdis = comparedis;
+                temp = _playerT[i];
+            }
+        }
+
+        _board.Target = temp;
+    }
+
+    private async UniTaskVoid MissTarget(Transform target)
+    {
+        await UniTask.WhenAny(UniTask.WaitUntil(() => _playerT.Count != 0, cancellationToken: _cts.Token) , UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: _cts.Token));
+
+        if (_playerT.Count == 0)
         {
             _board.Target = null;
             _tree.CheckSeq();
         }
+
+        else if (_board.Target == target)
+            DecideTarget();
 
         _bCheck = false;
     }

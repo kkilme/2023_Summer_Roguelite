@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UniRx;
 using UniRx.Triggers;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,7 +20,7 @@ public enum AnimParam
     Dead
 }
 
-public class PlayerController : MonoBehaviour, IAttackable
+public class PlayerController : NetworkBehaviour, IAttackable
 {
     public Animator Anim { get; private set; }
     public PlayerInput Pi { get; private set; }
@@ -147,7 +148,7 @@ public class PlayerController : MonoBehaviour, IAttackable
         transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
     }
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
         _actions[0].performed -= Move;
 

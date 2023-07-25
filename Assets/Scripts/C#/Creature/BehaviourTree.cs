@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -12,29 +13,12 @@ public enum SeqStates
     Success
 }
 
-public class BlackBoard
-{
-    public Transform CurCreature { get; private set; } = null;
-    public Animator Anim { get; private set; } = null;
-    public Stat Stat;
-
-    public BlackBoard(Transform creature, Animator anim, Stat stat)
-    {
-        CurCreature = creature;
-        Anim = anim;
-        Stat = stat;
-    }
-
-    public virtual void Clear()
-    {
-        Anim = null;
-    }
-}
-
 [Serializable]
 public class BehaviourTree
 {
     private List<BehaviourSequence> _seqList = null;
+    [SerializeField]
+    private int seqcount;
 
     public string CurLeaf = null;
 
@@ -46,7 +30,7 @@ public class BehaviourTree
     public void AddSeq(BehaviourSequence seq)
     {
         _seqList.Add(seq);
-        
+        seqcount = _seqList.Count;
     }
 
     public void CheckSeq()
@@ -304,5 +288,24 @@ public class BehaviourRandomSelector : BehaviourSequenceNode
     {
         base.Clear();
         _rand = null;
+    }
+}
+
+public class BlackBoard
+{
+    public Transform CurCreature { get; private set; } = null;
+    public Animator Anim { get; private set; } = null;
+    public Stat Stat;
+
+    public BlackBoard(Transform creature, Animator anim, Stat stat)
+    {
+        CurCreature = creature;
+        Anim = anim;
+        Stat = stat;
+    }
+
+    public virtual void Clear()
+    {
+        Anim = null;
     }
 }
