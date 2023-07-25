@@ -17,20 +17,20 @@ MonoBehaviour:
   maxDistance: 100
   bulletsPerShoot: 1
   spread: 0
-  aimSpeed: 0
-  aimingZoomrate: 1
+  zoomSpeed: 5
+  aimingZoomrate: 1.2
   fireRate: 5
   isAutofire: 1
   availableAttachmentTypes: 000000000100000002000000030000000400000005000000
   recoilX: -2
   recoilY: 1
   recoilZ: 0
-  aimRecoilX: 0
-  aimRecoilY: 0
+  aimRecoilX: -1.5
+  aimRecoilY: 0.8
   aimRecoilZ: 0
   currentAmmo: 180
   magSize: 180
   reloadTime: 1.5
-  bullethole: {fileID: 100002, guid: 73a9f9f0ffac08c449b5d9988697a6e8, type: 3}
+  bulletprefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
   reloading: 0
   isFirstRef: 0

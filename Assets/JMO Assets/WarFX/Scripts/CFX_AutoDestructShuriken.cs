@@ -29,7 +29,7 @@ public class CFX_AutoDestructShuriken : NetworkBehaviour
 				}
 				else
 					DestroySelfServerRpc();
-				break;
+                break;
 			}
 		}
 	}
@@ -37,6 +37,6 @@ public class CFX_AutoDestructShuriken : NetworkBehaviour
 	private void DestroySelfServerRpc()
 	{
 		GetComponent<NetworkObject>().Despawn();
-		
+
 	}
 }

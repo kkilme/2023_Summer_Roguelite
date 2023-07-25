@@ -50,7 +50,6 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
         _anim = Util.GetOrAddComponent<Animator>(gameObject);
 
-
     }
 
     public override void OnNetworkSpawn()
@@ -94,8 +93,8 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[4].started -= Aim;
         _actions[4].started += Aim;
 
-        _actions[4].canceled -= StopAttack;
-        _actions[4].canceled += StopAttack;
+        _actions[4].canceled -= StopAim;
+        _actions[4].canceled += StopAim;
 
     }
 
@@ -130,7 +129,12 @@ public class PlayerController : NetworkBehaviour, IAttackable
 
     private void Aim(InputAction.CallbackContext ctx)
     {
+        _weapon.Aim();
+    }
 
+    private void StopAim(InputAction.CallbackContext ctx)
+    {
+        _weapon.StopAim();
     }
 
     private void Interaction(InputAction.CallbackContext ctx)
@@ -176,14 +180,16 @@ public class PlayerController : NetworkBehaviour, IAttackable
         transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
     }
 
-    private void OnDestroy()
+    private new void OnDestroy()
     {
         if (_actions.Count == 0) return;
         _actions[0].performed -= Move;
         _actions[0].canceled -= Idle;
         _actions[1].started -= Attack;
+        _actions[1].canceled -= StopAttack;
         _actions[3].performed -= Reload;
         _actions[4].started -= Aim;
+        _actions[4].canceled -= StopAim;
 
     }
 }

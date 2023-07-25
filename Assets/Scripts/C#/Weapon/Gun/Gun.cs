@@ -11,42 +11,61 @@ using UnityEngine.UI;
 using Random = UnityEngine.Random;
 public class Gun : NetworkBehaviour
 {
-    [SerializeField] private GunData gunData; // 총의 모든 정보 보유
+    [SerializeField] private GunData _gunData; // 총의 모든 정보 보유
 
-    [SerializeField] private Camera cam; // 카메라
-    [SerializeField] private Recoil recoil; // 반동 담당
+    [SerializeField] private GunCamera _cam; // 카메라
+    [SerializeField] private Recoil _recoil; // 반동 담당
 
-    [SerializeField] private Transform effectparent; // 이펙트들 모아둘 부모 오브젝트
-    [SerializeField] private TextMeshProUGUI AmmoleftText;
+    [SerializeField] private Transform _effectparent; // 이펙트들 모아둘 부모 오브젝트
+    [SerializeField] private TextMeshProUGUI _ammoleftText;
+
+    [SerializeField] private Transform _muzzleTransform;
+
+    private Animator _animator;
 
     private CancellationTokenSource _cancellationTokenSource;
-
     private float _timeSinceLastShot;
-
+    private bool _isaiming = false;
 
     private void Start()
     {
-        SetGunData(gunData);
-        gunData.reloading = false;
-        gunData.currentAmmo = gunData.magSize;
-        effectparent = GameObject.Find("Effect").transform;
-        AmmoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
+        _animator = GetComponent<Animator>();
+        _effectparent = GameObject.Find("Effect").transform;
+        _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
+
+        Init();
     }
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner) cam.gameObject.SetActive(false);
+        if (!IsOwner) _cam.DisableCamera(); // 내 플레이어 아니면 카메라 비활성화
     }
 
-    private void OnDisable() => gunData.reloading = false;
+    private void Init()
+    {
+        SetGunData(_gunData);
+        _gunData.reloading = false;
+        _gunData.currentAmmo = _gunData.magSize;
+        _cam.SetZoomSpeed(_gunData.zoomSpeed);
+
+        //SetAnimatorTransitionDuration();
+    }
+
+    private void OnDisable() => _gunData.reloading = false;
     public void SetGunData(GunData gunData)
     {
         if (!gunData.isFirstRef)
-            this.gunData = gunData;
+            this._gunData = gunData;
         else
             gunData.isFirstRef = false;
-            this.gunData = gunData.Clone(); // 처음 gunData 사용 시 clone해야함
+            this._gunData = gunData.Clone(); // 처음 gunData 사용 시 clone해야함
     }
+
+    private void SetAnimatorTransitionDuration()
+    {
+        //_animator.SetFloat("test" + "_duration", 3f);
+    }
+
 
     /// <summary>
     /// 재장전 코루틴 시작
@@ -63,18 +82,18 @@ public class Gun : NetworkBehaviour
     private IEnumerator Reload()
     {
         Debug.Log("Reload Start");
-        gunData.reloading = true;
+        _gunData.reloading = true;
 
-        yield return new WaitForSeconds(gunData.reloadTime);
+        yield return new WaitForSeconds(_gunData.reloadTime);
 
-        gunData.currentAmmo = gunData.magSize;
+        _gunData.currentAmmo = _gunData.magSize;
 
-        gunData.reloading = false;
+        _gunData.reloading = false;
         Debug.Log("Reload finish");
     }
 
     // 총 발사 가능 여부 판단
-    private bool CanShoot() => !gunData.reloading && gunData.currentAmmo > 0 && (_timeSinceLastShot > 1f / gunData.fireRate || gunData.isAutofire);
+    private bool CanShoot() => !_gunData.reloading && _gunData.currentAmmo > 0 && (_timeSinceLastShot > 1f / _gunData.fireRate || _gunData.isAutofire);
 
 
     /// <summary>
@@ -84,39 +103,34 @@ public class Gun : NetworkBehaviour
     {   
         if (CanShoot())
         {   
-            for(int i = 0; i < gunData.bulletsPerShoot; i++)
+            for(int i = 0; i < _gunData.bulletsPerShoot; i++)
             {
-                float spreadx = Random.Range(-gunData.spread, gunData.spread) / 10; // 탄퍼짐
-                float spready = Random.Range(-gunData.spread, gunData.spread) / 10;
+                float spreadx = Random.Range(-_gunData.spread, _gunData.spread) / 10; // 탄퍼짐
+                float spready = Random.Range(-_gunData.spread, _gunData.spread) / 10;
 
-                Vector3 bulletDir = cam.transform.forward + new Vector3(spreadx, spready, 0);
+                Vector3 bulletDir = _cam.transform.forward + new Vector3(spreadx, spready, 0);
 
-                if (Physics.Raycast(cam.transform.position, bulletDir, out RaycastHit hitInfo, gunData.maxDistance))
-                {
-                    //IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
-                    //damageable?.TakeDamage(gunData.damage);
-                    //Debug.Log(hitInfo.transform.name);
-                    makeBulletHoleServerRPC(hitInfo.point, hitInfo.normal);
-                }
+                MakeBulletServerRPC(bulletDir);
             }
 
             _timeSinceLastShot = 0;
-            gunData.currentAmmo -= gunData.bulletsPerShoot;
+            _gunData.currentAmmo -= _gunData.bulletsPerShoot;
 
-            recoil.MakeRecoil(gunData.recoilX, gunData.recoilY, gunData.recoilZ); // 반동 생성
+            if(!_isaiming)
+                _recoil.MakeRecoil(_gunData.recoilX, _gunData.recoilY, _gunData.recoilZ); // 반동 생성
+            else
+                _recoil.MakeRecoil(_gunData.aimRecoilX, _gunData.aimRecoilY, _gunData.aimRecoilZ);
         }
     }
     /// <summary>
-    /// make bullethole effect at point
+    /// make bullet
     /// </summary>
     [ServerRpc]
-    private void makeBulletHoleServerRPC(Vector3 hitpoint, Vector3 hitnormal)
+    private void MakeBulletServerRPC(Vector3 dir)
     {
-         GameObject effect = Instantiate(gunData.bullethole, // effect생성
-                        hitpoint + (hitnormal * .01f),
-                        Quaternion.LookRotation(hitnormal), effectparent);
-
-        effect.GetComponent<NetworkObject>().Spawn(true);
+        GameObject bullet = Instantiate(_gunData.bulletprefab, _muzzleTransform.position, _cam.transform.rotation);
+        bullet.GetComponent<Bullet>().Init(dir, _gunData.maxDistance, _gunData.damage);
+        bullet.GetComponent<NetworkObject>().Spawn(true);
     }
 
     /// <summary>
@@ -126,11 +140,11 @@ public class Gun : NetworkBehaviour
     {   
         while (true)
         {
-            for (int i = 0; i < gunData.bulletsPerShoot; i++)
+            for (int i = 0; i < _gunData.bulletsPerShoot; i++)
             {
                 Shoot();
             }
-            await UniTask.Delay((int)(1000 / gunData.fireRate), cancellationToken: fireCancellationToken); // 다음 발사까지 걸리는 시간
+            await UniTask.Delay((int)(1000 / _gunData.fireRate), cancellationToken: fireCancellationToken); // 다음 발사까지 걸리는 시간
 
             if (fireCancellationToken.IsCancellationRequested)
             {
@@ -144,7 +158,7 @@ public class Gun : NetworkBehaviour
     /// </summary>
     public void StartShoot()
     {
-        if (gunData.isAutofire)
+        if (_gunData.isAutofire)
         {
             if (_cancellationTokenSource != null && !_cancellationTokenSource.Token.IsCancellationRequested)
                 return;
@@ -173,20 +187,24 @@ public class Gun : NetworkBehaviour
     }
 
     public void Aim()
-    {
-
+    {   
+        _isaiming = true;
+        _animator.SetBool("Aiming", true);
+        _cam.SetTargetFOV(_gunData.aimingZoomrate);
     }
 
     public void StopAim()
     {
-
+        _isaiming = false;
+        _animator.SetBool("Aiming", false);
+        _cam.SetTargetFOV();
     }
 
     private void Update()
     {
         _timeSinceLastShot += Time.deltaTime;
 
-        Debug.DrawRay(cam.transform.position, cam.transform.forward * gunData.maxDistance, Color.red);
-        AmmoleftText.text = $"Ammo left: {gunData.currentAmmo} / {gunData.magSize}";
+        Debug.DrawRay(_cam.transform.position, _cam.transform.forward * _gunData.maxDistance, Color.red);
+        _ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
     }
 }

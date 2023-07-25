@@ -716,6 +716,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 830342841}
+  - component: {fileID: 830342842}
   m_Layer: 0
   m_Name: Effect
   m_TagString: Untagged
@@ -738,6 +739,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &830342842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830342840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3058702610
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &850857544
 GameObject:
   m_ObjectHideFlags: 0
@@ -1272,7 +1289,7 @@ MonoBehaviour:
     PlayerPrefab: {fileID: 2039647809148138387, guid: 80a8c09831272ec4395862857c4e40cd, type: 3}
     NetworkPrefabs:
     - Override: 0
-      Prefab: {fileID: 100002, guid: 73a9f9f0ffac08c449b5d9988697a6e8, type: 3}
+      Prefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
@@ -1323,7 +1340,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1405540193
 MonoBehaviour:
   m_ObjectHideFlags: 0

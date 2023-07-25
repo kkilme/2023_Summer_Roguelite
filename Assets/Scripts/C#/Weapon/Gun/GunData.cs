@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Mail;
 using Unity.VisualScripting;
@@ -19,8 +19,8 @@ public class GunData : ScriptableObject
     public float spread;
 
     [Header("Aiming")]
-    public float aimSpeed; // 우클릭시 조준으로 전환되는 속도
-    public float aimingZoomrate = 1;
+    public float zoomSpeed; // 우클릭시 조준으로 전환되는 속도
+    public float aimingZoomrate = 1.2f;
     
     [Tooltip("1초 당 발사 수")] public float fireRate;
     [Tooltip("자동 발사 여부")] public bool isAutofire;
@@ -44,7 +44,7 @@ public class GunData : ScriptableObject
     public float reloadTime;
 
     [Header("Effect")]
-    public GameObject bullethole;
+    public GameObject bulletprefab;
 
     [HideInInspector] public bool reloading;
     [HideInInspector] public bool isFirstRef = true; // 맨 처음 gundata 사용 시 clone해야함.
