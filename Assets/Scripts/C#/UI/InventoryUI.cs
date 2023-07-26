@@ -68,7 +68,7 @@ public class InventoryUI : MonoBehaviour
         for (int i = 0; i < e.Items.Count; i++)
         {
             itemImages[i].gameObject.SetActive(true);
-            //itemImages[i] = e.Items[i].GetItemStat.image;
+            //itemImages[i] = e.Items[i].ItemStat.image;
             //itemImages[i].SetNativeSize();
 
             if (e.ItemRotationDic[e.Items[i]].Equals(ROTATION_TYPE.TOP))
