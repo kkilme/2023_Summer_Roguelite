@@ -24,4 +24,5 @@ public struct ItemStat
         this.currentCount = currentCount;
         this.maxCount = maxCount;
     }
+
 }

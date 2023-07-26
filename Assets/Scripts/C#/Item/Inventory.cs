@@ -47,10 +47,10 @@ public class Inventory : NetworkBehaviour
 
     // 인벤토리안에 아이템을 넣는 함수. 매개변수인 x,y가 기준점으로 좌하단에 위치함
     [ServerRpc]
-    public void PutItemServerRPC(ITEMNAME itemName, int x, int y, ROTATION_TYPE rotationType = ROTATION_TYPE.RIGHT, ServerRpcParams serverRpcParams = default)
+    public void PutItemServerRPC(ITEMNAME itemName, int x, int y, ROTATION_TYPE rotationType = ROTATION_TYPE.RIGHT, int itemCount = 1, ServerRpcParams serverRpcParams = default)
     {
         // 추후에 Stat database에서 stat만 받아올 수 있도록 구조 변경. (GC 낭비)
-        var item = Item.GetItem(itemName);
+        var item = Item.GetItem(itemName, itemCount);
         var itemStat = item.ItemStat;
 
         if (x + itemStat.sizeX < sizeX && y + itemStat.sizeY < sizeY)
@@ -64,7 +64,7 @@ public class Inventory : NetworkBehaviour
                         TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
                     }
                 };
-                PutItemClientRPC(itemName, x, y, rotationType, clientRpcParams);
+                PutItemClientRPC(itemName, x, y, rotationType, itemCount, clientRpcParams);
                 if (IsServer && !IsHost)
                 {
                     items.Add(item);
@@ -77,11 +77,12 @@ public class Inventory : NetworkBehaviour
 
     // 인벤토리안에 아이템을 자동으로 넣어주는 함수.
     [ServerRpc]
-    public void PutItemServerRPC(ITEMNAME itemName, ROTATION_TYPE rotationType = ROTATION_TYPE.RIGHT, ServerRpcParams serverRpcParams = default)
+    public void PutItemServerRPC(ITEMNAME itemName, ROTATION_TYPE rotationType = ROTATION_TYPE.RIGHT, int itemCount = 1, ServerRpcParams serverRpcParams = default)
     {
-        var item = Item.GetItem(itemName);
+        var item = Item.GetItem(itemName, itemCount);
         int x, y;
         var itemStat = item.ItemStat;
+
         if (CheckEmpty(itemStat.sizeX, itemStat.sizeY, out x, out y, rotationType))
         {
             ClientRpcParams clientRpcParams = new ClientRpcParams
@@ -91,7 +92,7 @@ public class Inventory : NetworkBehaviour
                     TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
                 }
             };
-            PutItemClientRPC(itemName, x, y, rotationType, clientRpcParams);
+            PutItemClientRPC(itemName, x, y, rotationType, itemCount, clientRpcParams);
             if (IsServer && !IsHost)
             {
                 items.Add(item);
@@ -102,9 +103,9 @@ public class Inventory : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void PutItemClientRPC(ITEMNAME itemName, int x, int y, ROTATION_TYPE rotationType = ROTATION_TYPE.RIGHT, ClientRpcParams clientRpcParams = default)
+    public void PutItemClientRPC(ITEMNAME itemName, int x, int y, ROTATION_TYPE rotationType, int itemCount, ClientRpcParams clientRpcParams = default)
     {
-        var item = Item.GetItem(itemName);
+        var item = Item.GetItem(itemName, itemCount);
         var itemStat = item.ItemStat;
         // rotationType이 Top일경우 x와 y를 스왑
         if (rotationType.Equals(ROTATION_TYPE.TOP))
@@ -165,6 +166,12 @@ public class Inventory : NetworkBehaviour
     // 인벤토리에 존재하는 아이템의 위치를 바꾸는 함수
     public void MoveItem(Item item, int x, int y)
     {
+        if (CheckSameItemType(x, y, item.ItemName))
+        {
+            TransferItemCountServerRPC(itemPositionDic[item], x, y);
+            return;
+        }
+
         if (!CheckEmpty(x, y, item.ItemStat.sizeX, item.ItemStat.sizeY, itemRotationDic[item], item))
         {
             OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
@@ -173,8 +180,54 @@ public class Inventory : NetworkBehaviour
 
         var rotationType = itemRotationDic[item];
         ITEMNAME itemName = item.ItemName;
+        int itemCount = item.ItemStat.currentCount;
         RemoveItemServerRPC(itemPositionDic[item].x, itemPositionDic[item].y);
-        PutItemServerRPC(itemName, x, y, rotationType);
+        PutItemServerRPC(itemName, x, y, rotationType, itemCount);
+    }
+
+    [ServerRpc]
+    private void TransferItemCountServerRPC(Vector2Int sendingPos, int receivedX, int receivedY, ServerRpcParams serverRpcParams = default)
+    {
+        if (receivedX < 0 || receivedY < 0 || receivedX >= sizeX || receivedY >= sizeY)
+            return;
+
+        var sendingItem = InventorySpace[sendingPos.x, sendingPos.y];
+        var receivedItem = InventorySpace[receivedX, receivedY];
+
+        int sendingCount = Mathf.Min(sendingItem.ItemStat.currentCount, receivedItem.ItemStat.maxCount - receivedItem.ItemStat.currentCount);
+
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
+            }
+        };
+
+        TransferItemCountClientRPC(sendingCount, sendingPos, receivedX, receivedY, clientRpcParams);
+
+        if (IsServer && !IsHost)
+        {
+            sendingItem.AddCount(-sendingCount);
+            receivedItem.AddCount(sendingCount);
+        }
+    }
+
+    [ClientRpc]
+    private void TransferItemCountClientRPC(int sendingCount, Vector2Int sendingPos, int receivedX, int receivedY, ClientRpcParams clientRpcParams = default)
+    {
+        var sendingItem = InventorySpace[sendingPos.x, sendingPos.y];
+        var receivedItem = InventorySpace[receivedX, receivedY];
+
+        sendingItem.AddCount(-sendingCount);
+        receivedItem.AddCount(sendingCount);
+
+        if (sendingItem.ItemStat.currentCount == 0)
+        {
+            RemoveItemServerRPC(itemPositionDic[sendingItem].x, itemPositionDic[sendingItem].y);
+        }
+
+        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
     }
 
     // 아이템을 회전시키는 함수
@@ -249,4 +302,13 @@ public class Inventory : NetworkBehaviour
         x = -1; y = -1;
         return false;
     }
+
+    private bool CheckSameItemType(int x, int y, ITEMNAME itemName)
+    {
+        if (InventorySpace[x, y] == null) 
+            return false;
+
+        return InventorySpace[x, y].ItemName == itemName;
+    }
+
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,12 +17,14 @@ public class InventoryUI : MonoBehaviour
 
     [SerializeField]
     private Image[] itemImages;
+    private TextMeshProUGUI[] texts;
 
     private Dictionary<Item, Image> itemImageDic = new Dictionary<Item, Image>();
 
     private void Start()
     {
         inventory = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Inventory>();
+        texts = GetComponentsInChildren<TextMeshProUGUI>(true);
         inventory.OnInventoryChanged += DisplayInventoryUI;
         rectTransform = GetComponent<RectTransform>();
 
@@ -54,7 +57,7 @@ public class InventoryUI : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
-            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Inventory>().PutItemServerRPC(ITEMNAME.GAUGE_12, ROTATION_TYPE.TOP);
+            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Inventory>().PutItemServerRPC(ITEMNAME.GAUGE_12, ROTATION_TYPE.TOP, Random.Range(2, 9));
         }
     }
 
@@ -72,6 +75,8 @@ public class InventoryUI : MonoBehaviour
                 itemImages[i].rectTransform.sizeDelta = new Vector2(e.Items[i].ItemStat.sizeY, e.Items[i].ItemStat.sizeX) * 64;
             else
                 itemImages[i].rectTransform.sizeDelta = new Vector2(e.Items[i].ItemStat.sizeX, e.Items[i].ItemStat.sizeY) * 64;
+
+            texts[i].text = e.Items[i].ItemStat.currentCount.ToString();
 
             if (selectedItem != null)
             {

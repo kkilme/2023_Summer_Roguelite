@@ -13,12 +13,13 @@ public enum ITEMNAME
 
 public abstract class Item
 {
-    public ItemStat ItemStat { get; protected set; }
+    private ItemStat itemStat;
+    public ItemStat ItemStat { get => itemStat; protected set => itemStat = value; }
     public ITEMNAME ItemName { get; protected set; }
 
     public abstract void Use(Player player);
 
-    public static Item GetItem(ITEMNAME item)
+    public static Item GetItem(ITEMNAME item, int count)
     {
         switch (item)
         {
@@ -31,9 +32,24 @@ public abstract class Item
             case ITEMNAME.AMMO_762:
                 return new Item_Ammo(AMMOTYPE.AMMO_762, new ItemStat("7.62mm Ammo", "총알", null, 1, 1), ITEMNAME.AMMO_762);
             case ITEMNAME.GAUGE_12:
-                return new Item_Ammo(AMMOTYPE.GAUGE_12, new ItemStat("12 Gauge", "총알", null, 2, 1), ITEMNAME.GAUGE_12);
+                return new Item_Ammo(AMMOTYPE.GAUGE_12, new ItemStat("12 Gauge", "총알", null, 2, 1, count, 12), ITEMNAME.GAUGE_12);
             default:
                 return null;
+        }
+    }
+
+    public void AddCount(int amount)
+    {
+        itemStat.currentCount += amount;
+        if (itemStat.currentCount > itemStat.maxCount)
+        {
+            Debug.Log("Current Count Exceed Max Count");
+            itemStat.currentCount = itemStat.maxCount;
+        }
+        else if (itemStat.currentCount < 0)
+        {
+            Debug.Log("Current Count is Less than Zero");
+            itemStat.currentCount = 0;
         }
     }
 }
