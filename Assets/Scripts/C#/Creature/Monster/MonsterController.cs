@@ -40,7 +40,7 @@ public class MonsterController : NetworkBehaviour, IAttackable
 
     public void Init(MonsterSpawner spawner)
     {
-        _stat = new Stat(1, 1, 5, 1, 1, 1);
+        _stat = new Stat(1, 1, 5, 1, 1, 5);
         MakeBehaviour(spawner);
         ChildInit();
         _tree.CheckSeq();

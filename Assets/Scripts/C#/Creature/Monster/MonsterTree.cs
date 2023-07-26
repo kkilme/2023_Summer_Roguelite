@@ -60,7 +60,7 @@ public class MonsterWanderLeaf : BehaviourLeaf
     public override void CancelBehaviour(CancellationTokenSource cts)
     {
         _cts = cts;
-        //_board.Anim.SetBool(_animHash, false);
+        _board.Anim.SetBool(_animHash, false);
     }
 
     public override SeqStates CheckLeaf()
@@ -116,6 +116,7 @@ public class MonsterComeBackLeaf : BehaviourLeaf
     public override void CancelBehaviour(CancellationTokenSource cts)
     {
         _cts = cts;
+        _board.Anim.SetBool(_animHash, false);
     }
 
     public override SeqStates CheckLeaf()
@@ -197,14 +198,14 @@ public class MonsterChaseLeaf : BehaviourLeaf
 
             await UniTask.Delay(TimeSpan.FromMilliseconds(10), cancellationToken: _cts.Token);
 
-            if (_board.Target == null) {
+            if (_board.Target == null || Vector3.Distance(_board.Spawner.transform.position, _board.CurCreature.position) < 100) {
                 _board.Agent.isStopped = true;
                 _parent.SeqState = SeqStates.Fail;
                 CancelBehaviour(_cts);
                 break;
             }
 
-            else if (Vector3.Distance(_board.Target.position, _board.CurCreature.position) < _board.Stat.Range)
+            else if (Vector3.Distance(_board.Target.position, _board.CurCreature.position) <= _board.Stat.Range)
             {
                 _board.Agent.isStopped = true;
                 _parent.SeqState = SeqStates.Success;
@@ -224,12 +225,20 @@ public class MonsterChaseLeaf : BehaviourLeaf
 public class MonsterAttackLeaf : BehaviourLeaf
 {
     private MonsterBlackBoard _board;
+    private AnimationEvent _evt;
+    private float _clipLength;
 
     public MonsterAttackLeaf(BehaviourSequenceNode parent, CancellationTokenSource cts,
         MonsterBlackBoard board) : base(parent, cts)
     {
         _board = board;
         _animHash = Animator.StringToHash(MonsterStates.Attack.ToString());
+        for (int i = 0; i < _board.Anim.runtimeAnimatorController.animationClips.Length; ++i)
+            if (_board.Anim.runtimeAnimatorController.animationClips[i].name.CompareTo("Attack_1") == 0)
+            {
+                _clipLength = _board.Anim.runtimeAnimatorController.animationClips[i].length / 2;
+                break;
+            }
     }
 
     public override void CancelBehaviour(CancellationTokenSource cts)
@@ -251,9 +260,10 @@ public class MonsterAttackLeaf : BehaviourLeaf
 
     private async UniTaskVoid Attack()
     {
+        _board.CurCreature.LookAt(_board.Target);
         _board.Anim.SetBool(_animHash, true);
         await UniTask.WhenAll(UniTask.WaitUntil(() => _parent.SeqState == SeqStates.Running, cancellationToken: _cts.Token), 
-            UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: _cts.Token));
+            UniTask.Delay(TimeSpan.FromSeconds(_clipLength), cancellationToken: _cts.Token));
         _board.Anim.SetBool(_animHash, false);
         await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: _cts.Token);
         _parent.SeqState = SeqStates.Success;
