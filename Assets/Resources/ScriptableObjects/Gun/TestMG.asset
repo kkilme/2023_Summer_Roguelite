@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df55e78659259044d81fe6242be65688, type: 3}
+  m_Name: TestMG
+  m_EditorClassIdentifier: 
+  name: Machinegun
+  damage: 1
+  maxDistance: 100
+  bulletsPerShoot: 1
+  spread: 0.7
+  zoomSpeed: 0
+  aimingZoomrate: 1
+  fireRate: 15
+  isAutofire: 1
+  availableAttachmentTypes: 
+  recoilX: -2
+  recoilY: 1
+  recoilZ: 0
+  aimRecoilX: 0
+  aimRecoilY: 0
+  aimRecoilZ: 0
+  currentAmmo: 152
+  magSize: 300
+  reloadTime: 4
+  bulletprefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
+  reloading: 0
+  isFirstRef: 0

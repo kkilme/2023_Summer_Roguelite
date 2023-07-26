@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class TestPlayerLook : MonoBehaviour
+public class TestPlayerLook : NetworkBehaviour
 {
 
     [Header("References")]
@@ -29,6 +30,7 @@ public class TestPlayerLook : MonoBehaviour
 
     private void Update()
     {
+        if (!IsOwner) return;
         float mouseX = Input.GetAxisRaw("Mouse X") * 0.1f;
         float mouseY = Input.GetAxisRaw("Mouse Y") * 0.1f;
 

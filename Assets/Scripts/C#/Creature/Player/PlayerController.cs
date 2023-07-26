@@ -49,15 +49,23 @@ public class PlayerController : NetworkBehaviour, IAttackable
         Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
         Anim = Util.GetOrAddComponent<Animator>(gameObject);
 
-        InitInputSystem();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner) { 
+            InitInputSystem();
+        }
     }
 
     private void InitInputSystem()
     {
+       
         _actions.Add(Pi.actions.FindAction("Move"));
         _actions.Add(Pi.actions.FindAction("Attack"));
         _actions.Add(Pi.actions.FindAction("Interaction"));
         _actions.Add(Pi.actions.FindAction("Reload"));
+        _actions.Add(Pi.actions.FindAction("Aim"));
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
@@ -65,11 +73,11 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[0].canceled -= Idle;
         _actions[0].canceled += Idle;
 
-        _actions[1].performed -= Attack;
-        _actions[1].performed += Attack;
+        _actions[1].started -= Attack;
+        _actions[1].started += Attack;
 
-        _actions[1].canceled -= Idle;
-        _actions[1].canceled += Idle;
+        _actions[1].canceled -= StopAttack;
+        _actions[1].canceled += StopAttack;
 
         _actions[2].performed -= Interaction;
         _actions[2].performed += Interaction;
@@ -79,6 +87,13 @@ public class PlayerController : NetworkBehaviour, IAttackable
 
         _actions[3].performed -= Reload;
         _actions[3].performed += Reload;
+
+        _actions[4].started -= Aim;
+        _actions[4].started += Aim;
+
+        _actions[4].canceled -= StopAim;
+        _actions[4].canceled += StopAim;
+
     }
 
     private void Move(InputAction.CallbackContext ctx)
@@ -90,7 +105,7 @@ public class PlayerController : NetworkBehaviour, IAttackable
     private void Idle(InputAction.CallbackContext ctx)
     {
         _moveDir = Vector3.zero;
-        _weapon?.StopShoot();
+        //_weapon?.StopShoot();
         //Idle 애니메이션
     }
 
@@ -100,17 +115,32 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _weapon?.StartShoot();
     }
 
+    private void StopAttack(InputAction.CallbackContext ctx)
+    {
+        _weapon?.StopShoot();
+    }
+
     private void Reload(InputAction.CallbackContext ctx)
     {
         _weapon?.StartReload();
+    }
+
+    private void Aim(InputAction.CallbackContext ctx)
+    {
+        _weapon.Aim();
+    }
+
+    private void StopAim(InputAction.CallbackContext ctx)
+    {
+        _weapon.StopAim();
     }
 
     private void Interaction(InputAction.CallbackContext ctx)
     {
         _actions[0].performed -= Move;
         _actions[0].canceled -= Idle;
-        _actions[1].performed -= Attack;
-        _actions[1].canceled -= Idle;
+        _actions[1].started -= Attack;
+        _actions[1].canceled -= StopAttack;
         _actions[3].performed -= Reload;
     }
 
@@ -122,11 +152,11 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[0].canceled -= Idle;
         _actions[0].canceled += Idle;
 
-        _actions[1].performed -= Attack;
-        _actions[1].performed += Attack;
+        _actions[1].started -= Attack;
+        _actions[1].started += Attack;
 
-        _actions[1].canceled -= Idle;
-        _actions[1].canceled += Idle;
+        _actions[1].canceled -= StopAttack;
+        _actions[1].canceled += StopAttack;
 
         _actions[3].performed -= Reload;
         _actions[3].performed += Reload;
@@ -148,16 +178,15 @@ public class PlayerController : NetworkBehaviour, IAttackable
         transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
     }
 
-    public override void OnDestroy()
+    private new void OnDestroy()
     {
+        if (_actions.Count == 0) return;
         _actions[0].performed -= Move;
-
         _actions[0].canceled -= Idle;
-
-        _actions[1].performed -= Attack;
-
-        _actions[1].canceled -= Idle;
-
+        _actions[1].started -= Attack;
+        _actions[1].canceled -= StopAttack;
         _actions[3].performed -= Reload;
+        _actions[4].started -= Aim;
+        _actions[4].canceled -= StopAim;
     }
 }

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df55e78659259044d81fe6242be65688, type: 3}
+  m_Name: TestHG
+  m_EditorClassIdentifier: 
+  name: Handgun
+  damage: 10
+  maxDistance: 100
+  bulletsPerShoot: 1
+  spread: 0
+  zoomSpeed: 0
+  aimingZoomrate: 1
+  fireRate: 3
+  isAutofire: 0
+  availableAttachmentTypes: 
+  recoilX: -2
+  recoilY: 0
+  recoilZ: 0
+  aimRecoilX: 0
+  aimRecoilY: 0
+  aimRecoilZ: 0
+  currentAmmo: 20
+  magSize: 20
+  reloadTime: 1.5
+  bulletprefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
+  reloading: 0
+  isFirstRef: 0
