@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(GunData))]
 public class GunDataEditor : Editor
 {
@@ -9,7 +9,7 @@ public class GunDataEditor : Editor
 
     private void OnEnable()
     {
-        // boldÃ¼
+        // boldì²´
         boldLabelStyle = new GUIStyle(EditorStyles.label);
         boldLabelStyle.fontStyle = FontStyle.Bold;
     }
@@ -19,12 +19,12 @@ public class GunDataEditor : Editor
     {
         GunData gunData = (GunData)target;
 
-        // ±âº» Inspector Ç¥½Ã
+        // ê¸°ë³¸ Inspector í‘œì‹œ
         DrawDefaultInspector();
 
-        // ÇÑ ÁÙ °ø¹é
+        // í•œ ì¤„ ê³µë°±
         EditorGUILayout.Space();
-        // attachments µñ¼Å³Ê¸® ³»¿ë Ç¥½Ã
+        // attachments ë”•ì…”ë„ˆë¦¬ ë‚´ìš© í‘œì‹œ
         EditorGUILayout.LabelField("Attachments", boldLabelStyle);
         foreach (var attachment in gunData.attachments)
         {
@@ -32,3 +32,4 @@ public class GunDataEditor : Editor
         }
     }
 }
+#endif

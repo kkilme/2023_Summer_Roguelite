@@ -61,11 +61,11 @@ public class PlayerController : NetworkBehaviour, IAttackable
     private void InitInputSystem()
     {
        
-        _actions.Add(_pi.actions.FindAction("Move"));
-        _actions.Add(_pi.actions.FindAction("Attack"));
-        _actions.Add(_pi.actions.FindAction("Interaction"));
-        _actions.Add(_pi.actions.FindAction("Reload"));
-        _actions.Add(_pi.actions.FindAction("Aim"));
+        _actions.Add(Pi.actions.FindAction("Move"));
+        _actions.Add(Pi.actions.FindAction("Attack"));
+        _actions.Add(Pi.actions.FindAction("Interaction"));
+        _actions.Add(Pi.actions.FindAction("Reload"));
+        _actions.Add(Pi.actions.FindAction("Aim"));
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
