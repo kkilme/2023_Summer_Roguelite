@@ -8,6 +8,7 @@ public class Player : NetworkBehaviour
     public Stat PlayerStat { get; private set; }
     public Inventory Inventory { get; private set; }
 
+
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
     {

@@ -6,10 +6,11 @@ public class Item_Ammo : Item
 {
     protected AMMOTYPE ammoType;
 
-    public Item_Ammo(AMMOTYPE ammoType, ItemStat itemStat)
+    public Item_Ammo(AMMOTYPE ammoType, ItemStat itemStat, ITEMNAME itemName)
     {
         this.ammoType = ammoType;
-        this.itemStat = itemStat;
+        this.ItemStat = itemStat;
+        this.ItemName = itemName;
     }
 
     public override void Use(Player player) { }

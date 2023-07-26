@@ -8,9 +8,9 @@ public class Item_Bandage : Item
 
     public Item_Bandage()
     {
-        itemStat = new ItemStat("Bandage", "Heal Player", null, 1, 1);
+        ItemStat = new ItemStat("Bandage", "Heal Player", null, 1, 5);
         healStat = new Stat();
-        itemName = ITEM_NAME.BANDAGE;
+        ItemName = ITEMNAME.BANDAGE;
         healStat.Hp = healAmount;
     }
 
