@@ -74,6 +74,6 @@ public class MouseInput : MonoBehaviour
     public void OnOffSettingUI(bool bOpen)
     {
         Cursor.visible = bOpen;
-        this.enabled = bOpen;
+        this.enabled = !bOpen;
     }
 }
