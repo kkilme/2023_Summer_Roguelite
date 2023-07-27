@@ -35,18 +35,21 @@ public class PlayerController
     private List<InputAction> _actions = new List<InputAction>();
     public Vector3 MoveDir { get; private set; }
 
-    public PlayerController(GameObject go, bool isOwner)
+    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam)
     {
         _player = Util.GetOrAddComponent<Player>(go);
         _weapon = go.GetComponentInChildren<Gun>();
         MoveDir = Vector3.zero;
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
-
         MouseInput = go.GetComponentInChildren<MouseInput>();
         
         if (isOwner)
+        {
+            MouseInput = go.GetComponentInChildren<MouseInput>();
             InitInputSystem();
+            MouseInput.Init(cam.transform);
+        }
     }
 
     private void InitInputSystem()
@@ -156,8 +159,8 @@ public class PlayerController
     }
 
     private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
-    {
-        _player.Inventory.SwitchInventoryPanel();
+    {    
+        MouseInput.OnOffSettingUI(_player.Inventory.SwitchInventoryPanel());
     }
 
     public void Clear()

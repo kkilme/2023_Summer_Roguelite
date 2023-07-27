@@ -149,11 +149,10 @@ public class MonsterController : NetworkBehaviour, IAttackable
         _board.Stat.Hp = _board.Stat.Hp + heal < _board.Stat.MaxHp ? _board.Stat.Hp + heal : _board.Stat.MaxHp;
     }
 
-    public override void OnDestroy()
+    public override void OnNetworkDespawn()
     {
         if (NetworkManager.Singleton.IsServer)
             Clear();
-        base.OnDestroy();
     }
 }
 

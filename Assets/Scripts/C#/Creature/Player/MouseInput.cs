@@ -30,17 +30,14 @@ public class MouseInput : MonoBehaviour
     private Transform _target;
     private Transform _targetOriginAngle;
 
-    private void Awake()
-    {
-        Init();
-    }
-
-    private void Init()
+    public void Init(Transform camera)
     {
         _screenMid.x = Screen.width >> 1;
         _screenMid.y = Screen.height >> 1;
         _target = transform.GetChild(0);
         _targetOriginAngle = transform.GetChild(1);
+        _player = transform.parent;
+        _cam = camera;
 
         Cursor.visible = false;
     }
@@ -74,6 +71,7 @@ public class MouseInput : MonoBehaviour
     public void OnOffSettingUI(bool bOpen)
     {
         Cursor.visible = bOpen;
+        Mouse.current.WarpCursorPosition(_screenMid);
         this.enabled = !bOpen;
     }
 }

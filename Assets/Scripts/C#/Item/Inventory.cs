@@ -330,6 +330,9 @@ public class Inventory : NetworkBehaviour
 
     private bool CheckSameItemType(int x, int y, ITEMNAME itemName)
     {
+        if (x < 0 || y < 0 || x >= sizeX || y >= sizeY)
+            return false;
+
         if (InventorySpace[x, y] == null) 
             return false;
 
@@ -344,10 +347,11 @@ public class Inventory : NetworkBehaviour
         return InventorySpace[x, y];
     }
 
-    public void SwitchInventoryPanel()
+    public bool SwitchInventoryPanel()
     {
         bool state = inventoryUI.activeSelf;
         inventoryUI.SetActive(!state);
+        return !state;
     }
 
     public void AddNearItem(GettableItem item)
