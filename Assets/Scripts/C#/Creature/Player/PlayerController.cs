@@ -25,8 +25,7 @@ public class PlayerController : NetworkBehaviour, IAttackable
     public Animator Anim { get; private set; }
     public PlayerInput Pi { get; private set; }
 
-    [SerializeField]
-    private Collider _interactionTrigger;
+    private MouseInput _mouseInput;
 
     [SerializeField]
     private Gun _weapon;
@@ -34,6 +33,7 @@ public class PlayerController : NetworkBehaviour, IAttackable
     private List<InputAction> _actions = new List<InputAction>();
     private Vector3 _moveDir;
 
+    [SerializeField]
     private Stat _stat;
 
     void Awake()
@@ -43,11 +43,12 @@ public class PlayerController : NetworkBehaviour, IAttackable
 
     private void Init()
     {
-        _stat = new Stat(1, 1, 10, 1, 1, 5);
+        _stat = new Stat(10, 10, 10, 1, 1, 5);
         _moveDir = Vector3.zero;
         
         Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
         Anim = Util.GetOrAddComponent<Animator>(gameObject);
+        _mouseInput = GetComponentInChildren<MouseInput>();
     }
 
     public override void OnNetworkSpawn()

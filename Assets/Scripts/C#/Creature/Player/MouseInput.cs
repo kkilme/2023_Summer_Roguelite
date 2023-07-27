@@ -27,7 +27,6 @@ public class MouseInput : MonoBehaviour
     [SerializeField]
     private Transform _player;
 
-    private float _toCharacterDistance;
     private Transform _target;
     private Transform _targetOriginAngle;
 
@@ -43,8 +42,7 @@ public class MouseInput : MonoBehaviour
         _target = transform.GetChild(0);
         _targetOriginAngle = transform.GetChild(1);
 
-        //Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void FixedUpdate()
@@ -70,7 +68,7 @@ public class MouseInput : MonoBehaviour
         Vector3 value = Quaternion.AngleAxis(_rotationY, cross) * (_targetOriginAngle.position - transform.position) + transform.position;
         _target.position = value;
         _target.localEulerAngles = new Vector3(-_rotationY, 0, 0);
-        //Mouse.current.WarpCursorPosition(_screenMid);
+        Mouse.current.WarpCursorPosition(_screenMid);
     }
 
     private void OnOffSettingUI(bool bOpen)
