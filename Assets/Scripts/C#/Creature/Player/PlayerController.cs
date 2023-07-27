@@ -35,7 +35,7 @@ public class PlayerController
     private List<InputAction> _actions = new List<InputAction>();
     public Vector3 MoveDir { get; private set; }
 
-    public PlayerController(GameObject go, bool isOwner)
+    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam)
     {
         _player = Util.GetOrAddComponent<Player>(go);
         MoveDir = Vector3.zero;
@@ -43,7 +43,10 @@ public class PlayerController
         Anim = Util.GetOrAddComponent<Animator>(go);
         MouseInput = go.GetComponentInChildren<MouseInput>();
         if (isOwner)
+        {
             InitInputSystem();
+            MouseInput.Init(cam.transform);
+        }
     }
 
     private void InitInputSystem()

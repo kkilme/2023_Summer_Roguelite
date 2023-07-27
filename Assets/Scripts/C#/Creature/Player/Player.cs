@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
@@ -11,6 +12,8 @@ public class Player : NetworkBehaviour, IAttackable
     private Stat _playerStat;
     public Inventory Inventory { get; private set; }
     private PlayerController _playerController;
+    [SerializeField]
+    private Transform _headTransform;
 
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
@@ -20,7 +23,12 @@ public class Player : NetworkBehaviour, IAttackable
 
     public override void OnNetworkSpawn()
     {
-        _playerController = new PlayerController(gameObject, IsOwner);
+        CinemachineVirtualCamera cam = null;
+        if (IsOwner) {
+            cam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
+            cam.Follow = _headTransform;
+        }
+        _playerController = new PlayerController(gameObject, IsOwner, cam);
         _playerStat = new Stat(5,5,5,5,5,5);
         Inventory = GetComponent<Inventory>();
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
@@ -29,7 +37,6 @@ public class Player : NetworkBehaviour, IAttackable
     private void FixedUpdate()
     {
         transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _playerController.MoveDir * Time.deltaTime * PlayerStat.Speed;
-        Debug.Log(PlayerStat.Speed);
     }
 
     public void OnDamaged(int damage)
