@@ -10844,8 +10844,8 @@ GameObject:
   - component: {fileID: 286124424880024327}
   - component: {fileID: 8082224028523841825}
   - component: {fileID: 1818433188575595677}
-  - component: {fileID: 4128455302207735985}
   - component: {fileID: 6432418538636249150}
+  - component: {fileID: -5241594300376616082}
   m_Layer: 0
   m_Name: Alice
   m_TagString: Player
@@ -11388,7 +11388,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5197dbcf5593fc4499d04dadad4f1df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4128455302207735985
+--- !u!54 &6432418538636249150
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8040581135928357528}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!114 &-5241594300376616082
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11397,7 +11413,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8040581135928357528}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 503fb0a2f564c094e875cc1369da987a, type: 3}
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SyncPositionX: 1
@@ -11414,22 +11430,6 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
---- !u!54 &6432418538636249150
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8040581135928357528}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!1 &8093268367272683022
 GameObject:
   m_ObjectHideFlags: 0
