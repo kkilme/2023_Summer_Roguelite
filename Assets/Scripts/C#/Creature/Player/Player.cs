@@ -30,7 +30,7 @@ public class Player : NetworkBehaviour, IAttackable
         }
         _playerController = new PlayerController(gameObject, IsOwner, cam);
         _playerStat = new Stat(5,5,5,5,5,5);
-        Inventory = GetComponent<Inventory>();
+        Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
     }
 
