@@ -10845,6 +10845,7 @@ GameObject:
   - component: {fileID: 286124424880024327}
   - component: {fileID: 286124424880024325}
   - component: {fileID: 8082224028523841825}
+  - component: {fileID: 1818433188575595677}
   m_Layer: 0
   m_Name: Alice
   m_TagString: Player
@@ -11392,6 +11393,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _headTransform: {fileID: 8326140672610778930}
+--- !u!114 &1818433188575595677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8040581135928357528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5197dbcf5593fc4499d04dadad4f1df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8093268367272683022
 GameObject:
   m_ObjectHideFlags: 0
