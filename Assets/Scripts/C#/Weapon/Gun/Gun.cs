@@ -33,7 +33,9 @@ public class Gun : NetworkBehaviour
     {
         _animator = GetComponent<Animator>();
         _effectparent = GameObject.Find("Effect").transform;
+        _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
         _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
+        _cam = Camera.main.gameObject.GetComponent<GunCamera>();
 
         Init();
     }

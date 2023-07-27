@@ -30,6 +30,8 @@ public class MouseInput : MonoBehaviour
     private Transform _target;
     private Transform _targetOriginAngle;
 
+    [SerializeField] private bool checkTruefortest = false;
+
     public void Init(Transform camera)
     {
         _screenMid.x = Screen.width >> 1;
@@ -40,6 +42,7 @@ public class MouseInput : MonoBehaviour
         _cam = camera;
 
         Cursor.visible = false;
+        OnOffSettingUI(checkTruefortest);
     }
 
     private void FixedUpdate()

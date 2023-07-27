@@ -6,8 +6,8 @@ using UnityEngine;
 public class GunCamera : MonoBehaviour
 {
     private Camera _camera;
-    [SerializeField]
-    private Camera _weaponCamera;
+    //[SerializeField]
+    //private Camera _weaponCamera;
     private float _targetFOV;
     private float _originalFOV;
     private float _zoomspeed;
@@ -21,7 +21,7 @@ public class GunCamera : MonoBehaviour
 
     public void DisableCamera()
     {
-        _weaponCamera.gameObject.SetActive(false);
+        //_weaponCamera.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
 
