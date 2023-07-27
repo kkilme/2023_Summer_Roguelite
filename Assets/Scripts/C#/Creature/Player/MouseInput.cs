@@ -13,10 +13,10 @@ public class MouseInput : MonoBehaviour
 
     private float _sensitive = 0.5f;
 
-    private int _maxX = 35;
+    private int _maxX = 80;
     //private int _maxY = 60;
 
-    private int _minX = -35;
+    private int _minX = -80;
     //private int _minY = -60;
 
     private float _rotationX = 0;
