@@ -30,8 +30,8 @@ public class Player : NetworkBehaviour, IAttackable
         if (IsOwner) {
             cam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
             cam.Follow = _headTransform;
+            _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa);
         }
-        _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa);
         _playerStat = new Stat(5,5,5,5,5,5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
@@ -39,7 +39,8 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void FixedUpdate()
     {
-        MoveCharacterServerRpc(_playerController.MoveDir);
+        if (IsOwner)
+            MoveCharacterServerRpc(_playerController.MoveDir);
     }
 
     [ServerRpc]
