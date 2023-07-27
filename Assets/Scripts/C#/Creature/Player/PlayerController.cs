@@ -157,8 +157,8 @@ public class PlayerController
     }
 
     private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
-    {
-        _player.Inventory.SwitchInventoryPanel();
+    {    
+        MouseInput.OnOffSettingUI(_player.Inventory.SwitchInventoryPanel());
     }
 
     public void Clear()

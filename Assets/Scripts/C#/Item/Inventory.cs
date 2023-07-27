@@ -347,10 +347,11 @@ public class Inventory : NetworkBehaviour
         return InventorySpace[x, y];
     }
 
-    public void SwitchInventoryPanel()
+    public bool SwitchInventoryPanel()
     {
         bool state = inventoryUI.activeSelf;
         inventoryUI.SetActive(!state);
+        return !state;
     }
 
     public void AddNearItem(GettableItem item)
