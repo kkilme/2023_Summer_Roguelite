@@ -20,9 +20,7 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void Awake()
     {
-        _playerController = new PlayerController(gameObject);
-        if(IsOwner)
-            _playerController.InitInputSystem();
+        _playerController = new PlayerController(gameObject, IsOwner);
     }
 
     private void FixedUpdate()

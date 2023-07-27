@@ -33,16 +33,18 @@ public class PlayerController
     private List<InputAction> _actions = new List<InputAction>();
     public Vector3 MoveDir { get; private set; }
 
-    public PlayerController(GameObject go)
+    public PlayerController(GameObject go, bool isOwner)
     {
         MoveDir = Vector3.zero;
 
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
         MouseInput = go.GetComponentInChildren<MouseInput>();
+        if (isOwner)
+            InitInputSystem();
     }
 
-    public void InitInputSystem()
+    private void InitInputSystem()
     {
         _actions.Add(Pi.actions.FindAction("Move"));
         _actions.Add(Pi.actions.FindAction("Attack"));
