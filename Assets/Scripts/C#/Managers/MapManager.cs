@@ -24,6 +24,8 @@ public class MapManager : NetworkBehaviour
     [SerializeField] private List<GameObject> lifeShips = new List<GameObject>(); // 현재 배치된 구명선들 리스트
     [SerializeField] private NavMeshSurface _testMap;
     private GameObject[] _monsterObjects;
+    [SerializeField]
+    private GameObject _playerObject;
 
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;

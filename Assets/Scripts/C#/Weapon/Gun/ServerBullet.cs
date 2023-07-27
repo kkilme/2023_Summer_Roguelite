@@ -5,52 +5,54 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-public class Bullet : NetworkBehaviour
+public class ServerBullet : NetworkBehaviour
 {
-    [SerializeField] private float _speed;
+    private float _speed;
+    private float _lifeTime;
     [SerializeField] private GameObject _bullethole;
-    [SerializeField] private float _lifeTime;
     //[SerializeField] private LayerMask _hitLayer;
 
     private Vector3 _direction;
-    private float _maxDistance;
     private float _dmg;
-
-    private float _travelDistance;
+    private float _travelDistance; // 거리에 따른 대미지 조정을 위해 필요할 듯?
     private Transform _effectparent;
     private Vector3 _prevpos;
 
     private CancellationTokenSource _cancellationTokenSource;
 
-    public void Start()
+
+    public override void OnNetworkSpawn()
     {
         _effectparent = GameObject.Find("Effect").transform;
         transform.SetParent(_effectparent);
-        // Bullet 생성 후 바로 발사 (Server에서만 발사, Client는 서버로부터 받아서 위치/방향 동기화) <- 수정필요할듯?
-        if (IsServer)
+        if (!IsServer)
         {
-            FireBullet();
-            _cancellationTokenSource = new CancellationTokenSource();
-            DestroySelf(_cancellationTokenSource.Token).Forget();
-            UpdateDirection(_cancellationTokenSource.Token).Forget();
+            this.gameObject.SetActive(false);
+            return;
         }
-        
+        _prevpos = transform.position;
+        _travelDistance = 0f;
+
+        FireBullet();
+        _cancellationTokenSource = new CancellationTokenSource();
+        DestroySelf(_cancellationTokenSource.Token).Forget();
+        UpdateDirection(_cancellationTokenSource.Token).Forget();
     }
 
-    public void Init(Vector3 dir, float maxDistance, float dmg)
+    public void Init(Vector3 dir, float bulletspeed, float bulletLifetime, float dmg)
     {
-        _maxDistance = maxDistance;
-        _dmg = dmg;
         _direction = dir.normalized;
-        _prevpos = transform.position;
+        _speed = bulletspeed;
+        _lifeTime = bulletLifetime;
+        _dmg = dmg;
     }
 
     private void FixedUpdate()
     {
-        MoveBullet();
+        CollisionDetect();
     }
 
-    private void MoveBullet()
+    private void CollisionDetect()
     {
         float distanceThisFrame = _speed * Time.fixedDeltaTime;
         
@@ -58,7 +60,7 @@ public class Bullet : NetworkBehaviour
 
         Debug.DrawRay(transform.position, _direction);
 
-        if (_travelDistance < _maxDistance && Physics.Raycast(transform.position, _direction, out hit, distanceThisFrame))
+        if (Physics.Raycast(transform.position, _direction, out hit, distanceThisFrame)) // Raycast로 충돌 검사
         {
             HitTargetClientRPC(hit.point, hit.normal);
             //Debug.Log(hit.transform.gameObject.name);
@@ -83,33 +85,37 @@ public class Bullet : NetworkBehaviour
     }
 
 
+    /// <summary>
+    /// 총알의 Collision 시 모든 클라이언트에 메시지. 이펙트 생성 등 지시.
+    /// </summary>
+    /// <param name="hitPoint"></param>
+    /// <param name="hitNormal"></param>
     [ClientRpc]
     private void HitTargetClientRPC(Vector3 hitPoint, Vector3 hitNormal)
     {
-        // 클라이언트는 서버로부터 받은 충돌 정보를 이용하여 피격 이펙트 등을 처리
         ShowHitEffect(hitPoint, hitNormal);
     }
 
     private void ShowHitEffect(Vector3 hitPoint, Vector3 hitNormal)
     {
         GameObject hitEffect = Instantiate(_bullethole, hitPoint, Quaternion.LookRotation(hitNormal), _effectparent);
-        Destroy(hitEffect, 3f);
+        
     }
 
     private void FireBullet()
     {
-        _travelDistance = 0f;
         GetComponent<Rigidbody>().velocity = _direction * _speed;
     }
 
     private async UniTaskVoid DestroySelf(CancellationToken cancellationToken)
     {
         await UniTask.Delay((int)(_lifeTime * 1000), cancellationToken: cancellationToken);
-        
-        GetComponent<NetworkObject>().Despawn();
+        if(GetComponent<NetworkObject>().IsSpawned) GetComponent<NetworkObject>().Despawn();
     }
     private new void OnDestroy()
     {
         _cancellationTokenSource?.Cancel();
     }
+
+    
 }

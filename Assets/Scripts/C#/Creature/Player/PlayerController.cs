@@ -35,23 +35,22 @@ public class PlayerController
     private List<InputAction> _actions = new List<InputAction>();
     public Vector3 MoveDir { get; private set; }
 
-    public PlayerController(GameObject go)
+    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam)
     {
-        Pi = Util.GetOrAddComponent<PlayerInput>(go);
-        Anim = Util.GetOrAddComponent<Animator>(go);
         _player = Util.GetOrAddComponent<Player>(go);
         MoveDir = Vector3.zero;
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
         MouseInput = go.GetComponentInChildren<MouseInput>();
-        Pi = Util.GetOrAddComponent<PlayerInput>(go);
-        Anim = Util.GetOrAddComponent<Animator>(go);
-        _player = Util.GetOrAddComponent<Player>(go);
-        GameObject.FindObjectOfType<Canvas>().gameObject.SetActive(true);
+        if (isOwner)
+        {
+            InitInputSystem();
+            MouseInput.Init(cam.transform);
+        }
     }
 
-    public void InitInputSystem()
-    {    
+    private void InitInputSystem()
+    {
         _actions.Add(Pi.actions.FindAction("Move"));
         _actions.Add(Pi.actions.FindAction("Attack"));
         _actions.Add(Pi.actions.FindAction("Interaction"));

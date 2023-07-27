@@ -12,11 +12,11 @@ GameObject:
   - component: {fileID: 460226624720307321}
   - component: {fileID: 4708960574754865327}
   - component: {fileID: 7528476704299558821}
-  - component: {fileID: 2245352748027539666}
-  - component: {fileID: 7121262068977738292}
-  - component: {fileID: -4847858009619932749}
+  - component: {fileID: 305518134877213179}
+  - component: {fileID: 621652838100478155}
+  - component: {fileID: 415161298439610635}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: BulletServer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -167,7 +167,8 @@ MonoBehaviour:
   _speed: 100
   _bullethole: {fileID: 100002, guid: 73a9f9f0ffac08c449b5d9988697a6e8, type: 3}
   _lifeTime: 5
---- !u!114 &2245352748027539666
+  _selfprefab: {fileID: 6125170495973926791}
+--- !u!114 &305518134877213179
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -183,7 +184,7 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &7121262068977738292
+--- !u!114 &621652838100478155
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -209,7 +210,7 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
---- !u!114 &-4847858009619932749
+--- !u!114 &415161298439610635
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

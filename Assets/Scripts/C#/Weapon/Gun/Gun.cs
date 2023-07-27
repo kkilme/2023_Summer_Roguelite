@@ -10,13 +10,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public enum AMMOTYPE
-{
-    AMMO_9,
-    AMMO_556,
-    AMMO_762,
-    GAUGE_12
-}
 
 public class Gun : NetworkBehaviour
 {
@@ -70,9 +63,9 @@ public class Gun : NetworkBehaviour
             this._gunData = gunData.Clone(); // 처음 gunData 사용 시 clone해야함
     }
 
-    private void SetAnimatorTransitionDuration()
+    private void SetAnimatorTransitionDuration() 
     {
-        //_animator.SetFloat("test" + "_duration", 3f);
+        // 총 별로 우클릭 시 총을 들어올리는 애니메이션 속도를 조절하고 싶었으나, 애니메이터 컨트롤러의 트랜지션을 직접 수정할 수 있는 방법은 없어보임.
     }
 
 
@@ -119,7 +112,15 @@ public class Gun : NetworkBehaviour
 
                 Vector3 bulletDir = _cam.transform.forward + new Vector3(spreadx, spready, 0);
 
-                MakeBulletServerRPC(bulletDir);
+                if (IsServer)
+                {
+                    SpawnBulletServerRPC(bulletDir);
+                }
+                else
+                {
+                    SpawnClientBullet(bulletDir);
+                }
+
             }
 
             _timeSinceLastShot = 0;
@@ -132,15 +133,42 @@ public class Gun : NetworkBehaviour
         }
     }
     /// <summary>
-    /// make bullet
+    /// 클라이언트의 로컬 총알을 먼저 생성한 후, ServerRPC로 서버 총알 생성
+    /// </summary>
+    /// <param name="dir"></param>
+    private void SpawnClientBullet(Vector3 dir)
+    {
+        GameObject bullet = Instantiate(_gunData.clientBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
+        bullet.GetComponent<ClientBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime);
+        SpawnBulletServerRPC(dir);
+    }
+
+    /// <summary>
+    /// 서버 총알 생성하고, ClientRPC로 모든 클라이언트에 총알 생성 지시
     /// </summary>
     [ServerRpc]
-    private void MakeBulletServerRPC(Vector3 dir)
+    private void SpawnBulletServerRPC(Vector3 dir)
     {
-        GameObject bullet = Instantiate(_gunData.bulletprefab, _muzzleTransform.position, _cam.transform.rotation);
-        bullet.GetComponent<Bullet>().Init(dir, _gunData.maxDistance, _gunData.damage);
-        bullet.GetComponent<NetworkObject>().Spawn(true);
+        GameObject bullet = Instantiate(_gunData.serverBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
+        bullet.GetComponent<ServerBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime, _gunData.damage);
+        bullet.GetComponent<NetworkObject>().Spawn();
+        SpawnBulletClientRPC(dir);
     }
+
+    /// <summary>
+    /// 한 클라이언트가 총알을 쏠 시 다른 클라이언트들도 그 총알을 생성하도록 함
+    /// </summary>
+    /// <param name="dir"></param>
+    [ClientRpc]
+    private void SpawnBulletClientRPC(Vector3 dir)
+    {
+        if (IsOwner) return;
+        GameObject bullet = Instantiate(_gunData.clientBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
+        bullet.GetComponent<ClientBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime);
+    }
+
+
+    
 
     /// <summary>
     /// 자동사격. 좌클릭 누르고있으면 계속 발사. 가능한 총과 불가능한 총이 있음. StartShoot()에서 호출.
@@ -213,7 +241,7 @@ public class Gun : NetworkBehaviour
     {
         _timeSinceLastShot += Time.deltaTime;
 
-        Debug.DrawRay(_cam.transform.position, _cam.transform.forward * _gunData.maxDistance, Color.red);
+        Debug.DrawRay(_cam.transform.position, _cam.transform.forward * 100, Color.red);
         _ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
     }
 }
