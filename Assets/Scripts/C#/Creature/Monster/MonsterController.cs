@@ -165,7 +165,6 @@ public class MonsterBlackBoard : BlackBoard{
     [field:SerializeField]
     public MonsterSpawner Spawner { get; private set; } = null;
     public NavMeshAgent Agent { get; private set; } = null;
-    //public Vector3 SpawnerPos { get; private set; }
     public Vector3 HitDir;
 
     public MonsterBlackBoard(Transform creature, Animator anim, NavMeshAgent agent, Stat stat, MonsterSpawner spawner) : base(creature, anim, stat)

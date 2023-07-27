@@ -49,7 +49,7 @@ public class MouseInput : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //RotateMouse();
+        RotateMouse();
     }
 
     private void RotateMouse()
@@ -70,7 +70,7 @@ public class MouseInput : MonoBehaviour
         Vector3 value = Quaternion.AngleAxis(_rotationY, cross) * (_targetOriginAngle.position - transform.position) + transform.position;
         _target.position = value;
         _target.localEulerAngles = new Vector3(-_rotationY, 0, 0);
-        Mouse.current.WarpCursorPosition(_screenMid);
+        //Mouse.current.WarpCursorPosition(_screenMid);
     }
 
     private void OnOffSettingUI(bool bOpen)
