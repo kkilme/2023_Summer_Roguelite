@@ -20,45 +20,29 @@ public enum AnimParam
     Dead
 }
 
-public class PlayerController : NetworkBehaviour, IAttackable
+public class PlayerController
 {
     public Animator Anim { get; private set; }
     public PlayerInput Pi { get; private set; }
 
-    private MouseInput _mouseInput;
+    public MouseInput MouseInput { get; private set; }
 
     [SerializeField]
     private Gun _weapon;
 
     private List<InputAction> _actions = new List<InputAction>();
-    private Vector3 _moveDir;
+    public Vector3 MoveDir { get; private set; }
 
-    [SerializeField]
-    private Stat _stat;
-
-    void Awake()
+    public PlayerController(GameObject go)
     {
-        Init();
+        MoveDir = Vector3.zero;
+
+        Pi = Util.GetOrAddComponent<PlayerInput>(go);
+        Anim = Util.GetOrAddComponent<Animator>(go);
+        MouseInput = go.GetComponentInChildren<MouseInput>();
     }
 
-    private void Init()
-    {
-        _stat = new Stat(10, 10, 10, 1, 1, 5);
-        _moveDir = Vector3.zero;
-        
-        Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
-        Anim = Util.GetOrAddComponent<Animator>(gameObject);
-        _mouseInput = GetComponentInChildren<MouseInput>();
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        if (IsOwner) { 
-            InitInputSystem();
-        }
-    }
-
-    private void InitInputSystem()
+    public void InitInputSystem()
     {
         _actions.Add(Pi.actions.FindAction("Move"));
         _actions.Add(Pi.actions.FindAction("Attack"));
@@ -97,12 +81,12 @@ public class PlayerController : NetworkBehaviour, IAttackable
     private void Move(InputAction.CallbackContext ctx)
     {
         Vector2 input = ctx.ReadValue<Vector2>();
-        _moveDir = new Vector3(input.x, 0, input.y);
+        MoveDir = new Vector3(input.x, 0, input.y);
     }
 
     private void Idle(InputAction.CallbackContext ctx)
     {
-        _moveDir = Vector3.zero;
+        MoveDir = Vector3.zero;
         //_weapon?.StopShoot();
         //Idle 애니메이션
     }
@@ -160,23 +144,7 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[3].performed += Reload;
     }
 
-    public void OnDamaged(int damage)
-    {
-        _stat.Hp -= damage;
-        //사운드
-    }
-
-    public void OnHealed(int heal)
-    {
-        _stat.Hp = _stat.Hp + heal < _stat.MaxHp ? _stat.Hp + heal : _stat.MaxHp;
-    }
-
-    private void FixedUpdate()
-    {
-        transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
-    }
-
-    private new void OnDestroy()
+    public void Clear()
     {
         if (_actions.Count == 0) return;
         _actions[0].performed -= Move;

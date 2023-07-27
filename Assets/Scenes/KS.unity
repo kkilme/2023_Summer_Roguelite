@@ -7037,7 +7037,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 675280930}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45684ba94ed95904c84ed5a44328990a, type: 3}
   m_Name: 
@@ -16327,27 +16327,6 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &1619159471
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1619159468}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5efbfc26a9612db4e96c7c8f55ac4e98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interactionTrigger: {fileID: 0}
-  _weapon: {fileID: 0}
-  _stat:
-    MaxHp: 0
-    Hp: 0
-    Speed: 0
-    Gold: 0
-    Damage: 0
-    Range: 0
 --- !u!54 &1619159472
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -16819,6 +16798,18 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &1619159480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1619159468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24bf4713a0eb8e540996f13af536c861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1620365758 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -3412112769004581048, guid: b62c92e162915794ab1903c22d356a6f, type: 3}
