@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: AR
   damage: 10
-  maxDistance: 100
+  bulletSpeed: 20
   bulletsPerShoot: 1
+  bulletLifetime: 5
   spread: 0
   zoomSpeed: 5
   aimingZoomrate: 1.2
@@ -28,9 +29,11 @@ MonoBehaviour:
   aimRecoilX: -1.5
   aimRecoilY: 0.8
   aimRecoilZ: 0
+  ammoType: 0
   currentAmmo: 180
   magSize: 180
   reloadTime: 1.5
-  bulletprefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
+  serverBulletPrefab: {fileID: 6125170495973926791, guid: 4c3e7a6331d3da94a972e88d79b5f501, type: 3}
+  clientBulletPrefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
   reloading: 0
   isFirstRef: 0

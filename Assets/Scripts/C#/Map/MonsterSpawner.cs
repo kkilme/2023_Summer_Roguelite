@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class MonsterSpawner : NetworkBehaviour
 {
