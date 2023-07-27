@@ -124,7 +124,7 @@ public class Gun : NetworkBehaviour
             }
 
             _timeSinceLastShot = 0;
-            _gunData.currentAmmo -= _gunData.bulletsPerShoot;
+            _gunData.currentAmmo -= 1;
 
             if(!_isaiming)
                 _recoil.MakeRecoil(_gunData.recoilX, _gunData.recoilY, _gunData.recoilZ); // 반동 생성

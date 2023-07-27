@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using UniRx;
 using UniRx.Triggers;
@@ -29,7 +30,6 @@ public class PlayerController
 
     public MouseInput MouseInput { get; private set; }
 
-    [SerializeField]
     private Gun _weapon;
 
     private List<InputAction> _actions = new List<InputAction>();
@@ -38,10 +38,13 @@ public class PlayerController
     public PlayerController(GameObject go, bool isOwner)
     {
         _player = Util.GetOrAddComponent<Player>(go);
+        _weapon = go.GetComponentInChildren<Gun>();
         MoveDir = Vector3.zero;
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
+
         MouseInput = go.GetComponentInChildren<MouseInput>();
+        
         if (isOwner)
             InitInputSystem();
     }

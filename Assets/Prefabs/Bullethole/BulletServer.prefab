@@ -89,7 +89,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0.33315852
-        value: 0.4961276
+        value: 0.1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -164,10 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c5c7c63cb2853b4dbe6c867d1be4922, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 100
   _bullethole: {fileID: 100002, guid: 73a9f9f0ffac08c449b5d9988697a6e8, type: 3}
-  _lifeTime: 5
-  _selfprefab: {fileID: 6125170495973926791}
 --- !u!114 &305518134877213179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,9 +199,9 @@ MonoBehaviour:
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01

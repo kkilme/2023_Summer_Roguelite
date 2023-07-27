@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using UnityEditor.Rendering;
 
 public class ServerBullet : NetworkBehaviour
 {
@@ -62,8 +63,11 @@ public class ServerBullet : NetworkBehaviour
 
         if (Physics.Raycast(transform.position, _direction, out hit, distanceThisFrame)) // Raycast로 충돌 검사
         {
-            HitTargetClientRPC(hit.point, hit.normal);
             //Debug.Log(hit.transform.gameObject.name);
+            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Furniture")) // 충돌 대상에 따른 이펙트 종류가 많아지만 추후 코드 개선할 수 있을 듯.
+            {
+                HitTargetClientRPC(hit.point, hit.normal, HitType.Object);
+            }
             GetComponent<NetworkObject>().Despawn();
         }
         else
@@ -91,13 +95,14 @@ public class ServerBullet : NetworkBehaviour
     /// <param name="hitPoint"></param>
     /// <param name="hitNormal"></param>
     [ClientRpc]
-    private void HitTargetClientRPC(Vector3 hitPoint, Vector3 hitNormal)
-    {
-        ShowHitEffect(hitPoint, hitNormal);
+    private void HitTargetClientRPC(Vector3 hitPoint, Vector3 hitNormal, HitType hitType)
+    {   
+        if(hitType == HitType.Object) ShowHitEffect(hitPoint, hitNormal);
     }
 
     private void ShowHitEffect(Vector3 hitPoint, Vector3 hitNormal)
-    {
+    {   
+       
         GameObject hitEffect = Instantiate(_bullethole, hitPoint, Quaternion.LookRotation(hitNormal), _effectparent);
         
     }
@@ -118,4 +123,10 @@ public class ServerBullet : NetworkBehaviour
     }
 
     
+}
+
+public enum HitType
+{
+    Player,
+    Object
 }
