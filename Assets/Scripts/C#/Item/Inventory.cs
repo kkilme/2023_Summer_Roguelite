@@ -61,7 +61,7 @@ public class Inventory : NetworkBehaviour
 
     private GameObject inventoryUI;
 
-    public override void OnNetworkSpawn()
+    private void Start()
     {
         this.sizeX = 10;
         this.sizeY = 12;
