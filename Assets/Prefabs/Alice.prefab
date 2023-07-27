@@ -7138,7 +7138,6 @@ GameObject:
   - component: {fileID: 4687088293680451676}
   - component: {fileID: 4066185493065589286}
   - component: {fileID: 3523417376845726745}
-  - component: {fileID: 4687088293680451648}
   - component: {fileID: 4687088293680451649}
   - component: {fileID: 4687088293680451677}
   - component: {fileID: 4687088293680451675}
@@ -7243,20 +7242,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5197dbcf5593fc4499d04dadad4f1df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4687088293680451648
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5605442398637927701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5efbfc26a9612db4e96c7c8f55ac4e98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interactionTrigger: {fileID: 0}
-  _weapon: {fileID: 0}
 --- !u!114 &4687088293680451649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7723,9 +7708,9 @@ MonoBehaviour:
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01

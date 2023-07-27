@@ -267,7 +267,7 @@ public class Inventory : NetworkBehaviour
     }
 
     // 기준점에서 해당 크기의 공간이 비어있는지 확인하는 함수
-    private bool CheckEmpty(int x, int y, int itemSizeX, int itemSizeY, ROTATION_TYPE rotationType, Item item = null)
+    public bool CheckEmpty(int x, int y, int itemSizeX, int itemSizeY, ROTATION_TYPE rotationType, Item item = null)
     {
         if (x < 0 || y < 0 || x >= sizeX || y >= sizeY)
             return false;

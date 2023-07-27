@@ -37,7 +37,6 @@ public class PlayerController
 
     public PlayerController(GameObject go)
     {
-        _stat = new Stat(1, 1, 10, 1, 1, 5);
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
         _player = Util.GetOrAddComponent<Player>(go);
@@ -45,15 +44,13 @@ public class PlayerController
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
         MouseInput = go.GetComponentInChildren<MouseInput>();
-        _stat = new Stat(1, 1, 10, 1, 1, 5);
-        _moveDir = Vector3.zero;
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
         _player = Util.GetOrAddComponent<Player>(go);
-        FindObjectOfType<Canvas>().gameObject.SetActive(true);
+        GameObject.FindObjectOfType<Canvas>().gameObject.SetActive(true);
     }
 
-    private void InitInputSystem()
+    public void InitInputSystem()
     {    
         _actions.Add(Pi.actions.FindAction("Move"));
         _actions.Add(Pi.actions.FindAction("Attack"));
@@ -162,22 +159,6 @@ public class PlayerController
     private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
     {
         _player.Inventory.SwitchInventoryPanel();
-    }
-
-    public void OnDamaged(int damage)
-    {
-        _stat.Hp -= damage;
-        //사운드
-    }
-
-    public void OnHealed(int heal)
-    {
-        _stat.Hp = _stat.Hp + heal < _stat.MaxHp ? _stat.Hp + heal : _stat.MaxHp;
-    }
-
-    private void FixedUpdate()
-    {
-        transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
     }
 
     public void Clear()
