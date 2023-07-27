@@ -330,6 +330,9 @@ public class Inventory : NetworkBehaviour
 
     private bool CheckSameItemType(int x, int y, ITEMNAME itemName)
     {
+        if (x < 0 || y < 0 || x >= sizeX || y >= sizeY)
+            return false;
+
         if (InventorySpace[x, y] == null) 
             return false;
 
