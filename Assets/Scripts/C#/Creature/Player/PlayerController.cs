@@ -37,14 +37,16 @@ public class PlayerController
 
     public PlayerController(GameObject go)
     {
+        _stat = new Stat(1, 1, 10, 1, 1, 5);
+        Pi = Util.GetOrAddComponent<PlayerInput>(go);
+        Anim = Util.GetOrAddComponent<Animator>(go);
+        _player = Util.GetOrAddComponent<Player>(go);
         MoveDir = Vector3.zero;
-
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
         MouseInput = go.GetComponentInChildren<MouseInput>();
         _stat = new Stat(1, 1, 10, 1, 1, 5);
         _moveDir = Vector3.zero;
-
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
         _player = Util.GetOrAddComponent<Player>(go);

@@ -10,7 +10,6 @@ public class Player : NetworkBehaviour, IAttackable
     public Stat PlayerStat { get => _playerStat; }
     private Stat _playerStat;
     public Inventory Inventory { get; private set; }
-
     private PlayerController _playerController;
 
     [ServerRpc]
@@ -25,6 +24,7 @@ public class Player : NetworkBehaviour, IAttackable
         Inventory = GetComponent<Inventory>();
         if (IsOwner)
             _playerController.InitInputSystem();
+        Inventory = GetComponent<Inventory>();
     }
 
     private void FixedUpdate()
