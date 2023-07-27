@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class Player : NetworkBehaviour, IAttackable
@@ -14,6 +15,8 @@ public class Player : NetworkBehaviour, IAttackable
     private PlayerController _playerController;
     [SerializeField]
     private Transform _headTransform;
+    [SerializeField]
+    private InputActionAsset _iaa;
 
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
@@ -28,7 +31,7 @@ public class Player : NetworkBehaviour, IAttackable
             cam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
             cam.Follow = _headTransform;
         }
-        _playerController = new PlayerController(gameObject, IsOwner, cam);
+        _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa);
         _playerStat = new Stat(5,5,5,5,5,5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);

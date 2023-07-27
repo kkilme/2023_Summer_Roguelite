@@ -35,11 +35,13 @@ public class PlayerController
     private List<InputAction> _actions = new List<InputAction>();
     public Vector3 MoveDir { get; private set; }
 
-    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam)
+    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam, InputActionAsset iaa)
     {
         _player = Util.GetOrAddComponent<Player>(go);
         MoveDir = Vector3.zero;
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
+        Pi.actions = null;
+        Pi.actions = iaa;
         Anim = Util.GetOrAddComponent<Animator>(go);
 
         if (isOwner)
@@ -94,7 +96,6 @@ public class PlayerController
     {
         Vector2 input = ctx.ReadValue<Vector2>();
         MoveDir = new Vector3(input.x, 0, input.y);
-        Debug.Log("x");
     }
 
     private void Idle(InputAction.CallbackContext ctx)
