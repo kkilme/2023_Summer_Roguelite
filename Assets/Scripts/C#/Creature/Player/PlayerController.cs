@@ -41,9 +41,10 @@ public class PlayerController
         MoveDir = Vector3.zero;
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
-        MouseInput = go.GetComponentInChildren<MouseInput>();
+
         if (isOwner)
         {
+            MouseInput = go.GetComponentInChildren<MouseInput>();
             InitInputSystem();
             MouseInput.Init(cam.transform);
         }

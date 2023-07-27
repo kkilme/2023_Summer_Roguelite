@@ -71,6 +71,7 @@ public class MouseInput : MonoBehaviour
     public void OnOffSettingUI(bool bOpen)
     {
         Cursor.visible = bOpen;
+        Mouse.current.WarpCursorPosition(_screenMid);
         this.enabled = !bOpen;
     }
 }
