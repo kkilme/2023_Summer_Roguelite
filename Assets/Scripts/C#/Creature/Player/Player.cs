@@ -18,10 +18,12 @@ public class Player : NetworkBehaviour, IAttackable
         _playerStat = stat;
     }
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
         _playerController = new PlayerController(gameObject);
-        if(IsOwner)
+        _playerStat = new Stat(5,5,5,5,5,5);
+        Inventory = GetComponent<Inventory>();
+        if (IsOwner)
             _playerController.InitInputSystem();
         Inventory = GetComponent<Inventory>();
     }
@@ -42,7 +44,7 @@ public class Player : NetworkBehaviour, IAttackable
         _playerStat.Hp = _playerStat.Hp + heal < _playerStat.MaxHp ? _playerStat.Hp + heal : _playerStat.MaxHp;
     }
 
-    private new void OnDestroy()
+    public override void OnNetworkDespawn()
     {
         _playerController.Clear();
     }
