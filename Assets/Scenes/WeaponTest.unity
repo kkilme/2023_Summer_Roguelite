@@ -1255,7 +1255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ProtocolType: 0
-  m_MaxPacketQueueSize: 128
+  m_MaxPacketQueueSize: 256
   m_MaxPayloadSize: 6144
   m_HeartbeatTimeoutMS: 500
   m_ConnectTimeoutMS: 1000
@@ -1289,7 +1289,7 @@ MonoBehaviour:
     PlayerPrefab: {fileID: 2039647809148138387, guid: 80a8c09831272ec4395862857c4e40cd, type: 3}
     NetworkPrefabs:
     - Override: 0
-      Prefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
+      Prefab: {fileID: 6125170495973926791, guid: 4c3e7a6331d3da94a972e88d79b5f501, type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}

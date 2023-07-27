@@ -14,8 +14,10 @@ public class GunData : ScriptableObject
 
     [Header("Shooting")]
     public float damage;
-    public float maxDistance;
+    //public float maxDistance; // 총알을 사용하기 때문에 일단 사용 안함
+    public float bulletSpeed;
     public int bulletsPerShoot;
+    public float bulletLifetime = 5f;
     public float spread;
 
     [Header("Aiming")]
@@ -39,12 +41,14 @@ public class GunData : ScriptableObject
     public float aimRecoilZ;
 
     [Header("Reloading")]
+    public AMMOTYPE ammoType;
     public int currentAmmo;
     public int magSize;
     public float reloadTime;
 
     [Header("Effect")]
-    public GameObject bulletprefab;
+    public GameObject serverBulletPrefab;
+    public GameObject clientBulletPrefab;
 
     [HideInInspector] public bool reloading;
     [HideInInspector] public bool isFirstRef = true; // 맨 처음 gundata 사용 시 clone해야함.
@@ -83,4 +87,12 @@ public enum AttachmentType
     [Tooltip("라이트")]
     Flashlight,
 
+}
+
+public enum AMMOTYPE
+{
+    AMMO_9,
+    AMMO_556,
+    AMMO_762,
+    GAUGE_12
 }

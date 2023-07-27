@@ -1,6 +1,9 @@
+using Mono.Collections.Generic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -16,6 +19,7 @@ public class Inventory : NetworkBehaviour
     public Item[,] InventorySpace { get; private set; } // 인벤토리 공간을 Item 타입의 이차원 배열로 저장해 해당 좌표의 공간이 비어있는지 채워져 있는지 판단
 
     private List<Item> items = new List<Item>(); // 현재 갖고있는 아이템들
+    private List<GettableItem> nearItems = new List<GettableItem>();
     private Dictionary<Item, ROTATION_TYPE> itemRotationDic = new Dictionary<Item, ROTATION_TYPE>(); // 해당 아이템의 회전 정보를 저장. 기본값은 RIGHT
     private Dictionary<Item, Vector2Int> itemPositionDic = new Dictionary<Item, Vector2Int>(); // 해당 아이템의 기준점을 저장
 
@@ -35,7 +39,27 @@ public class Inventory : NetworkBehaviour
             ItemRotationDic = itemRotationDic;
         }
     }
+    public event EventHandler<NearItemEventHandlerArgs> OnNearItemChanged;
+    public class NearItemEventHandlerArgs
+    {
+        public enum ChangedType
+        {
+            Added,
+            Removed
+        }
+
+        public GettableItem GettableItem { get; private set; }
+        public ChangedType changedType { get; private set; }
+        
+        public NearItemEventHandlerArgs(GettableItem gettableItem, ChangedType changedType)
+        {
+            GettableItem = gettableItem;
+            this.changedType = changedType;
+        }
+    }
     private InventoryEventHandlerArgs inventoryEventHandlerArgs;
+
+    private GameObject inventoryUI;
 
     public override void OnNetworkSpawn()
     {
@@ -43,6 +67,7 @@ public class Inventory : NetworkBehaviour
         this.sizeY = 12;
         InventorySpace = new Item[sizeX, sizeY];
         inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items, InventorySpace, itemPositionDic, itemRotationDic);
+        inventoryUI = FindObjectOfType<InventoryUI>(true).gameObject;
     }
 
     // 인벤토리안에 아이템을 넣는 함수. 매개변수인 x,y가 기준점으로 좌하단에 위치함
@@ -311,4 +336,34 @@ public class Inventory : NetworkBehaviour
         return InventorySpace[x, y].ItemName == itemName;
     }
 
+    public Item SelectItem(int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= sizeX || y >= sizeY)
+            return null;
+
+        return InventorySpace[x, y];
+    }
+
+    public void SwitchInventoryPanel()
+    {
+        bool state = inventoryUI.activeSelf;
+        inventoryUI.SetActive(!state);
+    }
+
+    public void AddNearItem(GettableItem item)
+    {
+        nearItems.Add(item);
+        OnNearItemChanged?.Invoke(this, new NearItemEventHandlerArgs(item, NearItemEventHandlerArgs.ChangedType.Added));
+    }
+
+    public void RemoveNearItem(GettableItem item)
+    {
+        nearItems.Remove(item);
+        OnNearItemChanged?.Invoke(this, new NearItemEventHandlerArgs(item, NearItemEventHandlerArgs.ChangedType.Removed));
+    }
+
+    public System.Collections.ObjectModel.ReadOnlyCollection<GettableItem> GetNearItems()
+    {
+        return nearItems.AsReadOnly();
+    }
 }

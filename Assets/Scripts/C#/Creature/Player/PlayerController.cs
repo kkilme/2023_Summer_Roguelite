@@ -22,6 +22,8 @@ public enum AnimParam
 
 public class PlayerController
 {
+    private Player _player;
+
     public Animator Anim { get; private set; }
     public PlayerInput Pi { get; private set; }
 
@@ -35,8 +37,8 @@ public class PlayerController
 
     public PlayerController(GameObject go, bool isOwner)
     {
+        _player = Util.GetOrAddComponent<Player>(go);
         MoveDir = Vector3.zero;
-
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
         MouseInput = go.GetComponentInChildren<MouseInput>();
@@ -51,6 +53,7 @@ public class PlayerController
         _actions.Add(Pi.actions.FindAction("Interaction"));
         _actions.Add(Pi.actions.FindAction("Reload"));
         _actions.Add(Pi.actions.FindAction("Aim"));
+        _actions.Add(Pi.actions.FindAction("Inventory"));
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
@@ -78,6 +81,9 @@ public class PlayerController
 
         _actions[4].canceled -= StopAim;
         _actions[4].canceled += StopAim;
+
+        _actions[5].performed -= SwitchInventoryPannel;
+        _actions[5].performed += SwitchInventoryPannel;
     }
 
     private void Move(InputAction.CallbackContext ctx)
@@ -146,6 +152,11 @@ public class PlayerController
         _actions[3].performed += Reload;
     }
 
+    private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
+    {
+        _player.Inventory.SwitchInventoryPanel();
+    }
+
     public void Clear()
     {
         if (_actions.Count == 0) return;
@@ -156,5 +167,6 @@ public class PlayerController
         _actions[3].performed -= Reload;
         _actions[4].started -= Aim;
         _actions[4].canceled -= StopAim;
+        _actions[5].performed -= SwitchInventoryPannel;
     }
 }

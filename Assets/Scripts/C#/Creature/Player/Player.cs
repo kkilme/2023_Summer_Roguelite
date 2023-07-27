@@ -22,6 +22,7 @@ public class Player : NetworkBehaviour, IAttackable
     {
         _playerController = new PlayerController(gameObject, IsOwner);
         _playerStat = new Stat(1, 1, 10, 1, 1, 1);
+        Inventory = GetComponent<Inventory>();
     }
 
     private void FixedUpdate()
