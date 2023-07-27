@@ -18,11 +18,12 @@ public class Player : NetworkBehaviour, IAttackable
         _playerStat = stat;
     }
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
         _playerController = new PlayerController(gameObject, IsOwner);
-        _playerStat = new Stat(1, 1, 10, 1, 1, 1);
+        _playerStat = new Stat(5,5,5,5,5,5);
         Inventory = GetComponent<Inventory>();
+        FindObjectOfType<Canvas>().gameObject.SetActive(true);
     }
 
     private void FixedUpdate()
@@ -42,7 +43,7 @@ public class Player : NetworkBehaviour, IAttackable
         _playerStat.Hp = _playerStat.Hp + heal < _playerStat.MaxHp ? _playerStat.Hp + heal : _playerStat.MaxHp;
     }
 
-    private new void OnDestroy()
+    public override void OnNetworkDespawn()
     {
         _playerController.Clear();
     }
