@@ -48,7 +48,6 @@ public class PlayerController : NetworkBehaviour, IAttackable
         
         Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
         Anim = Util.GetOrAddComponent<Animator>(gameObject);
-
     }
 
     public override void OnNetworkSpawn()
@@ -60,7 +59,6 @@ public class PlayerController : NetworkBehaviour, IAttackable
 
     private void InitInputSystem()
     {
-       
         _actions.Add(Pi.actions.FindAction("Move"));
         _actions.Add(Pi.actions.FindAction("Attack"));
         _actions.Add(Pi.actions.FindAction("Interaction"));
@@ -93,7 +91,6 @@ public class PlayerController : NetworkBehaviour, IAttackable
 
         _actions[4].canceled -= StopAim;
         _actions[4].canceled += StopAim;
-
     }
 
     private void Move(InputAction.CallbackContext ctx)
