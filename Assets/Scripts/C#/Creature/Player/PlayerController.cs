@@ -94,6 +94,7 @@ public class PlayerController
     {
         Vector2 input = ctx.ReadValue<Vector2>();
         MoveDir = new Vector3(input.x, 0, input.y);
+        Debug.Log("x");
     }
 
     private void Idle(InputAction.CallbackContext ctx)
