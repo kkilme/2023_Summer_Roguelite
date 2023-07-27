@@ -21,11 +21,13 @@ public class Player : NetworkBehaviour, IAttackable
     private void Awake()
     {
         _playerController = new PlayerController(gameObject, IsOwner);
+        _playerStat = new Stat(1, 1, 10, 1, 1, 1);
     }
 
     private void FixedUpdate()
     {
         transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _playerController.MoveDir * Time.deltaTime * PlayerStat.Speed;
+        Debug.Log(PlayerStat.Speed);
     }
 
     public void OnDamaged(int damage)
