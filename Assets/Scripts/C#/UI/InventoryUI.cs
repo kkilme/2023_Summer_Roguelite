@@ -1,5 +1,9 @@
+using Cysharp.Threading.Tasks.Triggers;
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -13,39 +17,68 @@ public class InventoryUI : MonoBehaviour
     private float width;
     private float height;
     private Inventory inventory;
-    private Item selectedItem;
 
-    [SerializeField]
-    private Image[] itemImages;
-    private TextMeshProUGUI[] texts;
+    private ScrollRect scrollRect;
+    private GameObject inventoryTile;
 
-    private Dictionary<Item, Image> itemImageDic = new Dictionary<Item, Image>();
+    private Item selectedInventoryItem;
+    private ItemUI selectedNearItem;
 
-    private void Start()
+    private Stack<ItemUI> inventoryItemUIStack;
+    private Stack<ItemUI> nearItemUIStack;
+
+    private Dictionary<Item, ItemUI> inventoryDic = new Dictionary<Item, ItemUI>();
+    private Dictionary<GettableItem, ItemUI> nearDic = new Dictionary<GettableItem, ItemUI>();
+
+    private void Awake()
     {
         inventory = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Inventory>();
-        texts = GetComponentsInChildren<TextMeshProUGUI>(true);
-        inventory.OnInventoryChanged += DisplayInventoryUI;
-        rectTransform = GetComponent<RectTransform>();
+        rectTransform = transform.GetChild(0).GetComponent<RectTransform>();
+
+        inventoryItemUIStack = new Stack<ItemUI>(transform.GetChild(0).GetComponentsInChildren<ItemUI>(true));
+        nearItemUIStack = new Stack<ItemUI>(transform.GetChild(1).GetComponentsInChildren<ItemUI>(true));
+        nearItemUIStack.ToList().ForEach(x => x.action += SelectNearItem);
+        scrollRect = GetComponentInChildren<ScrollRect>(true);
+        inventoryTile = transform.GetChild(0).gameObject;
 
         width = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.x;
         height = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.y;
     }
 
+    private void OnEnable()
+    {
+        DisplayNearItemUI();
+        inventory.OnInventoryChanged += DisplayInventoryUI;
+        inventory.OnNearItemChanged += DisplayNearItemUI;
+    }
+
+    private void OnDisable()
+    {
+        inventory.OnInventoryChanged -= DisplayInventoryUI;
+        inventory.OnNearItemChanged -= DisplayNearItemUI;
+    }
+
     private void Update()
     {
-        if (selectedItem != null)
+        if (selectedInventoryItem != null)
         {
             var pos = GetGridPostion(Input.mousePosition);
-            itemImageDic[selectedItem].rectTransform.localPosition = new Vector2(pos.x, pos.y) * 64;
+            inventoryDic[selectedInventoryItem].image.rectTransform.localPosition = new Vector2(pos.x, pos.y) * 64;
+        }
+        if (selectedNearItem != null)
+        {
+            var pos = GetGridPostion(Input.mousePosition);
+            selectedNearItem.image.rectTransform.localPosition = new Vector2(pos.x, pos.y) * 64;
         }
         if (Input.GetMouseButtonDown(0))
         {
-            SelectItem(GetGridPostion(Input.mousePosition));
+            var pos = GetGridPostion(Input.mousePosition);
+            selectedInventoryItem = inventory.SelectItem(pos.x, pos.y);
         }
         if (Input.GetMouseButtonUp(0))
         {
             MoveItem(GetGridPostion(Input.mousePosition));
+            PutItem(GetGridPostion(Input.mousePosition));
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -53,73 +86,121 @@ public class InventoryUI : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.I))
         {
-            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Inventory>().PutItemServerRPC(ITEMNAME.BANDAGE);
+            inventory.PutItemServerRPC(ITEMNAME.BANDAGE);
         }
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.O))
         {
-            NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Inventory>().PutItemServerRPC(ITEMNAME.GAUGE_12, ROTATION_TYPE.TOP, Random.Range(2, 9));
+            inventory.PutItemServerRPC(ITEMNAME.GAUGE_12, ROTATION_TYPE.TOP, Random.Range(2, 9));
         }
     }
 
     private void DisplayInventoryUI(object sender, Inventory.InventoryEventHandlerArgs e)
     {
-        itemImageDic.Clear();
+        // 인벤토리에서 제거된 아이템 추출 및 삭제
+        var removedItems = inventoryDic.Keys.Except(e.Items).ToArray();
+
+        for (int i = 0; i < removedItems.Length; i++)
+        {
+            inventoryItemUIStack.Push(inventoryDic[removedItems[i]]);
+            inventoryDic[removedItems[i]].gameObject.SetActive(false);
+            inventoryDic.Remove(removedItems[i]);
+        }
 
         for (int i = 0; i < e.Items.Count; i++)
         {
-            itemImages[i].gameObject.SetActive(true);
+            if (!inventoryDic.ContainsKey(e.Items[i]))
+            {
+                inventoryDic.Add(e.Items[i], inventoryItemUIStack.Pop());
+            }
+
+            inventoryDic[e.Items[i]].gameObject.SetActive(true);
             //itemImages[i] = e.Items[i].ItemStat.image;
             //itemImages[i].SetNativeSize();
 
             if (e.ItemRotationDic[e.Items[i]].Equals(ROTATION_TYPE.TOP))
-                itemImages[i].rectTransform.sizeDelta = new Vector2(e.Items[i].ItemStat.sizeY, e.Items[i].ItemStat.sizeX) * 64;
+                inventoryDic[e.Items[i]].image.rectTransform.sizeDelta = new Vector2(e.Items[i].ItemStat.sizeY, e.Items[i].ItemStat.sizeX) * 64;
             else
-                itemImages[i].rectTransform.sizeDelta = new Vector2(e.Items[i].ItemStat.sizeX, e.Items[i].ItemStat.sizeY) * 64;
+                inventoryDic[e.Items[i]].image.rectTransform.sizeDelta = new Vector2(e.Items[i].ItemStat.sizeX, e.Items[i].ItemStat.sizeY) * 64;
 
-            texts[i].text = e.Items[i].ItemStat.currentCount.ToString();
+            inventoryDic[e.Items[i]].text.text = e.Items[i].ItemStat.currentCount.ToString();
 
-            if (selectedItem != null)
+            if (selectedInventoryItem != null)
             {
-                if (e.Items[i] != selectedItem)
-                    itemImages[i].rectTransform.localPosition = new Vector2(e.ItemPositionDic[e.Items[i]].x, e.ItemPositionDic[e.Items[i]].y) * 64;
+                if (e.Items[i] != selectedInventoryItem)
+                    inventoryDic[e.Items[i]].image.rectTransform.localPosition = new Vector2(e.ItemPositionDic[e.Items[i]].x, e.ItemPositionDic[e.Items[i]].y) * 64;
             }
             else
-                itemImages[i].rectTransform.localPosition = new Vector2(e.ItemPositionDic[e.Items[i]].x, e.ItemPositionDic[e.Items[i]].y) * 64;
-
-            itemImageDic.Add(e.Items[i], itemImages[i]);
-        }
-
-        for (int i = e.Items.Count; i < itemImages.Length; i++)
-        {
-            itemImages[i].gameObject.SetActive(false);
+                inventoryDic[e.Items[i]].image.rectTransform.localPosition = new Vector2(e.ItemPositionDic[e.Items[i]].x, e.ItemPositionDic[e.Items[i]].y) * 64;
         }
     }
 
-    private void SelectItem(Vector2Int pos)
+    private void DisplayNearItemUI(object sender, Inventory.NearItemEventHandlerArgs e)
     {
-        if (pos.x < 0 || pos.y < 0 || pos.x >= inventory.InventorySpace.GetLength(0) || pos.y >= inventory.InventorySpace.GetLength(1))
+        if (e.changedType == Inventory.NearItemEventHandlerArgs.ChangedType.Added)
         {
-            return;
+            if (!nearDic.ContainsKey(e.GettableItem))
+            {
+                nearDic.Add(e.GettableItem, nearItemUIStack.Pop());
+            }
+
+            nearDic[e.GettableItem].gameObject.SetActive(true);
+            var stat = Item.GetItemStat(e.GettableItem.ItemName, e.GettableItem.ItemCount);
+            nearDic[e.GettableItem].image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
+            nearDic[e.GettableItem].text.text = stat.currentCount.ToString();
         }
 
-        selectedItem = inventory.InventorySpace[pos.x, pos.y];
+        else
+        {
+            if (nearDic.ContainsKey(e.GettableItem))
+            {
+                nearItemUIStack.Push(nearDic[e.GettableItem]);
+                nearDic[e.GettableItem].gameObject.SetActive(false);
+                nearDic.Remove(e.GettableItem);
+            }
+        }
+    }
+
+    private void DisplayNearItemUI()
+    {
+        var nearItems = inventory.GetNearItems();
+        var removedItems = nearDic.Keys.Except(nearItems).ToArray();
+
+        for (int i = 0; i < removedItems.Length; i++)
+        {
+            nearItemUIStack.Push(nearDic[removedItems[i]]);
+            nearDic[removedItems[i]].gameObject.SetActive(false);
+            nearDic.Remove(removedItems[i]);
+        }
+
+        for (int i = 0; i < nearItems.Count; i++)
+        {
+            if (!nearDic.ContainsKey(nearItems[i]))
+            {
+                nearDic.Add(nearItems[i], nearItemUIStack.Pop());
+            }
+
+            nearDic[nearItems[i]].gameObject.SetActive(true);
+            var stat = Item.GetItemStat(nearItems[i].ItemName, nearItems[i].ItemCount);
+            nearDic[nearItems[i]].image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
+            nearDic[nearItems[i]].text.text = stat.currentCount.ToString();
+        }
     }
 
     private void MoveItem(Vector2Int pos)
     {
-        if (selectedItem != null)
+        if (selectedInventoryItem != null)
         {
-            var t = selectedItem;
-            selectedItem = null;
+            var t = selectedInventoryItem;
+            selectedInventoryItem = null;
             inventory.MoveItem(t, pos.x, pos.y);
         }
     }
 
     private void RotateItem()
     {
-        if (selectedItem != null)
+        if (selectedInventoryItem != null)
         {
-            inventory.RotateItem(selectedItem);
+            inventory.RotateItem(selectedInventoryItem);
         }
     }
 
@@ -127,9 +208,27 @@ public class InventoryUI : MonoBehaviour
     {
         Vector2Int gridPos = Vector2Int.zero;
 
-        gridPos.x = (int)((mousePosition.x - rectTransform.position.x) / width);
-        gridPos.y = (int)((mousePosition.y - rectTransform.position.y) / height);
+        gridPos.x = Mathf.FloorToInt((mousePosition.x - rectTransform.position.x) / width);
+        gridPos.y = Mathf.FloorToInt((mousePosition.y - rectTransform.position.y) / height);
 
         return gridPos;
+    }
+
+    private void SelectNearItem(ItemUI itemUI)
+    {
+        selectedNearItem = itemUI;
+        selectedNearItem.transform.SetParent(inventoryTile.transform);
+    }
+
+    private void PutItem(Vector2Int pos)
+    {
+        if (selectedNearItem != null)
+        {
+            GettableItem item = nearDic.ToList().Find(x => x.Value == selectedNearItem).Key;
+            inventory.PutItemServerRPC(item.ItemName, pos.x, pos.y, ROTATION_TYPE.RIGHT, item.ItemCount);
+            selectedNearItem.transform.SetParent(scrollRect.transform.GetChild(0).GetChild(0));
+            selectedNearItem = null;
+            item.DespawnServerRPC();
+        }
     }
 }

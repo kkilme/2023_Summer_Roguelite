@@ -1,6 +1,10 @@
+using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 
 public class MouseInput : MonoBehaviour
@@ -22,11 +26,11 @@ public class MouseInput : MonoBehaviour
     private Transform _cam;
     [SerializeField]
     private Transform _player;
-    [SerializeField]
-    private Transform[] _playerUpperBody;
-    private float[] _playerOriginalX;
 
-    void Awake()
+    private Transform _target;
+    private Transform _targetOriginAngle;
+
+    private void Awake()
     {
         Init();
     }
@@ -35,14 +39,10 @@ public class MouseInput : MonoBehaviour
     {
         _screenMid.x = Screen.width >> 1;
         _screenMid.y = Screen.height >> 1;
+        _target = transform.GetChild(0);
+        _targetOriginAngle = transform.GetChild(1);
 
         Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
-
-        _playerOriginalX = new float[_playerUpperBody.Length];
-
-        for (short i = 0; i < _playerUpperBody.Length; ++i)
-            _playerOriginalX[i] = _playerUpperBody[i].localEulerAngles.x;
     }
 
     private void FixedUpdate()
@@ -63,17 +63,15 @@ public class MouseInput : MonoBehaviour
         _cam.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
         _player.eulerAngles = new Vector3(0, _rotationX, 0);
 
-        for (short i = 0; i < _playerUpperBody.Length; ++i)
-        {
-            float anglex = Mathf.Clamp(_playerOriginalX[i] - _rotationY * (_playerUpperBody.Length - i) / 10, _playerOriginalX[i] + _minX, _playerOriginalX[i] + _maxX);
-            _playerUpperBody[i].localEulerAngles =
-                new Vector3(anglex, _playerUpperBody[i].localEulerAngles.y, _playerUpperBody[i].localEulerAngles.z);
-        }
+        Vector3 cross = Vector3.Cross(_targetOriginAngle.position - transform.position, Vector3.up);
 
+        Vector3 value = Quaternion.AngleAxis(_rotationY, cross) * (_targetOriginAngle.position - transform.position) + transform.position;
+        _target.position = value;
+        _target.localEulerAngles = new Vector3(-_rotationY, 0, 0);
         Mouse.current.WarpCursorPosition(_screenMid);
     }
 
-    private void OnOffSettingUI(bool bOpen)
+    public void OnOffSettingUI(bool bOpen)
     {
         Cursor.visible = bOpen;
         this.enabled = bOpen;

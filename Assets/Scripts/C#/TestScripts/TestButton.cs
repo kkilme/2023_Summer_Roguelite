@@ -17,6 +17,6 @@ public class TestButton : MonoBehaviour
 
     public void testgamestart()
     {
-        playerController.enabled = true;
+        //playerController.enabled = true;
     }
 }

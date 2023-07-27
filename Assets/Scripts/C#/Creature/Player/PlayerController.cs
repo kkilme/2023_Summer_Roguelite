@@ -20,52 +20,43 @@ public enum AnimParam
     Dead
 }
 
-public class PlayerController : NetworkBehaviour, IAttackable
+public class PlayerController
 {
+    private Player _player;
+
     public Animator Anim { get; private set; }
     public PlayerInput Pi { get; private set; }
 
-    [SerializeField]
-    private Collider _interactionTrigger;
+    public MouseInput MouseInput { get; private set; }
 
     [SerializeField]
     private Gun _weapon;
 
     private List<InputAction> _actions = new List<InputAction>();
-    private Vector3 _moveDir;
+    public Vector3 MoveDir { get; private set; }
 
-    private Stat _stat;
-
-    void Awake()
-    {
-        Init();
-    }
-
-    private void Init()
+    public PlayerController(GameObject go)
     {
         _stat = new Stat(1, 1, 10, 1, 1, 5);
-        _moveDir = Vector3.zero;
-        
-        Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
-        Anim = Util.GetOrAddComponent<Animator>(gameObject);
-
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        if (IsOwner) { 
-            InitInputSystem();
-        }
+        _moveDir = Vector3.zero;  
+        Pi = Util.GetOrAddComponent<PlayerInput>(go);
+        Anim = Util.GetOrAddComponent<Animator>(go);
+        _player = Util.GetOrAddComponent<Player>(go);
+        MoveDir = Vector3.zero;
+        Pi = Util.GetOrAddComponent<PlayerInput>(go);
+        Anim = Util.GetOrAddComponent<Animator>(go);
+        MouseInput = go.GetComponentInChildren<MouseInput>();
+        FindObjectOfType<Canvas>().gameObject.SetActive(true);
     }
 
     private void InitInputSystem()
-    {
-       
+    {    
         _actions.Add(Pi.actions.FindAction("Move"));
         _actions.Add(Pi.actions.FindAction("Attack"));
         _actions.Add(Pi.actions.FindAction("Interaction"));
         _actions.Add(Pi.actions.FindAction("Reload"));
         _actions.Add(Pi.actions.FindAction("Aim"));
+        _actions.Add(Pi.actions.FindAction("Inventory"));
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
@@ -94,17 +85,19 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[4].canceled -= StopAim;
         _actions[4].canceled += StopAim;
 
+        _actions[5].performed -= SwitchInventoryPannel;
+        _actions[5].performed += SwitchInventoryPannel;
     }
 
     private void Move(InputAction.CallbackContext ctx)
     {
         Vector2 input = ctx.ReadValue<Vector2>();
-        _moveDir = new Vector3(input.x, 0, input.y);
+        MoveDir = new Vector3(input.x, 0, input.y);
     }
 
     private void Idle(InputAction.CallbackContext ctx)
     {
-        _moveDir = Vector3.zero;
+        MoveDir = Vector3.zero;
         //_weapon?.StopShoot();
         //Idle 애니메이션
     }
@@ -162,6 +155,11 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[3].performed += Reload;
     }
 
+    private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
+    {
+        _player.Inventory.SwitchInventoryPanel();
+    }
+
     public void OnDamaged(int damage)
     {
         _stat.Hp -= damage;
@@ -178,7 +176,7 @@ public class PlayerController : NetworkBehaviour, IAttackable
         transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
     }
 
-    private new void OnDestroy()
+    public void Clear()
     {
         if (_actions.Count == 0) return;
         _actions[0].performed -= Move;
@@ -188,5 +186,6 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[3].performed -= Reload;
         _actions[4].started -= Aim;
         _actions[4].canceled -= StopAim;
+        _actions[5].performed -= SwitchInventoryPannel;
     }
 }
