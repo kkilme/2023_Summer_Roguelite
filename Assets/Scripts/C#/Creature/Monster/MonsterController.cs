@@ -25,7 +25,7 @@ public enum GOTag
     Player,
     Monster,
     Weapon,
-    MonsterWeapon
+    Item
 }
 
 public class MonsterController : NetworkBehaviour, IAttackable
@@ -40,7 +40,9 @@ public class MonsterController : NetworkBehaviour, IAttackable
 
     public void Init(MonsterSpawner spawner)
     {
-        _stat = new Stat(1, 1, 5, 1, 1, 1);
+        _stat = new Stat(1, 1, 5, 1, 1, 5);
+        _attack = gameObject.GetComponentInChildren<MonsterAttack>();
+        _detect = gameObject.GetComponentInChildren<MonsterDetect>();
         MakeBehaviour(spawner);
         ChildInit();
         _tree.CheckSeq();
@@ -48,11 +50,8 @@ public class MonsterController : NetworkBehaviour, IAttackable
 
     private void ChildInit()
     {
-        _detect = gameObject.GetComponentInChildren<MonsterDetect>();
         _detect.Init(_tree, _board);
-
-        //_attack = gameObject.GetComponentInChildren<MonsterAttack>();
-        //_attack.Init(_stat);
+        _attack.Init(_stat);
     }
 
     private void MakeBehaviour(MonsterSpawner spawner)
@@ -85,7 +84,7 @@ public class MonsterController : NetworkBehaviour, IAttackable
 
         var attackSeqcts = new CancellationTokenSource();
         var attackNode = new BehaviourNormalSelector(attackSeqcts, chaseSeq);
-        MonsterAttackLeaf attack = new MonsterAttackLeaf(attackNode, chaseSeqcts, _board);
+        MonsterAttackLeaf attack = new MonsterAttackLeaf(attackNode, chaseSeqcts, _board, _attack.GetComponent<BoxCollider>());
         attackNode.AddNode(attack);
 
         chaseSeq.AddSequenceNode(chaseNode);
@@ -165,7 +164,6 @@ public class MonsterBlackBoard : BlackBoard{
     [field:SerializeField]
     public MonsterSpawner Spawner { get; private set; } = null;
     public NavMeshAgent Agent { get; private set; } = null;
-    //public Vector3 SpawnerPos { get; private set; }
     public Vector3 HitDir;
 
     public MonsterBlackBoard(Transform creature, Animator anim, NavMeshAgent agent, Stat stat, MonsterSpawner spawner) : base(creature, anim, stat)
