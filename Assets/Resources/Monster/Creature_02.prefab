@@ -130,7 +130,6 @@ GameObject:
   - component: {fileID: 95254289514023752}
   - component: {fileID: -7719453551771152361}
   - component: {fileID: 4592489825727479424}
-  - component: {fileID: -1002217642655263550}
   - component: {fileID: -3132828152319514621}
   - component: {fileID: -1115168524307496298}
   - component: {fileID: 4619233776793452820}
@@ -226,33 +225,6 @@ MonoBehaviour:
     Target: {fileID: 0}
     <Spawner>k__BackingField: {fileID: 0}
     HitDir: {x: 0, y: 0, z: 0}
---- !u!114 &-1002217642655263550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1078603814506092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6960e84d07fb87f47956e7a81d71c4e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ProtocolType: 0
-  m_MaxPacketQueueSize: 128
-  m_MaxPayloadSize: 6144
-  m_HeartbeatTimeoutMS: 500
-  m_ConnectTimeoutMS: 1000
-  m_MaxConnectAttempts: 60
-  m_DisconnectTimeoutMS: 30000
-  ConnectionData:
-    Address: 127.0.0.1
-    Port: 7777
-    ServerListenAddress: 
-  DebugSimulator:
-    PacketDelayMS: 0
-    PacketJitterMS: 0
-    PacketDropRate: 0
 --- !u!114 &-3132828152319514621
 MonoBehaviour:
   m_ObjectHideFlags: 0

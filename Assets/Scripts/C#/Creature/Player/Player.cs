@@ -39,7 +39,13 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void FixedUpdate()
     {
-        transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _playerController.MoveDir * Time.deltaTime * PlayerStat.Speed;
+        MoveCharacterServerRpc(_playerController.MoveDir);
+    }
+
+    [ServerRpc]
+    private void MoveCharacterServerRpc(Vector3 dir)
+    {
+        transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir * Time.deltaTime * PlayerStat.Speed;
     }
 
     public void OnDamaged(int damage)
