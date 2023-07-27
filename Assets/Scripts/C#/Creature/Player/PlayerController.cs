@@ -22,6 +22,8 @@ public enum AnimParam
 
 public class PlayerController : NetworkBehaviour, IAttackable
 {
+    private Player _player;
+
     public Animator Anim { get; private set; }
     public PlayerInput Pi { get; private set; }
 
@@ -48,6 +50,7 @@ public class PlayerController : NetworkBehaviour, IAttackable
         
         Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
         Anim = Util.GetOrAddComponent<Animator>(gameObject);
+        _player = Util.GetOrAddComponent<Player>(gameObject);
 
     }
 
@@ -55,17 +58,19 @@ public class PlayerController : NetworkBehaviour, IAttackable
     {
         if (IsOwner) { 
             InitInputSystem();
+            // 임시
+            FindObjectOfType<Canvas>().gameObject.SetActive(true);
         }
     }
 
     private void InitInputSystem()
-    {
-       
+    {    
         _actions.Add(Pi.actions.FindAction("Move"));
         _actions.Add(Pi.actions.FindAction("Attack"));
         _actions.Add(Pi.actions.FindAction("Interaction"));
         _actions.Add(Pi.actions.FindAction("Reload"));
         _actions.Add(Pi.actions.FindAction("Aim"));
+        _actions.Add(Pi.actions.FindAction("Inventory"));
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
@@ -94,6 +99,8 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[4].canceled -= StopAim;
         _actions[4].canceled += StopAim;
 
+        _actions[5].performed -= SwitchInventoryPannel;
+        _actions[5].performed += SwitchInventoryPannel;
     }
 
     private void Move(InputAction.CallbackContext ctx)
@@ -162,6 +169,11 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[3].performed += Reload;
     }
 
+    private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
+    {
+        _player.Inventory.SwitchInventoryPanel();
+    }
+
     public void OnDamaged(int damage)
     {
         _stat.Hp -= damage;
@@ -188,5 +200,6 @@ public class PlayerController : NetworkBehaviour, IAttackable
         _actions[3].performed -= Reload;
         _actions[4].started -= Aim;
         _actions[4].canceled -= StopAim;
+        _actions[5].performed -= SwitchInventoryPannel;
     }
 }

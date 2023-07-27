@@ -24,17 +24,36 @@ public abstract class Item
         switch (item)
         {
             case ITEMNAME.BANDAGE:
-                return new Item_Bandage();
+                return new Item_Bandage(count);
             case ITEMNAME.AMMO_9:
-                return new Item_Ammo(AMMOTYPE.AMMO_9, new ItemStat("9mm Ammo", "총알", null, 1, 1), ITEMNAME.AMMO_9);
+                return new Item_Ammo(AMMOTYPE.AMMO_9, new ItemStat("9mm Ammo", "총알", null, 1, 1, count, 30), ITEMNAME.AMMO_9);
             case ITEMNAME.AMMO_556:
-                return new Item_Ammo(AMMOTYPE.AMMO_556, new ItemStat("5.56mm Ammo", "총알", null, 1, 1), ITEMNAME.AMMO_556);
+                return new Item_Ammo(AMMOTYPE.AMMO_556, new ItemStat("5.56mm Ammo", "총알", null, 1, 1, count, 30), ITEMNAME.AMMO_556);
             case ITEMNAME.AMMO_762:
-                return new Item_Ammo(AMMOTYPE.AMMO_762, new ItemStat("7.62mm Ammo", "총알", null, 1, 1), ITEMNAME.AMMO_762);
+                return new Item_Ammo(AMMOTYPE.AMMO_762, new ItemStat("7.62mm Ammo", "총알", null, 1, 1, count, 30), ITEMNAME.AMMO_762);
             case ITEMNAME.GAUGE_12:
                 return new Item_Ammo(AMMOTYPE.GAUGE_12, new ItemStat("12 Gauge", "총알", null, 2, 1, count, 12), ITEMNAME.GAUGE_12);
             default:
                 return null;
+        }
+    }
+
+    public static ItemStat GetItemStat(ITEMNAME item, int count)
+    {
+        switch (item)
+        {
+            case ITEMNAME.BANDAGE:
+                return new Item_Bandage(count).itemStat;
+            case ITEMNAME.AMMO_9:
+                return new ItemStat("9mm Ammo", "총알", null, 1, 1, count, 1);
+            case ITEMNAME.AMMO_556:
+                return new ItemStat("5.56mm Ammo", "총알", null, 1, 1, count, 1);
+            case ITEMNAME.AMMO_762:
+                return new ItemStat("7.62mm Ammo", "총알", null, 1, 1, count, 1);
+            case ITEMNAME.GAUGE_12:
+                return new ItemStat("12 Gauge", "총알", null, 2, 1, count, 12);
+            default:
+                return new ItemStat("9mm Ammo", "총알", null, 1, 1, count, 1);
         }
     }
 
