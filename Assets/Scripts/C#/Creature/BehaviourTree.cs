@@ -152,7 +152,8 @@ public abstract class BehaviourSequenceNode
             _cts.Cancel();
             _cts.Dispose();
             _cts = new CancellationTokenSource();
-            _curLeaf.CancelBehaviour(_cts);
+            for (short i = 0; i < _nodes.Count; ++i)
+                _nodes[i].CancelBehaviour(_cts);
             _curLeaf = null;
             SeqState = SeqStates.Fail;
         }
