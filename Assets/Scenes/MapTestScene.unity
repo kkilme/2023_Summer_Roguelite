@@ -852,6 +852,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 7.62mm Ammo
       objectReference: {fileID: 0}
+    - target: {fileID: 1510067600269706510, guid: 4d4e147c36d3e1249bbfe5b9605bacd6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1510067600269706511, guid: 4d4e147c36d3e1249bbfe5b9605bacd6, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 382187702
@@ -1764,7 +1768,32 @@ MonoBehaviour:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 166890539}
     PlayerPrefab: {fileID: 5605442398637927701, guid: efefebbfdcc983b469242865be929dae, type: 3}
-    NetworkPrefabs: []
+    NetworkPrefabs:
+    - Override: 0
+      Prefab: {fileID: 2683575652569560584, guid: 1345007479ba04a45bab4f666fcf6b26, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 1510067600269706510, guid: 4d4e147c36d3e1249bbfe5b9605bacd6, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 8774723610033246346, guid: 120b2c93fd78ae8408d1a3015aea7f5e, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 1773648484044878929, guid: 1b225b2692ea8e34493a9c67a925353f, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 3286940023294729869, guid: ffb46c41c88c9b04792838ed946320ad, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -6021,6 +6050,10 @@ PrefabInstance:
     - target: {fileID: 1773648484044878929, guid: 1b225b2692ea8e34493a9c67a925353f, type: 3}
       propertyPath: m_Name
       value: 12Gauge Ammo
+      objectReference: {fileID: 0}
+    - target: {fileID: 1773648484044878929, guid: 1b225b2692ea8e34493a9c67a925353f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1773648484044878935, guid: 1b225b2692ea8e34493a9c67a925353f, type: 3}
       propertyPath: m_RootOrder
@@ -11836,6 +11869,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 9mm Ammo
       objectReference: {fileID: 0}
+    - target: {fileID: 8774723610033246346, guid: 120b2c93fd78ae8408d1a3015aea7f5e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8774723610033246347, guid: 120b2c93fd78ae8408d1a3015aea7f5e, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 646176053
@@ -14092,6 +14129,10 @@ PrefabInstance:
     - target: {fileID: 2683575652569560584, guid: 1345007479ba04a45bab4f666fcf6b26, type: 3}
       propertyPath: m_Name
       value: 5.56mm Ammo
+      objectReference: {fileID: 0}
+    - target: {fileID: 2683575652569560584, guid: 1345007479ba04a45bab4f666fcf6b26, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2683575652569560585, guid: 1345007479ba04a45bab4f666fcf6b26, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -19630,6 +19671,10 @@ PrefabInstance:
     - target: {fileID: 2683575652569560584, guid: 1345007479ba04a45bab4f666fcf6b26, type: 3}
       propertyPath: m_Name
       value: 5.56mm Ammo (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2683575652569560584, guid: 1345007479ba04a45bab4f666fcf6b26, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2683575652569560585, guid: 1345007479ba04a45bab4f666fcf6b26, type: 3}
       propertyPath: GlobalObjectIdHash

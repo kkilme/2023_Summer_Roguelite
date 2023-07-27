@@ -225,10 +225,15 @@ public class InventoryUI : MonoBehaviour
         if (selectedNearItem != null)
         {
             GettableItem item = nearDic.ToList().Find(x => x.Value == selectedNearItem).Key;
-            inventory.PutItemServerRPC(item.ItemName, pos.x, pos.y, ROTATION_TYPE.RIGHT, item.ItemCount);
+            var stat = Item.GetItemStat(item.ItemName, 1);
+            if (inventory.CheckEmpty(pos.x, pos.y, stat.sizeX, stat.sizeY, ROTATION_TYPE.RIGHT))
+            {
+                inventory.PutItemServerRPC(item.ItemName, pos.x, pos.y, ROTATION_TYPE.RIGHT, item.ItemCount);
+                item.DespawnServerRPC();
+            }
+
             selectedNearItem.transform.SetParent(scrollRect.transform.GetChild(0).GetChild(0));
             selectedNearItem = null;
-            item.DespawnServerRPC();
         }
     }
 }
