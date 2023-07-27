@@ -22,6 +22,8 @@ public enum AnimParam
 
 public class PlayerController
 {
+    private Player _player;
+
     public Animator Anim { get; private set; }
     public PlayerInput Pi { get; private set; }
 
@@ -35,20 +37,26 @@ public class PlayerController
 
     public PlayerController(GameObject go)
     {
+        _stat = new Stat(1, 1, 10, 1, 1, 5);
+        _moveDir = Vector3.zero;  
+        Pi = Util.GetOrAddComponent<PlayerInput>(go);
+        Anim = Util.GetOrAddComponent<Animator>(go);
+        _player = Util.GetOrAddComponent<Player>(go);
         MoveDir = Vector3.zero;
-
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
         Anim = Util.GetOrAddComponent<Animator>(go);
         MouseInput = go.GetComponentInChildren<MouseInput>();
+        FindObjectOfType<Canvas>().gameObject.SetActive(true);
     }
 
-    public void InitInputSystem()
-    {
+    private void InitInputSystem()
+    {    
         _actions.Add(Pi.actions.FindAction("Move"));
         _actions.Add(Pi.actions.FindAction("Attack"));
         _actions.Add(Pi.actions.FindAction("Interaction"));
         _actions.Add(Pi.actions.FindAction("Reload"));
         _actions.Add(Pi.actions.FindAction("Aim"));
+        _actions.Add(Pi.actions.FindAction("Inventory"));
 
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
@@ -76,6 +84,9 @@ public class PlayerController
 
         _actions[4].canceled -= StopAim;
         _actions[4].canceled += StopAim;
+
+        _actions[5].performed -= SwitchInventoryPannel;
+        _actions[5].performed += SwitchInventoryPannel;
     }
 
     private void Move(InputAction.CallbackContext ctx)
@@ -144,6 +155,27 @@ public class PlayerController
         _actions[3].performed += Reload;
     }
 
+    private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
+    {
+        _player.Inventory.SwitchInventoryPanel();
+    }
+
+    public void OnDamaged(int damage)
+    {
+        _stat.Hp -= damage;
+        //사운드
+    }
+
+    public void OnHealed(int heal)
+    {
+        _stat.Hp = _stat.Hp + heal < _stat.MaxHp ? _stat.Hp + heal : _stat.MaxHp;
+    }
+
+    private void FixedUpdate()
+    {
+        transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _moveDir * Time.deltaTime * _stat.Speed;
+    }
+
     public void Clear()
     {
         if (_actions.Count == 0) return;
@@ -154,5 +186,6 @@ public class PlayerController
         _actions[3].performed -= Reload;
         _actions[4].started -= Aim;
         _actions[4].canceled -= StopAim;
+        _actions[5].performed -= SwitchInventoryPannel;
     }
 }

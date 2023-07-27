@@ -23,6 +23,7 @@ public class Player : NetworkBehaviour, IAttackable
         _playerController = new PlayerController(gameObject);
         if(IsOwner)
             _playerController.InitInputSystem();
+        Inventory = GetComponent<Inventory>();
     }
 
     private void FixedUpdate()
