@@ -17,6 +17,7 @@ public class Player : NetworkBehaviour, IAttackable
     private Transform _headTransform;
     [SerializeField]
     private InputActionAsset _iaa;
+    private Rigidbody rigidbody;
 
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
@@ -32,21 +33,21 @@ public class Player : NetworkBehaviour, IAttackable
             cam.Follow = _headTransform;
             _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa);
         }
-        _playerStat = new Stat(5,5,5,5,5,5);
+        _playerStat = new Stat(5,5, 10,5,5,5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
     {
         if (IsOwner)
-            MoveCharacterServerRpc(_playerController.MoveDir);
+            MoveCharacter(_playerController.MoveDir);
     }
 
-    [ServerRpc]
-    private void MoveCharacterServerRpc(Vector3 dir)
+    private void MoveCharacter(Vector3 dir)
     {
-        transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir * Time.deltaTime * PlayerStat.Speed;
+        rigidbody.velocity = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir  * PlayerStat.Speed;
     }
 
     public void OnDamaged(int damage)
