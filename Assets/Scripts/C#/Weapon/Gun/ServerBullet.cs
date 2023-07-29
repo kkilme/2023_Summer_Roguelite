@@ -59,7 +59,7 @@ public class ServerBullet : NetworkBehaviour
         
         RaycastHit hit;
 
-        Debug.DrawRay(transform.position, _direction);
+        Debug.DrawRay(transform.position, _direction*5);
 
         if (Physics.Raycast(transform.position, _direction, out hit, distanceThisFrame)) // Raycast로 충돌 검사
         {

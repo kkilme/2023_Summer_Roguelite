@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,7 +6,7 @@ using UnityEngine;
 
 public class GunCamera : MonoBehaviour
 {
-    private Camera _camera;
+    private CinemachineVirtualCamera _camera;
     //[SerializeField]
     //private Camera _weaponCamera;
     private float _targetFOV;
@@ -14,9 +15,9 @@ public class GunCamera : MonoBehaviour
 
     void Start()
     {
-        _camera = GetComponent<Camera>();
-        _originalFOV = _camera.fieldOfView;
-        _targetFOV = _camera.fieldOfView;
+        _camera = GetComponent<CinemachineVirtualCamera>();
+        _originalFOV = _camera.m_Lens.FieldOfView;
+        _targetFOV = _camera.m_Lens.FieldOfView;
     }
 
     public void DisableCamera()
@@ -42,6 +43,6 @@ public class GunCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _camera.fieldOfView = Mathf.Lerp(_camera.fieldOfView, _targetFOV, Time.deltaTime * _zoomspeed);
+        _camera.m_Lens.FieldOfView = Mathf.Lerp(_camera.m_Lens.FieldOfView, _targetFOV, Time.deltaTime * _zoomspeed);
     }
 }
