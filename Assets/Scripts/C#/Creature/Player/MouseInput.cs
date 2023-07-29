@@ -11,7 +11,7 @@ public class MouseInput : MonoBehaviour
 {
     private Vector2 _screenMid;
 
-    private float _sensitive = 0.5f;
+    [SerializeField] private float _sensitive = 0.5f;
 
     private int _maxX = 80;
     //private int _maxY = 60;
@@ -30,6 +30,8 @@ public class MouseInput : MonoBehaviour
     private Transform _target;
     private Transform _targetOriginAngle;
 
+    [SerializeField] private bool checkTruefortest = false;
+
     public void Init(Transform camera)
     {
         _screenMid.x = Screen.width >> 1;
@@ -40,6 +42,7 @@ public class MouseInput : MonoBehaviour
         _cam = camera;
 
         Cursor.visible = false;
+        OnOffSettingUI(true);
     }
 
     private void FixedUpdate()
