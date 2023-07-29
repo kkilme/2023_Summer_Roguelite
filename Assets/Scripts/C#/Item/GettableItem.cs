@@ -14,6 +14,8 @@ public class GettableItem : NetworkBehaviour, IInteraction
     public ITEMNAME ItemName { get => itemName; }
     public int ItemCount { get => itemCount; }
 
+    List<Player> players = new List<Player>();
+
     public void Init()
     {
 
@@ -32,7 +34,9 @@ public class GettableItem : NetworkBehaviour, IInteraction
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<Player>().Inventory.AddNearItem(this);
+            var player = other.GetComponent<Player>();
+            player.Inventory.AddNearItem(this);
+            players.Add(player);
         }
     }
 
@@ -40,23 +44,23 @@ public class GettableItem : NetworkBehaviour, IInteraction
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<Player>().Inventory.RemoveNearItem(this);
+            var player = other.GetComponent<Player>();
+            player.Inventory.RemoveNearItem(this);
+            players.Remove(player);
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void DespawnServerRPC()
     {
-        DespawnClientRPC();
         GetComponent<NetworkObject>().Despawn();
     }
 
-    [ClientRpc]
-    private void DespawnClientRPC()
+    public override void OnNetworkDespawn()
     {
-        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
+        for (int i = 0; i < players.Count; i++)
         {
-            NetworkManager.Singleton.ConnectedClientsList[i].PlayerObject.GetComponent<Player>().Inventory.RemoveNearItem(this);
+            players[i].Inventory.RemoveNearItem(this);
         }
     }
 }

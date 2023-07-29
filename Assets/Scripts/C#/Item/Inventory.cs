@@ -61,7 +61,7 @@ public class Inventory : NetworkBehaviour
 
     private GameObject inventoryUI;
 
-    public override void OnNetworkSpawn()
+    private void Start()
     {
         this.sizeX = 10;
         this.sizeY = 12;
@@ -78,24 +78,21 @@ public class Inventory : NetworkBehaviour
         var item = Item.GetItem(itemName, itemCount);
         var itemStat = item.ItemStat;
 
-        if (x + itemStat.sizeX < sizeX && y + itemStat.sizeY < sizeY)
+        if (CheckEmpty(x, y, itemStat.sizeX, itemStat.sizeY, rotationType))
         {
-            if (CheckEmpty(x,y, itemStat.sizeX, itemStat.sizeY, rotationType))
+            ClientRpcParams clientRpcParams = new ClientRpcParams
             {
-                ClientRpcParams clientRpcParams = new ClientRpcParams
+                Send = new ClientRpcSendParams
                 {
-                    Send = new ClientRpcSendParams
-                    {
-                        TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
-                    }
-                };
-                PutItemClientRPC(itemName, x, y, rotationType, itemCount, clientRpcParams);
-                if (IsServer && !IsHost)
-                {
-                    items.Add(item);
-                    itemRotationDic.Add(item, rotationType);
-                    itemPositionDic.Add(item, new Vector2Int(x, y));
+                    TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
                 }
+            };
+            PutItemClientRPC(itemName, x, y, rotationType, itemCount, clientRpcParams);
+            if (IsServer && !IsHost)
+            {
+                items.Add(item);
+                itemRotationDic.Add(item, rotationType);
+                itemPositionDic.Add(item, new Vector2Int(x, y));
             }
         }
     }

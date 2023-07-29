@@ -35,12 +35,14 @@ public class PlayerController
     private List<InputAction> _actions = new List<InputAction>();
     public Vector3 MoveDir { get; private set; }
 
-    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam)
+    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam, InputActionAsset iaa)
     {
         _player = Util.GetOrAddComponent<Player>(go);
         _weapon = go.GetComponentInChildren<Gun>();
         MoveDir = Vector3.zero;
         Pi = Util.GetOrAddComponent<PlayerInput>(go);
+        Pi.actions = null;
+        Pi.actions = iaa;
         Anim = Util.GetOrAddComponent<Animator>(go);
         MouseInput = go.GetComponentInChildren<MouseInput>();
         

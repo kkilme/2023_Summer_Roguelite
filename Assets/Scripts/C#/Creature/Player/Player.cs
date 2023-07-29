@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class Player : NetworkBehaviour, IAttackable
@@ -14,6 +15,9 @@ public class Player : NetworkBehaviour, IAttackable
     private PlayerController _playerController;
     [SerializeField]
     private Transform _headTransform;
+    [SerializeField]
+    private InputActionAsset _iaa;
+    private Rigidbody rigidbody;
 
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
@@ -27,16 +31,23 @@ public class Player : NetworkBehaviour, IAttackable
         if (IsOwner) {
             cam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
             cam.Follow = _headTransform;
+            _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa);
         }
-        _playerController = new PlayerController(gameObject, IsOwner, cam);
-        _playerStat = new Stat(5,5,5,5,5,5);
+        _playerStat = new Stat(5,5, 10,5,5,5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
     {
-        transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * _playerController.MoveDir * Time.deltaTime * PlayerStat.Speed;
+        if (IsOwner)
+            MoveCharacter(_playerController.MoveDir);
+    }
+
+    private void MoveCharacter(Vector3 dir)
+    {
+        rigidbody.velocity = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir  * PlayerStat.Speed;
     }
 
     public void OnDamaged(int damage)
