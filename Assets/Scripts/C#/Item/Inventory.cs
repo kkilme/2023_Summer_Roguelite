@@ -398,4 +398,9 @@ public class Inventory : NetworkBehaviour
         networkObj.Spawn();
         RemoveItemServerRPC(itemPosX, itemPosY, serverRpcParams);
     }
+
+    public bool hasItem(ITEMNAME itemName)
+    {
+        return items.Find(x => x.ItemName == itemName) != null;
+    }
 }

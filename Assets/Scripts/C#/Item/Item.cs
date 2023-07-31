@@ -8,7 +8,8 @@ public enum ITEMNAME
     AMMO_9,
     AMMO_556,
     AMMO_762,
-    GAUGE_12
+    GAUGE_12,
+    JERRY_CAN
 }
 
 public abstract class Item

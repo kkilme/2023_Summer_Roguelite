@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
@@ -110,6 +111,16 @@ public class MapManager : NetworkBehaviour
 
             var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
             networkObj.Spawn();
+
+            // 아이템 배치
+            var itemPlaces = obj.GetComponent<Room>().itemPlaces;
+            Array values = Enum.GetValues(typeof(ITEMNAME));
+            for (int j = 0; j < itemPlaces.Length; j++)
+            {
+                Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(0, values.Length))), itemPlaces[j].position, Quaternion.identity)
+                    .GetComponent<NetworkObject>().Spawn();
+            }
+
             //networkObj.TrySetParent(roomPositionList[idx].transform);
 
             ++roomCountDic[roomType][0];
@@ -136,6 +147,15 @@ public class MapManager : NetworkBehaviour
                 var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
                 networkObj.Spawn();
 
+                // 아이템 배치
+                var itemPlaces = obj.GetComponent<Room>().itemPlaces;
+                Array values = Enum.GetValues(typeof(ITEMNAME));
+                for (int j = 0; j < itemPlaces.Length; j++)
+                {
+                    Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(0, values.Length))), itemPlaces[j].position, Quaternion.identity)
+                        .GetComponent<NetworkObject>().Spawn();
+                }
+
                 //networkObj.TrySetParent(roomPositionList[idx].transform);
 
                 ++roomCountDic[roomType][0];
@@ -158,6 +178,15 @@ public class MapManager : NetworkBehaviour
                 rooms.Add(obj);
                 var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
                 networkObj.Spawn();
+
+                // 아이템 배치
+                var itemPlaces = obj.GetComponent<Room>().itemPlaces;
+                Array values = Enum.GetValues(typeof(ITEMNAME));
+                for (int j = 0; j < itemPlaces.Length; j++)
+                {
+                    Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(0, values.Length))), itemPlaces[j].position, Quaternion.identity)
+                        .GetComponent<NetworkObject>().Spawn();
+                }
 
                 //networkObj.TrySetParent(roomPositionList[i].transform);
 

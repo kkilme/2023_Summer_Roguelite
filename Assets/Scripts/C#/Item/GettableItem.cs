@@ -86,6 +86,9 @@ public class GettableItem : NetworkBehaviour, IInteraction
             case ITEMNAME.GAUGE_12:
                 path += "12Gauge Ammo";
                 break;
+            case ITEMNAME.JERRY_CAN:
+                path += "Jerry Can";
+                break;
             default:
                 path += "";
                 break;
