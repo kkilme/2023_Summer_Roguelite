@@ -47,6 +47,7 @@ public class Player : NetworkBehaviour, IAttackable
     private void MoveCharacterServerRpc(Vector3 dir)
     {
         transform.position += Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir * Time.deltaTime * PlayerStat.Speed;
+        Debug.Log($"{dir} {PlayerStat.Speed} {Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir * Time.deltaTime * PlayerStat.Speed}");
     }
 
     public void OnDamaged(int damage)
