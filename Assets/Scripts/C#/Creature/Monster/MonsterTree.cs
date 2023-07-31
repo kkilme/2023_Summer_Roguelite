@@ -6,6 +6,33 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
 
+public class MonsterPauseLeaf : BehaviourLeaf
+{
+    private System.Random _rand;
+    private MonsterBlackBoard _board;
+
+    public MonsterPauseLeaf(BehaviourSequenceNode parent, CancellationTokenSource cts, MonsterBlackBoard board) : base(parent, cts)
+    {
+        _board = board;
+    }
+
+    public override void CancelBehaviour(CancellationTokenSource cts)
+    {
+        _cts = cts;
+    }
+
+    public override SeqStates CheckLeaf()
+    {
+        return SeqStates.Running;
+    }
+
+    public override void Clear()
+    {
+        _rand = null;
+        _board = null;
+    }
+}
+
 public class MonsterIdleLeaf : BehaviourLeaf
 {
     private System.Random _rand;
@@ -133,6 +160,7 @@ public class MonsterComeBackLeaf : BehaviourLeaf
     private async UniTaskVoid ComeBack()
     {
         _board.Agent.destination = _board.Spawner.GetRandomRoomPos();
+        _board.HitDir = _board.Agent.destination;
         _board.Agent.isStopped = false;
         _board.Anim.SetBool(_animHash, true);
 
@@ -142,6 +170,7 @@ public class MonsterComeBackLeaf : BehaviourLeaf
         _board.Agent.isStopped = true;
         _board.Agent.velocity = Vector3.zero;
         _board.Anim.SetBool(_animHash, false);
+        _parent.SeqState = SeqStates.Success;
         _parent.CompleteSeq();
     }
 
