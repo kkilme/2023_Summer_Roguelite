@@ -17,7 +17,7 @@ public class Player : NetworkBehaviour, IAttackable
     private Transform _headTransform;
     [SerializeField]
     private InputActionAsset _iaa;
-    private Rigidbody rigidbody;
+    private Rigidbody _rigidbody;
 
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
@@ -36,7 +36,7 @@ public class Player : NetworkBehaviour, IAttackable
         _playerStat = new Stat(5,5, 10,5,5,5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
-        rigidbody = GetComponent<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
@@ -47,7 +47,7 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void MoveCharacter(Vector3 dir)
     {
-        rigidbody.velocity = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir  * PlayerStat.Speed;
+        _rigidbody.velocity = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir  * PlayerStat.Speed;
     }
 
     public void OnDamaged(int damage)

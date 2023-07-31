@@ -14,10 +14,7 @@ public class MouseInput : MonoBehaviour
     [SerializeField] private float _sensitive = 0.5f;
 
     private int _maxX = 80;
-    //private int _maxY = 60;
-
     private int _minX = -80;
-    //private int _minY = -60;
 
     private float _rotationX = 0;
     private float _rotationY = 0;
