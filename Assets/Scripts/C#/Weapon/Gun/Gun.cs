@@ -21,7 +21,7 @@ public class Gun : NetworkBehaviour
     [SerializeField] private Transform _effectparent; // 이펙트들 모아둘 부모 오브젝트
     [SerializeField] private TextMeshProUGUI _ammoleftText;
 
-    [SerializeField] private Transform _muzzleTransform;
+    [SerializeField] private Transform _muzzleTransform; // 총알이 생성되는 위치
 
     private Animator _animator;
 
@@ -33,8 +33,10 @@ public class Gun : NetworkBehaviour
     {
         _animator = GetComponent<Animator>();
         _effectparent = GameObject.Find("Effect").transform;
+        _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
         _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
-
+        _cam = GameObject.Find("FollowPlayerCam").GetComponent<GunCamera>();
+        transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
         Init();
     }
 
@@ -109,9 +111,20 @@ public class Gun : NetworkBehaviour
             {
                 float spreadx = Random.Range(-_gunData.spread, _gunData.spread) / 10; // 탄퍼짐
                 float spready = Random.Range(-_gunData.spread, _gunData.spread) / 10;
+                Vector3 bulletDir;
+                Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
 
-                Vector3 bulletDir = _cam.transform.forward + new Vector3(spreadx, spready, 0);
+                if (Physics.Raycast(ray, out RaycastHit hit, 1000))
+                {   
+                    bulletDir = hit.point - _muzzleTransform.position;
+                }
+                else
+                {
+                    bulletDir = ray.GetPoint(1000) - _muzzleTransform.position;
+                }
 
+                bulletDir += new Vector3(spreadx, spready, 0);
+        
                 if (IsServer)
                 {
                     SpawnBulletServerRPC(bulletDir);
@@ -124,7 +137,7 @@ public class Gun : NetworkBehaviour
             }
 
             _timeSinceLastShot = 0;
-            _gunData.currentAmmo -= _gunData.bulletsPerShoot;
+            _gunData.currentAmmo -= 1;
 
             if(!_isaiming)
                 _recoil.MakeRecoil(_gunData.recoilX, _gunData.recoilY, _gunData.recoilZ); // 반동 생성
@@ -167,8 +180,6 @@ public class Gun : NetworkBehaviour
         bullet.GetComponent<ClientBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime);
     }
 
-
-    
 
     /// <summary>
     /// 자동사격. 좌클릭 누르고있으면 계속 발사. 가능한 총과 불가능한 총이 있음. StartShoot()에서 호출.
@@ -240,8 +251,8 @@ public class Gun : NetworkBehaviour
     private void Update()
     {
         _timeSinceLastShot += Time.deltaTime;
-
-        Debug.DrawRay(_cam.transform.position, _cam.transform.forward * 100, Color.red);
+        Debug.DrawRay(transform.position, transform.forward * 5, Color.yellow);
+        Debug.DrawRay(_cam.transform.position, _cam.transform.forward * 5, Color.red);
         _ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
     }
 }

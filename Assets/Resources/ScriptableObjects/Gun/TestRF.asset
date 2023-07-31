@@ -14,23 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Rifle
   damage: 10
-  maxDistance: 100
+  bulletSpeed: 25
   bulletsPerShoot: 1
+  bulletLifetime: 5
   spread: 0
-  zoomSpeed: 0
-  aimingZoomrate: 1
+  zoomSpeed: 3
+  aimingZoomrate: 1.2
   fireRate: 0.2
   isAutofire: 0
   availableAttachmentTypes: 
   recoilX: -13
   recoilY: 0
   recoilZ: 0
-  aimRecoilX: 0
+  aimRecoilX: -10
   aimRecoilY: 0
   aimRecoilZ: 0
+  ammoType: 0
   currentAmmo: 10
   magSize: 10
   reloadTime: 2
-  bulletprefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
+  serverBulletPrefab: {fileID: 6125170495973926791, guid: 4c3e7a6331d3da94a972e88d79b5f501, type: 3}
+  clientBulletPrefab: {fileID: 6125170495973926791, guid: 27446eef8ae15b24ba6de9f2e2f8a3d2, type: 3}
   reloading: 0
   isFirstRef: 0
