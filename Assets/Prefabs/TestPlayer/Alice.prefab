@@ -10849,6 +10849,7 @@ GameObject:
   - component: {fileID: 6432418538636249150}
   - component: {fileID: 4425034576458580032}
   - component: {fileID: -7150532234439383726}
+  - component: {fileID: -5535220407005576748}
   m_Layer: 0
   m_Name: Alice
   m_TagString: Player
@@ -11496,7 +11497,7 @@ MonoBehaviour:
   timeCorrectionSpeed: 0.1
   snapTimeThreshold: 3
   syncPosition: 0
-  syncRotation: 4
+  syncRotation: 5
   syncScale: 7
   syncVelocity: 7
   syncAngularVelocity: 7
@@ -11512,6 +11513,61 @@ MonoBehaviour:
   sendRate: 60
   networkChannel: 
   childObjectToSync: {fileID: 4378936951146317844}
+  setVelocityInsteadOfPositionOnNonOwners: 0
+  maxPositionDifferenceForVelocitySyncing: 10
+  useLocalTransformOnly: 0
+  ownerChangeIndicator: 1
+  receivedStatesCounter: 0
+--- !u!114 &-5535220407005576748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8040581135928357528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cca18b1aff5bb3e498b69d39cea4db5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interpolationBackTime: 0.1
+  extrapolationMode: 1
+  useExtrapolationTimeLimit: 1
+  extrapolationTimeLimit: 5
+  useExtrapolationDistanceLimit: 0
+  extrapolationDistanceLimit: 20
+  sendPositionThreshold: 0
+  sendRotationThreshold: 0
+  sendScaleThreshold: 0
+  sendVelocityThreshold: 0
+  sendAngularVelocityThreshold: 0
+  receivedPositionThreshold: 0
+  receivedRotationThreshold: 0
+  snapPositionThreshold: 0
+  snapRotationThreshold: 0
+  snapScaleThreshold: 0
+  positionLerpSpeed: 1
+  rotationLerpSpeed: 1
+  scaleLerpSpeed: 0
+  timeCorrectionSpeed: 0.1
+  snapTimeThreshold: 3
+  syncPosition: 0
+  syncRotation: 4
+  syncScale: 7
+  syncVelocity: 7
+  syncAngularVelocity: 7
+  isPositionCompressed: 0
+  isRotationCompressed: 0
+  isScaleCompressed: 0
+  isVelocityCompressed: 0
+  isAngularVelocityCompressed: 0
+  automaticallyResetTime: 1
+  isSmoothingAuthorityChanges: 0
+  transformSource: 0
+  whenToUpdateTransform: 0
+  sendRate: 30
+  networkChannel: 
+  childObjectToSync: {fileID: 286124424980741145}
   setVelocityInsteadOfPositionOnNonOwners: 0
   maxPositionDifferenceForVelocitySyncing: 10
   useLocalTransformOnly: 0
