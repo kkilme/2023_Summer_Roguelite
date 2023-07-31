@@ -368,10 +368,34 @@ public class Inventory : NetworkBehaviour
         return nearItems.AsReadOnly();
     }
 
+    // 해당 아이템의 기준점을 반환하는 함수
+    public void GetItemPos(Item item, out int itemPosX, out int itemPosY)
+    {
+        for (int i = 0; i < sizeY; i++)
+            for (int j = 0; j < sizeX; j++)
+                if (InventorySpace[j, i] == item)
+                {
+                    itemPosX = j; itemPosY = i;
+                    return;
+                }
+
+        itemPosX = -1;
+        itemPosY = -1;
+    }
+
+    public void DropItem(Item item)
+    {
+        int x, y;
+        GetItemPos(item, out x, out y);
+        DropItemServerRPC(x, y);
+    }
+
     [ServerRpc]
     public void DropItemServerRPC(int itemPosX, int itemPosY, ServerRpcParams serverRpcParams = default)
     {
         Item item = InventorySpace[itemPosX, itemPosY];
+        var networkObj = Instantiate(GettableItem.GetItemPrefab(item.ItemName), transform.position + transform.forward, Quaternion.identity).GetComponent<NetworkObject>();
+        networkObj.Spawn();
         RemoveItemServerRPC(itemPosX, itemPosY, serverRpcParams);
     }
 }

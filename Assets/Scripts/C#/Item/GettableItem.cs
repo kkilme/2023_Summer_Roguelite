@@ -1,3 +1,4 @@
+using Mono.Cecil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -62,5 +63,34 @@ public class GettableItem : NetworkBehaviour, IInteraction
         {
             players[i].Inventory.RemoveNearItem(this);
         }
+    }
+
+    public static GameObject GetItemPrefab(ITEMNAME itemName)
+    {
+        string path = "Item/";
+
+        switch (itemName)
+        {
+            case ITEMNAME.BANDAGE:
+                path += "Bandage";
+                break;
+            case ITEMNAME.AMMO_9:
+                path += "9mm Ammo";
+                break;
+            case ITEMNAME.AMMO_556:
+                path += "5.56mm Ammo";
+                break;
+            case ITEMNAME.AMMO_762:
+                path += "7.62mm Ammo";
+                break;
+            case ITEMNAME.GAUGE_12:
+                path += "12Gauge Ammo";
+                break;
+            default:
+                path += "";
+                break;
+        }
+
+        return Resources.Load(path) as GameObject;
     }
 }

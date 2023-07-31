@@ -77,8 +77,10 @@ public class InventoryUI : MonoBehaviour
         }
         if (Input.GetMouseButtonUp(0))
         {
-            MoveItem(GetGridPostion(Input.mousePosition));
-            PutItem(GetGridPostion(Input.mousePosition));
+            Vector2Int pos = GetGridPostion(Input.mousePosition);
+            DropItem(pos);
+            MoveItem(pos);
+            PutItem(pos);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -234,6 +236,15 @@ public class InventoryUI : MonoBehaviour
 
             selectedNearItem.transform.SetParent(scrollRect.transform.GetChild(0).GetChild(0));
             selectedNearItem = null;
+        }
+    }
+
+    private void DropItem(Vector2Int pos)
+    {
+        if (selectedInventoryItem != null && (pos.x < 0 || pos.y < 0 || pos.x >= inventory.InventorySpace.GetLength(0) || pos.y >= inventory.InventorySpace.GetLength(1)))
+        {
+            inventory.DropItem(selectedInventoryItem);
+            selectedInventoryItem = null;
         }
     }
 }
