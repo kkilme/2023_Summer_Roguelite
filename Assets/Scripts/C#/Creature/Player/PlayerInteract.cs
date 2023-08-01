@@ -9,9 +9,9 @@ public class PlayerInteract : MonoBehaviour
     private Transform _itemTransform;
     private short _interactions = 0;
     private Player _curPlayer;
-    private CinemachineVirtualCamera _cam;
+    private Transform _cam;
 
-    public void Init(Player player, CinemachineVirtualCamera cam)
+    public void Init(Player player, Transform cam)
     {
         _curPlayer = player;
         _cam = cam;
@@ -28,9 +28,9 @@ public class PlayerInteract : MonoBehaviour
         if (_interactions > 0)
         {
             RaycastHit hit;
-            Debug.DrawLine(_cam.transform.position, _cam.transform.position + 3 * _cam.transform.forward, Color.red, 5f);
+            Debug.DrawLine(_cam.position, _cam.position + 3 * _cam.forward, Color.red, 5f);
 
-            if (Physics.Linecast(_cam.transform.position, _cam.transform.position + 3 * _cam.transform.forward, out hit))
+            if (Physics.Linecast(_cam.position, _cam.position + 3 * _cam.forward, out hit))
                 if (_item == null || hit.transform != _itemTransform)
                 {
                     IInteraction item = null;
@@ -43,6 +43,9 @@ public class PlayerInteract : MonoBehaviour
                         _item.Interactable(true);
                     }
                 }
+
+            else
+                ClearItem();
         }
     }
 
@@ -57,9 +60,7 @@ public class PlayerInteract : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag(GOTag.Item.ToString()))
-        {
             --_interactions;
-        }
     }
 
     public void Clear()

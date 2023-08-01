@@ -35,7 +35,7 @@ public class Player : NetworkBehaviour, IAttackable
             cam.Follow = _headTransform;
             _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa);
             _interact = GetComponentInChildren<PlayerInteract>();
-            _interact.Init(this, cam);
+            _interact.Init(this, cam.transform);
         }
 
         _playerStat = new Stat(5, 5, 10, 5, 5, 5);
