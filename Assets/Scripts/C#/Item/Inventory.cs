@@ -367,4 +367,11 @@ public class Inventory : NetworkBehaviour
     {
         return nearItems.AsReadOnly();
     }
+
+    [ServerRpc]
+    public void DropItemServerRPC(int itemPosX, int itemPosY, ServerRpcParams serverRpcParams = default)
+    {
+        Item item = InventorySpace[itemPosX, itemPosY];
+        RemoveItemServerRPC(itemPosX, itemPosY, serverRpcParams);
+    }
 }

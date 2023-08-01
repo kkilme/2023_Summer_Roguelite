@@ -63,4 +63,9 @@ public class GettableItem : NetworkBehaviour, IInteraction
             players[i].Inventory.RemoveNearItem(this);
         }
     }
+
+    public void Interactable(bool bCan)
+    {
+        Debug.Log(bCan);
+    }
 }
