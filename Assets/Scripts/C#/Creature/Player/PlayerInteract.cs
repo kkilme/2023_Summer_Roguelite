@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
-    private IInteraction _item;
+    public IInteraction Item { get; private set; }
     private Transform _itemTransform;
     private short _interactions = 0;
     private Player _curPlayer;
-    private CinemachineVirtualCamera _cam;
+    private Transform _cam;
 
-    public void Init(Player player, CinemachineVirtualCamera cam)
+    public void Init(Player player, Transform cam)
     {
         _curPlayer = player;
         _cam = cam;
@@ -28,44 +28,45 @@ public class PlayerInteract : MonoBehaviour
         if (_interactions > 0)
         {
             RaycastHit hit;
-            Debug.DrawLine(_cam.transform.position, _cam.transform.position + 3 * _cam.transform.forward, Color.red, 5f);
+            Debug.DrawLine(_cam.position, _cam.position + 3 * _cam.forward, Color.red, 5f);
 
-            if (Physics.Linecast(_cam.transform.position, _cam.transform.position + 3 * _cam.transform.forward, out hit))
-                if (_item == null || hit.transform != _itemTransform)
+            if (Physics.Linecast(_cam.position, _cam.position + 3 * _cam.forward, out hit))
+                if (Item == null || hit.transform != _itemTransform)
                 {
                     IInteraction item = null;
                     ClearItem();
 
                     if (hit.transform.TryGetComponent(out item))
                     {
-                        _item = item;
+                        Item = item;
                         _itemTransform = hit.transform;
-                        _item.Interactable(true);
+                        Item.Interactable(true);
                     }
                 }
+
+            else
+                ClearItem();
         }
     }
 
     private void ClearItem()
     {
-        if (_item != null)
-            _item.Interactable(false);
-        _item = null;
+        if (Item != null)
+            Item.Interactable(false);
+        Item = null;
         _itemTransform = null;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag(GOTag.Item.ToString()))
-        {
             --_interactions;
-        }
     }
 
     public void Clear()
     {
         _curPlayer = null;
         _cam = null;
-        _item = null;
+        Item = null;
     }
 }

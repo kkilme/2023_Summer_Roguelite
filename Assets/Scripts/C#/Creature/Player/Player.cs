@@ -33,9 +33,9 @@ public class Player : NetworkBehaviour, IAttackable
         if (IsOwner) {
             cam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
             cam.Follow = _headTransform;
-            _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa);
             _interact = GetComponentInChildren<PlayerInteract>();
-            _interact.Init(this, cam);
+            _interact.Init(this, cam.transform);
+            _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa, _interact);
         }
 
         _playerStat = new Stat(5, 5, 10, 5, 5, 5);

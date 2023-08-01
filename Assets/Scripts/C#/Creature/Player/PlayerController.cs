@@ -24,6 +24,7 @@ public enum AnimParam
 public class PlayerController
 {
     private Player _player;
+    private PlayerInteract _interact;
 
     public Animator Anim { get; private set; }
     public PlayerInput Pi { get; private set; }
@@ -35,7 +36,7 @@ public class PlayerController
     private List<InputAction> _actions = new List<InputAction>();
     public Vector3 MoveDir { get; private set; }
 
-    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam, InputActionAsset iaa)
+    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam, InputActionAsset iaa, PlayerInteract interact)
     {
         _player = Util.GetOrAddComponent<Player>(go);
         _weapon = go.GetComponentInChildren<Gun>();
@@ -51,6 +52,7 @@ public class PlayerController
             MouseInput = go.GetComponentInChildren<MouseInput>();
             InitInputSystem();
             MouseInput.Init(cam.transform);
+            _interact = interact;
         }
     }
 
@@ -135,14 +137,22 @@ public class PlayerController
 
     private void Interaction(InputAction.CallbackContext ctx)
     {
-        _actions[0].performed -= Move;
-        _actions[0].canceled -= Idle;
-        _actions[1].started -= Attack;
-        _actions[1].canceled -= StopAttack;
-        _actions[3].performed -= Reload;
+        if (_interact.Item != null)
+        {
+            _actions[0].performed -= Move;
+            _actions[0].canceled -= Idle;
+            _actions[1].started -= Attack;
+            _actions[1].canceled -= StopAttack;
+            _actions[3].performed -= Reload;
+        }
     }
 
     private void InteractionCancel(InputAction.CallbackContext ctx)
+    {
+        CompleteInteraction();
+    }
+
+    public void CompleteInteraction()
     {
         _actions[0].performed -= Move;
         _actions[0].performed += Move;
