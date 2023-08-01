@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour
 {
-    private IInteraction _item;
+    public IInteraction Item { get; private set; }
     private Transform _itemTransform;
     private short _interactions = 0;
     private Player _curPlayer;
@@ -31,16 +31,16 @@ public class PlayerInteract : MonoBehaviour
             Debug.DrawLine(_cam.position, _cam.position + 3 * _cam.forward, Color.red, 5f);
 
             if (Physics.Linecast(_cam.position, _cam.position + 3 * _cam.forward, out hit))
-                if (_item == null || hit.transform != _itemTransform)
+                if (Item == null || hit.transform != _itemTransform)
                 {
                     IInteraction item = null;
                     ClearItem();
 
                     if (hit.transform.TryGetComponent(out item))
                     {
-                        _item = item;
+                        Item = item;
                         _itemTransform = hit.transform;
-                        _item.Interactable(true);
+                        Item.Interactable(true);
                     }
                 }
 
@@ -51,9 +51,9 @@ public class PlayerInteract : MonoBehaviour
 
     private void ClearItem()
     {
-        if (_item != null)
-            _item.Interactable(false);
-        _item = null;
+        if (Item != null)
+            Item.Interactable(false);
+        Item = null;
         _itemTransform = null;
     }
 
@@ -67,6 +67,6 @@ public class PlayerInteract : MonoBehaviour
     {
         _curPlayer = null;
         _cam = null;
-        _item = null;
+        Item = null;
     }
 }
