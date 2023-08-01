@@ -8,7 +8,6 @@ using UnityEngine.AI;
 
 public class MonsterPauseLeaf : BehaviourLeaf
 {
-    private System.Random _rand;
     private MonsterBlackBoard _board;
 
     public MonsterPauseLeaf(BehaviourSequenceNode parent, CancellationTokenSource cts, MonsterBlackBoard board) : base(parent, cts)
@@ -28,7 +27,6 @@ public class MonsterPauseLeaf : BehaviourLeaf
 
     public override void Clear()
     {
-        _rand = null;
         _board = null;
     }
 }

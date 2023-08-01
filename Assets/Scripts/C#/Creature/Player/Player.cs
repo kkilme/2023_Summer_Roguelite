@@ -13,6 +13,7 @@ public class Player : NetworkBehaviour, IAttackable
     private Stat _playerStat;
     public Inventory Inventory { get; private set; }
     private PlayerController _playerController;
+    private PlayerInteract _interact;
     [SerializeField]
     private Transform _headTransform;
     [SerializeField]
@@ -28,12 +29,16 @@ public class Player : NetworkBehaviour, IAttackable
     public override void OnNetworkSpawn()
     {
         CinemachineVirtualCamera cam = null;
+
         if (IsOwner) {
             cam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
             cam.Follow = _headTransform;
             _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa);
+            _interact = GetComponentInChildren<PlayerInteract>();
+            _interact.Init(this, cam);
         }
-        _playerStat = new Stat(5,5, 10,5,5,5);
+
+        _playerStat = new Stat(5, 5, 10, 5, 5, 5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
         _rigidbody = GetComponent<Rigidbody>();
@@ -47,7 +52,7 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void MoveCharacter(Vector3 dir)
     {
-        _rigidbody.velocity = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir  * PlayerStat.Speed;
+        _rigidbody.velocity = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir * PlayerStat.Speed;
     }
 
     public void OnDamaged(int damage)
@@ -64,5 +69,6 @@ public class Player : NetworkBehaviour, IAttackable
     public override void OnNetworkDespawn()
     {
         _playerController.Clear();
+        _interact.Clear();
     }
 }
