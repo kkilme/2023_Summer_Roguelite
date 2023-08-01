@@ -271,7 +271,7 @@ MonoBehaviour:
   timeCorrectionSpeed: 0.1
   snapTimeThreshold: 3
   syncPosition: 0
-  syncRotation: 0
+  syncRotation: 5
   syncScale: 7
   syncVelocity: 7
   syncAngularVelocity: 7
@@ -283,7 +283,7 @@ MonoBehaviour:
   automaticallyResetTime: 1
   isSmoothingAuthorityChanges: 0
   transformSource: 1
-  whenToUpdateTransform: 0
+  whenToUpdateTransform: 1
   sendRate: 30
   networkChannel: 
   childObjectToSync: {fileID: 0}
@@ -717,7 +717,7 @@ SkinnedMeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1310296961695892}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
