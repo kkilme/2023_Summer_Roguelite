@@ -739,7 +739,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45684ba94ed95904c84ed5a44328990a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sensitive: 0.5
+  _sensitive: 5
   _cam: {fileID: 0}
   _player: {fileID: 7268301126809102370}
   checkTruefortest: 0
@@ -4064,7 +4064,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3480720456844488128
 Transform:
   m_ObjectHideFlags: 0
@@ -10952,6 +10952,7 @@ GameObject:
   - component: {fileID: 4425034576458580032}
   - component: {fileID: -7150532234439383726}
   - component: {fileID: -5535220407005576748}
+  - component: {fileID: 8868113066552024011}
   m_Layer: 0
   m_Name: Alice
   m_TagString: Player
@@ -11483,6 +11484,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5197dbcf5593fc4499d04dadad4f1df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sizeX:
+    m_InternalValue: 0
+  sizeY:
+    m_InternalValue: 0
 --- !u!54 &6432418538636249150
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -11664,6 +11669,19 @@ MonoBehaviour:
   useLocalTransformOnly: 0
   ownerChangeIndicator: 1
   receivedStatesCounter: 0
+--- !u!65 &8868113066552024011
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8040581135928357528}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 7, y: 20, z: 7}
+  m_Center: {x: 0, y: 10, z: 0}
 --- !u!1 &8093268367272683022
 GameObject:
   m_ObjectHideFlags: 0

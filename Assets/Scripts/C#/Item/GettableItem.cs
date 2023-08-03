@@ -1,3 +1,4 @@
+using Mono.Cecil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,17 +9,17 @@ using UnityEngine;
 // 플레이어가 획득하는 아이템. 프리팹 형태로 존재
 public class GettableItem : NetworkBehaviour, IInteraction
 {
-    [SerializeField] protected ITEMNAME itemName; // 획득하는 아이템
-    [SerializeField] protected int itemCount; // 들어있는 아이템 갯수
+    [SerializeField] protected NetworkVariable<ITEMNAME> itemName = new NetworkVariable<ITEMNAME>(); // 획득하는 아이템
+    [SerializeField] protected NetworkVariable<int> itemCount = new NetworkVariable<int>(); // 들어있는 아이템 갯수
 
-    public ITEMNAME ItemName { get => itemName; }
-    public int ItemCount { get => itemCount; }
+    public ITEMNAME ItemName { get => itemName.Value; }
+    public int ItemCount { get => itemCount.Value; }
 
     List<Player> players = new List<Player>();
 
-    public void Init()
+    public override void OnNetworkSpawn()
     {
-
+        base.OnNetworkSpawn();
     }
 
     public virtual void Interact(Player player)
@@ -50,12 +51,6 @@ public class GettableItem : NetworkBehaviour, IInteraction
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void DespawnServerRPC()
-    {
-        GetComponent<NetworkObject>().Despawn();
-    }
-
     public override void OnNetworkDespawn()
     {
         for (int i = 0; i < players.Count; i++)
@@ -64,6 +59,37 @@ public class GettableItem : NetworkBehaviour, IInteraction
         }
     }
 
+    public static GameObject GetItemPrefab(ITEMNAME itemName)
+    {
+        string path = "Item/";
+
+        switch (itemName)
+        {
+            case ITEMNAME.BANDAGE:
+                path += "Bandage";
+                break;
+            case ITEMNAME.AMMO_9:
+                path += "9mm Ammo";
+                break;
+            case ITEMNAME.AMMO_556:
+                path += "5.56mm Ammo";
+                break;
+            case ITEMNAME.AMMO_762:
+                path += "7.62mm Ammo";
+                break;
+            case ITEMNAME.GAUGE_12:
+                path += "12Gauge Ammo";
+                break;
+            case ITEMNAME.JERRY_CAN:
+                path += "Jerry Can";
+                break;
+            default:
+                path += "";
+                break;
+        }
+
+        return Resources.Load(path) as GameObject;
+    }
     public void Interactable(bool bCan)
     {
         Debug.Log(bCan);
