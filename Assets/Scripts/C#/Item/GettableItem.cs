@@ -87,8 +87,8 @@ public class GettableItem : NetworkBehaviour, IInteraction
                 path += "";
                 break;
         }
-
-        return Resources.Load(path) as GameObject;
+        GameObject go = GameManager.Resource.GetObject<GameObject>(path);
+        return GameManager.Resource.GetObject<GameObject>(path);
     }
     public void Interactable(bool bCan)
     {
