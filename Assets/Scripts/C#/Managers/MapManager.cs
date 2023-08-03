@@ -11,8 +11,6 @@ using Random = UnityEngine.Random;
 
 public class MapManager : NetworkBehaviour
 {
-    private static MapManager _instance;
-
     private Dictionary<ROOMSIZE, List<Room>> roomPrefabsDic = new Dictionary<ROOMSIZE, List<Room>>();
     private Dictionary<ROOMTYPE, int[]> roomCountDic = new Dictionary<ROOMTYPE, int[]>(); // 0번 인덱스는 현재 룸 카운트. 1번 인덱스는 최대 룸 카운트
     private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // 해당 방 타입이 special 타입일 시 해당 방의 생성확률을 정의해줌 (0 ~ 1)
@@ -25,59 +23,51 @@ public class MapManager : NetworkBehaviour
     [SerializeField] private List<GameObject> lifeShips = new List<GameObject>(); // 현재 배치된 구명선들 리스트
     [SerializeField] private NavMeshSurface _testMap;
     private GameObject[] _monsterObjects;
-    [SerializeField]
-    private GameObject _playerObject;
+    [SerializeField] private GameObject _playerObject;
+    [SerializeField] private Transform[] spawnPoints;
 
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;
 
-    public MapManager Instance { get => _instance; }
-
-    private void Awake()
+    private void Start()
     {
-        Init();
+        SceneEvent a = new SceneEvent();
+        a.SceneEventType = SceneEventType.LoadEventCompleted;
+        Init(a);
+        //NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
     }
 
-    private void Init()
+    private void Init(SceneEvent sceneEvent)
     {
-        //Debug.Log("Connect");
-        //if (!IsServer && !IsHost)
-        //{
-        //    Destroy(this.gameObject);
-        //    return;
-        //}
-
-        if (_instance == null)
+        if (IsHost || IsServer)
         {
-            _instance = this;
-
-            foreach (ROOMSIZE roomSize in Enum.GetValues(typeof(ROOMSIZE)))
-                roomPrefabsDic.Add(roomSize, new List<Room>());
-
-            // 추후에 데이터베이스에서 관리 생성하도록 설정
-            roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
-            roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
-            roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
-            roomCountDic.Add(ROOMTYPE.BED_ROOM, new int[] { 0, 99 });
-            roomCountDic.Add(ROOMTYPE.LABORATORY, new int[] { 0, 3 });
-            roomCountDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new int[] { 0, 5 });
-            roomCountDic.Add(ROOMTYPE.MEDICAL_ROOM, new int[] { 0, 3 });
-
-            specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
-
-            var roomPrefabs = Resources.LoadAll<Room>("Room");
-            _monsterObjects = Resources.LoadAll<GameObject>("Monster");
-
-            NetworkManager.AddNetworkPrefab(lifeShipPrefab);
-
-            for (int i = 0; i < roomPrefabs.Length; i++)
+            if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
             {
-                NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
-                roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
-            }
 
-            for (int i = 0; i < _monsterObjects.Length; i++)
-                NetworkManager.AddNetworkPrefab(_monsterObjects[i].gameObject);
+                foreach (ROOMSIZE roomSize in Enum.GetValues(typeof(ROOMSIZE)))
+                    roomPrefabsDic.Add(roomSize, new List<Room>());
+
+                // 추후에 데이터베이스에서 관리 생성하도록 설정
+                roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
+                roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
+                roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
+                roomCountDic.Add(ROOMTYPE.BED_ROOM, new int[] { 0, 99 });
+                roomCountDic.Add(ROOMTYPE.LABORATORY, new int[] { 0, 3 });
+                roomCountDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new int[] { 0, 5 });
+                roomCountDic.Add(ROOMTYPE.MEDICAL_ROOM, new int[] { 0, 3 });
+
+                specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
+
+                var roomPrefabs = Resources.LoadAll<Room>("Room");
+                _monsterObjects = Resources.LoadAll<GameObject>("Monster");
+
+                for (int i = 0; i < roomPrefabs.Length; i++)
+                {
+                    roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
+                }
+
+                GenerateMapServerRPC();
+            }
         }
     }
 
@@ -117,7 +107,7 @@ public class MapManager : NetworkBehaviour
             Array values = Enum.GetValues(typeof(ITEMNAME));
             for (int j = 0; j < itemPlaces.Length; j++)
             {
-                Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(0, values.Length))), itemPlaces[j].position, Quaternion.identity)
+                Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(1, values.Length))), itemPlaces[j].position, Quaternion.identity)
                     .GetComponent<NetworkObject>().Spawn();
             }
 
@@ -152,7 +142,7 @@ public class MapManager : NetworkBehaviour
                 Array values = Enum.GetValues(typeof(ITEMNAME));
                 for (int j = 0; j < itemPlaces.Length; j++)
                 {
-                    Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(0, values.Length))), itemPlaces[j].position, Quaternion.identity)
+                    Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(1, values.Length))), itemPlaces[j].position, Quaternion.identity)
                         .GetComponent<NetworkObject>().Spawn();
                 }
 
@@ -184,7 +174,7 @@ public class MapManager : NetworkBehaviour
                 Array values = Enum.GetValues(typeof(ITEMNAME));
                 for (int j = 0; j < itemPlaces.Length; j++)
                 {
-                    Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(0, values.Length))), itemPlaces[j].position, Quaternion.identity)
+                    Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(1, values.Length))), itemPlaces[j].position, Quaternion.identity)
                         .GetComponent<NetworkObject>().Spawn();
                 }
 
@@ -213,15 +203,21 @@ public class MapManager : NetworkBehaviour
 
         _testMap.BuildNavMesh();
 
-        for (int i = 0; i < rooms.Count; ++i)
+        //for (int i = 0; i < rooms.Count; ++i)
+        //{
+        //    //int rand = Random.Range(0, 100);
+        //    //if (rand >= 66)
+        //    {
+        //        var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
+        //        spawner.Init();
+        //        spawner.SpawnMonster(_monsterObjects);
+        //    }
+        //}
+
+        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
         {
-            //int rand = Random.Range(0, 100);
-            //if (rand >= 66)
-            {
-                var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
-                spawner.Init();
-                spawner.SpawnMonster(_monsterObjects);
-            }
+            var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
+            networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
         }
     }
 

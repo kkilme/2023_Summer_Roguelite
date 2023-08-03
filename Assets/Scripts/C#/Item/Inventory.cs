@@ -15,28 +15,19 @@ public enum ROTATION_TYPE
 
 public class Inventory : NetworkBehaviour
 {
-    private int sizeX, sizeY; // 인벤토리창 크기
-    public Item[,] InventorySpace { get; private set; } // 인벤토리 공간을 Item 타입의 이차원 배열로 저장해 해당 좌표의 공간이 비어있는지 채워져 있는지 판단
-
-    private List<Item> items = new List<Item>(); // 현재 갖고있는 아이템들
+    public NetworkVariable<int> sizeX = new NetworkVariable<int>();
+    public NetworkVariable<int> sizeY = new NetworkVariable<int>();
+    private NetworkList<InventoryItem> items;
     private List<GettableItem> nearItems = new List<GettableItem>();
-    private Dictionary<Item, ROTATION_TYPE> itemRotationDic = new Dictionary<Item, ROTATION_TYPE>(); // 해당 아이템의 회전 정보를 저장. 기본값은 RIGHT
-    private Dictionary<Item, Vector2Int> itemPositionDic = new Dictionary<Item, Vector2Int>(); // 해당 아이템의 기준점을 저장
 
     public event EventHandler<InventoryEventHandlerArgs> OnInventoryChanged;
     public class InventoryEventHandlerArgs
     {
-        public List<Item> Items { get; private set; }
-        public Item[,] InventorySpace { get; private set; }
-        public Dictionary<Item, Vector2Int> ItemPositionDic { get; private set; }
-        public Dictionary<Item, ROTATION_TYPE> ItemRotationDic { get; private set; }
+        public NetworkList<InventoryItem> InventoryItems { get; private set; }
 
-        public InventoryEventHandlerArgs(List<Item> items, Item[,] inventorySpace, Dictionary<Item, Vector2Int> itemPositionDic, Dictionary<Item, ROTATION_TYPE> itemRotationDic)
+        public InventoryEventHandlerArgs(NetworkList<InventoryItem> inventoryItems)
         {
-            Items = items;
-            InventorySpace = inventorySpace;
-            ItemPositionDic = itemPositionDic;
-            ItemRotationDic = itemRotationDic;
+            InventoryItems = inventoryItems;
         }
     }
     public event EventHandler<NearItemEventHandlerArgs> OnNearItemChanged;
@@ -59,289 +50,271 @@ public class Inventory : NetworkBehaviour
     }
     private InventoryEventHandlerArgs inventoryEventHandlerArgs;
 
+    public void OnItemChanged(NetworkListEvent<InventoryItem> changeEvent)
+    {
+        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
+    }
+
     private GameObject inventoryUI;
 
-    private void Start()
+    private void Awake()
     {
-        this.sizeX = 10;
-        this.sizeY = 12;
-        InventorySpace = new Item[sizeX, sizeY];
-        inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items, InventorySpace, itemPositionDic, itemRotationDic);
-        inventoryUI = FindObjectOfType<InventoryUI>(true).gameObject;
+        items = new NetworkList<InventoryItem>();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            sizeX.Value = 10;
+            sizeY.Value = 12;
+        }
+
+        if (IsOwner)
+        {
+            inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items);
+            inventoryUI = FindObjectOfType<InventoryUI>(true).gameObject;
+            items.OnListChanged += OnItemChanged;
+        }
     }
 
     // 인벤토리안에 아이템을 넣는 함수. 매개변수인 x,y가 기준점으로 좌하단에 위치함
     [ServerRpc]
-    public void PutItemServerRPC(ITEMNAME itemName, int x, int y, ROTATION_TYPE rotationType = ROTATION_TYPE.RIGHT, int itemCount = 1, ServerRpcParams serverRpcParams = default)
+    public void PutItemServerRPC(NetworkObjectReference item, int posX, int posY, ServerRpcParams serverRpcParams = default)
     {
-        // 추후에 Stat database에서 stat만 받아올 수 있도록 구조 변경. (GC 낭비)
-        var item = Item.GetItem(itemName, itemCount);
-        var itemStat = item.ItemStat;
+        NetworkObject getItem = item;
+        var t = getItem.GetComponent<GettableItem>();
+        InventoryItem inventoryItem = Item.GetInventoryItem(t.ItemName, t.ItemCount);
+        inventoryItem.posX = posX;
+        inventoryItem.posY = posY;
 
-        if (CheckEmpty(x, y, itemStat.sizeX, itemStat.sizeY, rotationType))
+        if (CheckEmpty(inventoryItem))
         {
-            ClientRpcParams clientRpcParams = new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
-                }
-            };
-            PutItemClientRPC(itemName, x, y, rotationType, itemCount, clientRpcParams);
-            if (IsServer && !IsHost)
-            {
-                items.Add(item);
-                itemRotationDic.Add(item, rotationType);
-                itemPositionDic.Add(item, new Vector2Int(x, y));
-            }
+            items.Add(inventoryItem);
+            getItem.Despawn();
         }
     }
 
     // 인벤토리안에 아이템을 자동으로 넣어주는 함수.
-    [ServerRpc]
-    public void PutItemServerRPC(ITEMNAME itemName, ROTATION_TYPE rotationType = ROTATION_TYPE.RIGHT, int itemCount = 1, ServerRpcParams serverRpcParams = default)
-    {
-        var item = Item.GetItem(itemName, itemCount);
-        int x, y;
-        var itemStat = item.ItemStat;
+    //[ServerRpc]
+    //public void PutItemServerRPC(ITEMNAME itemName, ROTATION_TYPE rotationType = ROTATION_TYPE.RIGHT, int itemCount = 1, ServerRpcParams serverRpcParams = default)
+    //{
+    //    var item = Item.GetItem(itemName, itemCount);
+    //    int x, y;
+    //    var itemStat = item.ItemStat;
 
-        if (CheckEmpty(itemStat.sizeX, itemStat.sizeY, out x, out y, rotationType))
-        {
-            ClientRpcParams clientRpcParams = new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
-                }
-            };
-            PutItemClientRPC(itemName, x, y, rotationType, itemCount, clientRpcParams);
-            if (IsServer && !IsHost)
-            {
-                items.Add(item);
-                itemRotationDic.Add(item, rotationType);
-                itemPositionDic.Add(item, new Vector2Int(x, y));
-            }
-        }
-    }
-
-    [ClientRpc]
-    public void PutItemClientRPC(ITEMNAME itemName, int x, int y, ROTATION_TYPE rotationType, int itemCount, ClientRpcParams clientRpcParams = default)
-    {
-        var item = Item.GetItem(itemName, itemCount);
-        var itemStat = item.ItemStat;
-        // rotationType이 Top일경우 x와 y를 스왑
-        if (rotationType.Equals(ROTATION_TYPE.TOP))
-            (itemStat.sizeX, itemStat.sizeY) = (itemStat.sizeY, itemStat.sizeX);
-
-        for (int i = 0; i < itemStat.sizeY; i++)
-            for (int j = 0; j < itemStat.sizeX; j++)
-                InventorySpace[x + j, y + i] = item;
-
-        items.Add(item);
-        itemRotationDic.Add(item, rotationType);
-        itemPositionDic.Add(item, new Vector2Int(x, y));
-        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
-    }
+    //    if (CheckEmpty(itemStat.sizeX, itemStat.sizeY, out x, out y, rotationType))
+    //    {
+    //        ClientRpcParams clientRpcParams = new ClientRpcParams
+    //        {
+    //            Send = new ClientRpcSendParams
+    //            {
+    //                TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
+    //            }
+    //        };
+    //        PutItemClientRPC(itemName, x, y, rotationType, itemCount, clientRpcParams);
+    //        if (IsServer && !IsHost)
+    //        {
+    //            items.Add(item);
+    //            itemRotationDic.Add(item, rotationType);
+    //            itemPositionDic.Add(item, new Vector2Int(x, y));
+    //        }
+    //    }
+    //}
 
     // 인벤토리에있는 아이템을 제거함
     [ServerRpc]
-    public void RemoveItemServerRPC(int itemPosX, int itemPosY, ServerRpcParams serverRpcParams = default)
+    public void RemoveItemServerRPC(InventoryItem item, ServerRpcParams serverRpcParams = default)
     {
-        ClientRpcParams clientRpcParams = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
-            }
-        };
-
-        RemoveItemClientRPC(itemPosX, itemPosY, clientRpcParams);
-
-        if (IsServer && !IsHost)
-        {
-            var item = InventorySpace[itemPosX, itemPosY];
-            var itemStat = item.ItemStat;
-            items.Remove(item);
-            itemRotationDic.Remove(item);
-            itemPositionDic.Remove(item);
-        }
-    }
-
-    [ClientRpc]
-    public void RemoveItemClientRPC(int itemPosX, int itemPosY, ClientRpcParams clientRpcParams = default)
-    {
-        var item = InventorySpace[itemPosX, itemPosY];
-        var itemStat = item.ItemStat;
-
-        for (int i = 0; i < sizeY; i++)
-            for (int j = 0; j < sizeX; j++)
-                if (InventorySpace[j, i] == item)
-                    InventorySpace[j, i] = null;
-
         items.Remove(item);
-        itemRotationDic.Remove(item);
-        itemPositionDic.Remove(item);
-
-        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
     }
 
     // 인벤토리에 존재하는 아이템의 위치를 바꾸는 함수
-    public void MoveItem(Item item, int x, int y)
-    {
-        if (CheckSameItemType(x, y, item.ItemName))
-        {
-            TransferItemCountServerRPC(itemPositionDic[item], x, y);
-            return;
-        }
-
-        if (!CheckEmpty(x, y, item.ItemStat.sizeX, item.ItemStat.sizeY, itemRotationDic[item], item))
-        {
-            OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
-            return;
-        }
-
-        var rotationType = itemRotationDic[item];
-        ITEMNAME itemName = item.ItemName;
-        int itemCount = item.ItemStat.currentCount;
-        RemoveItemServerRPC(itemPositionDic[item].x, itemPositionDic[item].y);
-        PutItemServerRPC(itemName, x, y, rotationType, itemCount);
-    }
-
     [ServerRpc]
-    private void TransferItemCountServerRPC(Vector2Int sendingPos, int receivedX, int receivedY, ServerRpcParams serverRpcParams = default)
+    public void MoveItemServerRPC(InventoryItem item, int x, int y, ServerRpcParams serverRpcParams = default)
     {
-        if (receivedX < 0 || receivedY < 0 || receivedX >= sizeX || receivedY >= sizeY)
+        // 아이템의 종류가 같다면 합치기
+        InventoryItem receiveItem;
+        if (CheckSameItemType(x, y, item.itemName, out receiveItem))
+        {
+            TransferItemCount(item, receiveItem, serverRpcParams);
             return;
-
-        var sendingItem = InventorySpace[sendingPos.x, sendingPos.y];
-        var receivedItem = InventorySpace[receivedX, receivedY];
-
-        int sendingCount = Mathf.Min(sendingItem.ItemStat.currentCount, receivedItem.ItemStat.maxCount - receivedItem.ItemStat.currentCount);
-
-        ClientRpcParams clientRpcParams = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
-            }
-        };
-
-        TransferItemCountClientRPC(sendingCount, sendingPos, receivedX, receivedY, clientRpcParams);
-
-        if (IsServer && !IsHost)
-        {
-            sendingItem.AddCount(-sendingCount);
-            receivedItem.AddCount(sendingCount);
         }
+
+        // 해당 공간이 비어있는제 확인
+        if (!CheckEmpty(item))
+        {
+            return;
+        }
+
+        item.posX = x; item.posY = y;
+        items[FindIndex(item)] = item;
     }
 
-    [ClientRpc]
-    private void TransferItemCountClientRPC(int sendingCount, Vector2Int sendingPos, int receivedX, int receivedY, ClientRpcParams clientRpcParams = default)
+    private void TransferItemCount(InventoryItem item, InventoryItem receiveItem, ServerRpcParams serverRpcParams)
     {
-        var sendingItem = InventorySpace[sendingPos.x, sendingPos.y];
-        var receivedItem = InventorySpace[receivedX, receivedY];
-
-        sendingItem.AddCount(-sendingCount);
-        receivedItem.AddCount(sendingCount);
-
-        if (sendingItem.ItemStat.currentCount == 0)
+        if (!IsServer)
         {
-            RemoveItemServerRPC(itemPositionDic[sendingItem].x, itemPositionDic[sendingItem].y);
+            return;
         }
 
-        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
+        int sendingCount = Mathf.Min(item.currentCount, receiveItem.maxCount - receiveItem.currentCount);
+
+        item.currentCount -= sendingCount;
+        receiveItem.currentCount += sendingCount;
+
+        items[FindIndex(receiveItem)] = receiveItem;
+
+        if (item.currentCount <= 0)
+            items.Remove(item);
+        else
+            items[FindIndex(item)] = item;
     }
 
     // 아이템을 회전시키는 함수
-    public void RotateItem(Item item)
+    [ServerRpc]
+    public void RotateItemServerRPC(InventoryItem item, ServerRpcParams serverRpcParams = default)
     {
-        if (itemRotationDic[item].Equals(ROTATION_TYPE.RIGHT))
-            itemRotationDic[item] = ROTATION_TYPE.TOP;
+        if (item.rotationType.Equals(ROTATION_TYPE.RIGHT))
+            item.rotationType = ROTATION_TYPE.TOP;
         else
-            itemRotationDic[item] = ROTATION_TYPE.RIGHT;
+            item.rotationType = ROTATION_TYPE.RIGHT;
 
-        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
+        items[FindIndex(item)] = item;
     }
 
     // 기준점에서 해당 크기의 공간이 비어있는지 확인하는 함수
-    public bool CheckEmpty(int x, int y, int itemSizeX, int itemSizeY, ROTATION_TYPE rotationType, Item item = null)
+    public bool CheckEmpty(InventoryItem item)
     {
-        if (x < 0 || y < 0 || x >= sizeX || y >= sizeY)
+        if (!IsServer)
             return false;
 
-        if (rotationType.Equals(ROTATION_TYPE.TOP))
-            (itemSizeX, itemSizeY) = (itemSizeY, itemSizeX);
+        if (item.posX < 0 || item.posY < 0 || item.posX >= sizeX.Value || item.posY >= sizeY.Value)
+            return false;
 
-        for (int i = 0; i < itemSizeY; i++)
-            for (int j = 0; j < itemSizeX; j++)
+        int itemSizeX, itemSizeY;
+
+        if (item.rotationType == ROTATION_TYPE.RIGHT)
+        {
+            itemSizeX = item.posX;
+            itemSizeY = item.posY;
+        }
+        else
+        {
+            itemSizeX = item.posY;
+            itemSizeY = item.posX;
+        }
+
+        bool isX, isY;
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            isX = false;
+            isY = false;
+
+            // 좌하단 검사
+            if (items[i].rotationType == ROTATION_TYPE.RIGHT)
             {
-                if (x + j < sizeX && y + i < sizeY)
-                {
-                    if (InventorySpace[x + j, y + i] != null)
-                    {
-                        if (item != null)
-                        {
-                            if (InventorySpace[x + j, y + i] != item)
-                                return false;
-                        }
-                        else
-                            return false;
-                    }
-                }
-                else
-                    return false;
+                if (items[i].posX >= item.posX && item.posX < items[i].posX + items[i].sizeX)
+                    isX = true;
+                else if (items[i].posY >= item.posY && item.posY < items[i].posY + items[i].sizeY)
+                    isY = true;
             }
+            // 우상단 검사
+            else
+            {
+                if (items[i].posX >= item.posX + itemSizeX && item.posX + itemSizeX < items[i].posX + items[i].sizeY)
+                    isX = true;
+                else if (items[i].posY >= item.posY + itemSizeY && item.posY + itemSizeY < items[i].posY + items[i].sizeX)
+                    isY = true;
+            }
+
+            if (isX && isY)
+            {
+                return false;
+            }
+        }
 
         return true;
     }
 
     // 해당 크기의 공간이 존재하는지 확인하는 함수. 해당 공간의 기준점도 반환
-    private bool CheckEmpty(int itemSizeX, int itemSizeY, out int x, out int y, ROTATION_TYPE rotationType)
+    //private bool CheckEmpty(int itemSizeX, int itemSizeY, out int x, out int y, ROTATION_TYPE rotationType)
+    //{
+    //    if (rotationType.Equals(ROTATION_TYPE.TOP))
+    //        (itemSizeX, itemSizeY) = (itemSizeY, itemSizeX);
+
+    //    for (int i = 0; i < sizeY; i++)
+    //        for (int j = 0; j < sizeX; j++)
+    //        {
+    //            for (int k = 0; k < itemSizeY; k++)
+    //                for (int l = 0; l < itemSizeX; l++)
+    //                {
+    //                    if (j + l < sizeX && i + k < sizeY)
+    //                    { 
+    //                        if (InventorySpace[j + l, i + k] != null)
+    //                            goto FAILED;
+    //                    }
+    //                    else
+    //                        goto FAILED;
+    //                }
+
+    //            x = j; y = i;
+    //            return true;
+    //            FAILED:;
+    //        }
+
+    //    x = -1; y = -1;
+    //    return false;
+    //}
+
+    private bool CheckSameItemType(int x, int y, ITEMNAME itemName, out InventoryItem item)
     {
-        if (rotationType.Equals(ROTATION_TYPE.TOP))
-            (itemSizeX, itemSizeY) = (itemSizeY, itemSizeX);
+        item = new InventoryItem();
 
-        for (int i = 0; i < sizeY; i++)
-            for (int j = 0; j < sizeX; j++)
+        if (x < 0 || y < 0 || x >= sizeX.Value || y >= sizeY.Value)
+            return false;
+
+        for (int i = 0; i < items.Count; i++)
+            if (items[i].itemName == itemName)
             {
-                for (int k = 0; k < itemSizeY; k++)
-                    for (int l = 0; l < itemSizeX; l++)
+                if (items[i].rotationType == ROTATION_TYPE.RIGHT)
+                {
+                    if (items[i].posX >= x && x < items[i].posX + items[i].sizeX && items[i].posY >= y && y < items[i].posY + items[i].sizeY)
                     {
-                        if (j + l < sizeX && i + k < sizeY)
-                        { 
-                            if (InventorySpace[j + l, i + k] != null)
-                                goto FAILED;
-                        }
-                        else
-                            goto FAILED;
+                        item = items[i];
+                        return true;
                     }
-
-                x = j; y = i;
-                return true;
-                FAILED:;
+                }
+                else
+                {
+                    if (items[i].posX >= x && x < items[i].posX + items[i].sizeY && items[i].posY >= y && y < items[i].posY + items[i].sizeX)
+                    {
+                        item = items[i];
+                        return true;
+                    }
+                }
             }
 
-        x = -1; y = -1;
         return false;
     }
 
-    private bool CheckSameItemType(int x, int y, ITEMNAME itemName)
+    public InventoryItem SelectItem(int x, int y)
     {
-        if (x < 0 || y < 0 || x >= sizeX || y >= sizeY)
-            return false;
+        if (x < 0 || y < 0 || x >= sizeX.Value || y >= sizeY.Value)
+            return new InventoryItem();
 
-        if (InventorySpace[x, y] == null) 
-            return false;
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].rotationType == ROTATION_TYPE.RIGHT)
+                if (items[i].posX >= x && x < items[i].posX + items[i].sizeX && items[i].posY >= y && y < items[i].posY + items[i].sizeY)                
+                    return items[i];
+            else
+                if (items[i].posX >= x && x < items[i].posX + items[i].sizeY && items[i].posY >= y && y < items[i].posY + items[i].sizeX)
+                    return items[i];
+        }
 
-        return InventorySpace[x, y].ItemName == itemName;
-    }
-
-    public Item SelectItem(int x, int y)
-    {
-        if (x < 0 || y < 0 || x >= sizeX || y >= sizeY)
-            return null;
-
-        return InventorySpace[x, y];
+        return new InventoryItem();
     }
 
     public bool SwitchInventoryPanel()
@@ -368,39 +341,29 @@ public class Inventory : NetworkBehaviour
         return nearItems.AsReadOnly();
     }
 
-    // 해당 아이템의 기준점을 반환하는 함수
-    public void GetItemPos(Item item, out int itemPosX, out int itemPosY)
-    {
-        for (int i = 0; i < sizeY; i++)
-            for (int j = 0; j < sizeX; j++)
-                if (InventorySpace[j, i] == item)
-                {
-                    itemPosX = j; itemPosY = i;
-                    return;
-                }
-
-        itemPosX = -1;
-        itemPosY = -1;
-    }
-
-    public void DropItem(Item item)
-    {
-        int x, y;
-        GetItemPos(item, out x, out y);
-        DropItemServerRPC(x, y);
-    }
-
     [ServerRpc]
-    public void DropItemServerRPC(int itemPosX, int itemPosY, ServerRpcParams serverRpcParams = default)
+    public void DropItemServerRPC(InventoryItem item, ServerRpcParams serverRpcParams = default)
     {
-        Item item = InventorySpace[itemPosX, itemPosY];
-        var networkObj = Instantiate(GettableItem.GetItemPrefab(item.ItemName), transform.position + transform.forward, Quaternion.identity).GetComponent<NetworkObject>();
+        var networkObj = Instantiate(GettableItem.GetItemPrefab(item.itemName), transform.position + transform.forward, Quaternion.identity).GetComponent<NetworkObject>();
         networkObj.Spawn();
-        RemoveItemServerRPC(itemPosX, itemPosY, serverRpcParams);
+        RemoveItemServerRPC(item , serverRpcParams);
     }
 
     public bool hasItem(ITEMNAME itemName)
     {
-        return items.Find(x => x.ItemName == itemName) != null;
+        for (int i = 0; i < items.Count; i++)
+            if (items[i].itemName == itemName)
+                return true;
+
+        return false;
+    }
+
+    private int FindIndex(InventoryItem item)
+    {
+        for (int i = 0; i < items.Count; i++)
+            if (items[i].Equals(item))
+                return i;
+
+        return -1;
     }
 }

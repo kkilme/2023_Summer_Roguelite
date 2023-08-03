@@ -9,17 +9,17 @@ using UnityEngine;
 // 플레이어가 획득하는 아이템. 프리팹 형태로 존재
 public class GettableItem : NetworkBehaviour, IInteraction
 {
-    [SerializeField] protected ITEMNAME itemName; // 획득하는 아이템
-    [SerializeField] protected int itemCount; // 들어있는 아이템 갯수
+    [SerializeField] protected NetworkVariable<ITEMNAME> itemName = new NetworkVariable<ITEMNAME>(); // 획득하는 아이템
+    [SerializeField] protected NetworkVariable<int> itemCount = new NetworkVariable<int>(); // 들어있는 아이템 갯수
 
-    public ITEMNAME ItemName { get => itemName; }
-    public int ItemCount { get => itemCount; }
+    public ITEMNAME ItemName { get => itemName.Value; }
+    public int ItemCount { get => itemCount.Value; }
 
     List<Player> players = new List<Player>();
 
-    public void Init()
+    public override void OnNetworkSpawn()
     {
-
+        base.OnNetworkSpawn();
     }
 
     public virtual void Interact(Player player)
@@ -49,12 +49,6 @@ public class GettableItem : NetworkBehaviour, IInteraction
             player.Inventory.RemoveNearItem(this);
             players.Remove(player);
         }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void DespawnServerRPC()
-    {
-        GetComponent<NetworkObject>().Despawn();
     }
 
     public override void OnNetworkDespawn()
