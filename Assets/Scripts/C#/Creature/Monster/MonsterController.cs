@@ -125,9 +125,11 @@ public class MonsterController : NetworkBehaviour, IAttackable
             normalSeqFirstRandSelector, normalSeqcts, _board);
 
         MonsterIdleLeaf idle = new MonsterIdleLeaf(normalSeqFirstRandSelector, normalSeqcts, _board);
+        //MonsterPauseLeaf pause = new MonsterPauseLeaf(normalSeqFirstRandSelector, normalSeqcts, _board);
 
         normalSeqFirstRandSelector.AddNode(wander);
         normalSeqFirstRandSelector.AddNode(idle);
+        //normalSeqFirstRandSelector.AddNode(pause);
         normalSeq.AddSequenceNode(normalSeqFirstRandSelector);
     }
 
@@ -151,8 +153,7 @@ public class MonsterController : NetworkBehaviour, IAttackable
 
     public override void OnNetworkDespawn()
     {
-        if (NetworkManager.Singleton.IsServer)
-            Clear();
+        Clear();
     }
 }
 

@@ -15,7 +15,7 @@ public class GunData : ScriptableObject
     [Header("Shooting")]
     public float damage;
     //public float maxDistance; // 총알을 사용하기 때문에 일단 사용 안함
-    public float bulletSpeed;
+    public float bulletSpeed = 25;
     public int bulletsPerShoot;
     public float bulletLifetime = 5f;
     public float spread;

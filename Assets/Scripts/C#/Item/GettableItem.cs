@@ -90,4 +90,8 @@ public class GettableItem : NetworkBehaviour, IInteraction
 
         return Resources.Load(path) as GameObject;
     }
+    public void Interactable(bool bCan)
+    {
+        Debug.Log(bCan);
+    }
 }

@@ -4,8 +4,10 @@ using UnityEngine;
 
 public interface IInteraction
 {
-    //¾ÆÀÌÅÛÀÇ Á¤º¸¸¦ Àü´Ş(¾ÆÀÌÅÛ »ç¿ë Á¶°Ç, »ç¿ë ½Ã°£ µî)
+    //ì•„ì´í…œì˜ ì •ë³´ë¥¼ ì „ë‹¬(ì•„ì´í…œ ì‚¬ìš© ì¡°ê±´, ì‚¬ìš© ì‹œê°„ ë“±)
     public void Interact(Player player);
+
+    public void Interactable(bool bCan);
 
     public void InteractComplete(bool bSuccess);
 }

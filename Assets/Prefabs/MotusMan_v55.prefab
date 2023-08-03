@@ -1613,14 +1613,15 @@ GameObject:
   - component: {fileID: 2039647808526043301}
   - component: {fileID: 2039647808526043303}
   - component: {fileID: 2039647808526043307}
-  - component: {fileID: 2039647808526043308}
+  - component: {fileID: 6352715587137757949}
   - component: {fileID: 2039647808526043309}
   - component: {fileID: 2039647808526043312}
   - component: {fileID: 1226452659386831050}
   - component: {fileID: 8350231589519323657}
+  - component: {fileID: 1935651355253234921}
   m_Layer: 0
   m_Name: MotusMan_v55
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1741,7 +1742,7 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &2039647808526043308
+--- !u!114 &6352715587137757949
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1750,13 +1751,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2039647809148138387}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5efbfc26a9612db4e96c7c8f55ac4e98, type: 3}
+  m_Script: {fileID: 11500000, guid: 24bf4713a0eb8e540996f13af536c861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _anim: {fileID: 2039647809157513229}
-  _pi: {fileID: 2039647808526043307}
-  _interactionTrigger: {fileID: 2039647808526043301}
-  _weapon: {fileID: 2039647809074552436}
+  _headTransform: {fileID: 0}
 --- !u!114 &2039647808526043309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1811,9 +1809,9 @@ MonoBehaviour:
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
@@ -1829,6 +1827,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1935651355253234921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039647809148138387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5197dbcf5593fc4499d04dadad4f1df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2039647809148138389
@@ -2831,7 +2841,7 @@ GameObject:
   - component: {fileID: 2039647809687165452}
   - component: {fileID: 5240672861575292318}
   m_Layer: 0
-  m_Name: Camera
+  m_Name: Cam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2948,7 +2958,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e1ad0d5d4129ec478d08759e22c2546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weaponCamera: {fileID: 4962131492287264310}
 --- !u!1 &2039647810257839176
 GameObject:
   m_ObjectHideFlags: 0
@@ -3021,7 +3030,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2698586305441020210}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.092, z: 0.621}
+  m_LocalPosition: {x: 0, y: 0.1003, z: 0.671}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

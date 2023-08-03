@@ -19,7 +19,7 @@ public class TestPlayerLook : NetworkBehaviour
 
     private void Start()
     {
-
+        cameraHolder = GameObject.Find("FollowPlayerCam").transform;
     }
 
     public void HideCursor()

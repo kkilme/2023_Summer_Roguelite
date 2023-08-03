@@ -3,21 +3,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 
-public class MouseInput : MonoBehaviour
+public class MouseInput : NetworkBehaviour
 {
     private Vector2 _screenMid;
 
-    private float _sensitive = 0.5f;
+    [SerializeField] private float _sensitive = 0.5f;
 
     private int _maxX = 80;
-    //private int _maxY = 60;
-
     private int _minX = -80;
-    //private int _minY = -60;
 
     private float _rotationX = 0;
     private float _rotationY = 0;
@@ -30,6 +28,8 @@ public class MouseInput : MonoBehaviour
     private Transform _target;
     private Transform _targetOriginAngle;
 
+    [SerializeField] private bool checkTruefortest = false;
+
     public void Init(Transform camera)
     {
         _screenMid.x = Screen.width >> 1;
@@ -40,6 +40,7 @@ public class MouseInput : MonoBehaviour
         _cam = camera;
 
         Cursor.visible = false;
+        OnOffSettingUI(true);
     }
 
     private void FixedUpdate()
