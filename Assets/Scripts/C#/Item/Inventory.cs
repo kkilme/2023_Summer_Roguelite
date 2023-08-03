@@ -53,9 +53,11 @@ public class Inventory : NetworkBehaviour
     public void OnItemChanged(NetworkListEvent<InventoryItem> changeEvent)
     {
         OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
+        if (changeEvent.PreviousValue.Equals(inventoryUI.selectedInventoryItem) && inventoryUI.selectedInventoryItem.itemName != ITEMNAME.NONE)
+            inventoryUI.selectedInventoryItem = changeEvent.Value;
     }
 
-    private GameObject inventoryUI;
+    private InventoryUI inventoryUI;
 
     private void Awake()
     {
@@ -73,7 +75,7 @@ public class Inventory : NetworkBehaviour
         if (IsOwner)
         {
             inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items);
-            inventoryUI = FindObjectOfType<InventoryUI>(true).gameObject;
+            inventoryUI = FindObjectOfType<InventoryUI>(true);
             items.OnListChanged += OnItemChanged;
         }
     }
@@ -135,20 +137,37 @@ public class Inventory : NetworkBehaviour
     {
         // 아이템의 종류가 같다면 합치기
         InventoryItem receiveItem;
-        if (CheckSameItemType(x, y, item.itemName, out receiveItem))
+        if (CheckSameItemType(item.hashCode, x, y, item.itemName, out receiveItem))
         {
             TransferItemCount(item, receiveItem, serverRpcParams);
             return;
         }
 
         // 해당 공간이 비어있는제 확인
+        item.posX = x; item.posY = y;
+
         if (!CheckEmpty(item))
         {
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
+                }
+            };
+
+
+            MoveItemClientRPC(clientRpcParams);
             return;
         }
 
-        item.posX = x; item.posY = y;
         items[FindIndex(item)] = item;
+    }
+
+    [ClientRpc]
+    public void MoveItemClientRPC(ClientRpcParams clientRpcParams = default)
+    {
+        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
     }
 
     private void TransferItemCount(InventoryItem item, InventoryItem receiveItem, ServerRpcParams serverRpcParams)
@@ -196,42 +215,39 @@ public class Inventory : NetworkBehaviour
 
         if (item.rotationType == ROTATION_TYPE.RIGHT)
         {
-            itemSizeX = item.posX;
-            itemSizeY = item.posY;
+            itemSizeX = item.sizeX;
+            itemSizeY = item.sizeY;
         }
         else
         {
-            itemSizeX = item.posY;
-            itemSizeY = item.posX;
+            itemSizeX = item.sizeY;
+            itemSizeY = item.sizeX;
         }
-
-        bool isX, isY;
 
         for (int i = 0; i < items.Count; i++)
         {
-            isX = false;
-            isY = false;
+            if (items[i].Equals(item))
+                continue;
 
-            // 좌하단 검사
             if (items[i].rotationType == ROTATION_TYPE.RIGHT)
             {
-                if (items[i].posX >= item.posX && item.posX < items[i].posX + items[i].sizeX)
-                    isX = true;
-                else if (items[i].posY >= item.posY && item.posY < items[i].posY + items[i].sizeY)
-                    isY = true;
+                if (item.posX + itemSizeX > items[i].posX &&
+                    items[i].posX + items[i].sizeX > item.posX &&
+                    item.posY + itemSizeY > items[i].posY &&
+                    items[i].posY + items[i].sizeY > item.posY)
+                {
+                    return false;
+                }
             }
-            // 우상단 검사
             else
             {
-                if (items[i].posX >= item.posX + itemSizeX && item.posX + itemSizeX < items[i].posX + items[i].sizeY)
-                    isX = true;
-                else if (items[i].posY >= item.posY + itemSizeY && item.posY + itemSizeY < items[i].posY + items[i].sizeX)
-                    isY = true;
-            }
-
-            if (isX && isY)
-            {
-                return false;
+                if (item.posX + itemSizeX > items[i].posX &&
+                    items[i].posX + items[i].sizeY > item.posX &&
+                    item.posY + itemSizeY > items[i].posY &&
+                    items[i].posY + items[i].sizeX > item.posY)
+                {
+                    return false;
+                }
             }
         }
 
@@ -268,7 +284,7 @@ public class Inventory : NetworkBehaviour
     //    return false;
     //}
 
-    private bool CheckSameItemType(int x, int y, ITEMNAME itemName, out InventoryItem item)
+    private bool CheckSameItemType(int hashcode, int x, int y, ITEMNAME itemName, out InventoryItem item)
     {
         item = new InventoryItem();
 
@@ -276,11 +292,11 @@ public class Inventory : NetworkBehaviour
             return false;
 
         for (int i = 0; i < items.Count; i++)
-            if (items[i].itemName == itemName)
+            if (items[i].itemName == itemName && items[i].hashCode != hashcode)
             {
                 if (items[i].rotationType == ROTATION_TYPE.RIGHT)
                 {
-                    if (items[i].posX >= x && x < items[i].posX + items[i].sizeX && items[i].posY >= y && y < items[i].posY + items[i].sizeY)
+                    if (items[i].posX <= x && x < items[i].posX + items[i].sizeX && items[i].posY <= y && y < items[i].posY + items[i].sizeY)
                     {
                         item = items[i];
                         return true;
@@ -288,7 +304,7 @@ public class Inventory : NetworkBehaviour
                 }
                 else
                 {
-                    if (items[i].posX >= x && x < items[i].posX + items[i].sizeY && items[i].posY >= y && y < items[i].posY + items[i].sizeX)
+                    if (items[i].posX <= x && x < items[i].posX + items[i].sizeY && items[i].posY <= y && y < items[i].posY + items[i].sizeX)
                     {
                         item = items[i];
                         return true;
@@ -307,11 +323,15 @@ public class Inventory : NetworkBehaviour
         for (int i = 0; i < items.Count; i++)
         {
             if (items[i].rotationType == ROTATION_TYPE.RIGHT)
-                if (items[i].posX >= x && x < items[i].posX + items[i].sizeX && items[i].posY >= y && y < items[i].posY + items[i].sizeY)                
+            {
+                if (items[i].posX <= x && x < items[i].posX + items[i].sizeX && items[i].posY <= y && y < items[i].posY + items[i].sizeY)
                     return items[i];
+            }
             else
-                if (items[i].posX >= x && x < items[i].posX + items[i].sizeY && items[i].posY >= y && y < items[i].posY + items[i].sizeX)
+            {
+                if (items[i].posX <= x && x < items[i].posX + items[i].sizeY && items[i].posY <= y && y < items[i].posY + items[i].sizeX)
                     return items[i];
+            }
         }
 
         return new InventoryItem();
@@ -319,8 +339,8 @@ public class Inventory : NetworkBehaviour
 
     public bool SwitchInventoryPanel()
     {
-        bool state = inventoryUI.activeSelf;
-        inventoryUI.SetActive(!state);
+        bool state = inventoryUI.gameObject.activeSelf;
+        inventoryUI.gameObject.SetActive(!state);
         return !state;
     }
 

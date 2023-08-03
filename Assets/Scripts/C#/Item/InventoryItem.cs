@@ -39,7 +39,7 @@ public struct InventoryItem : INetworkSerializable, System.IEquatable<InventoryI
         posX = -1;
         posY = -1;
         hashCode = 18181818;
-        hashCode = GetHashCode();
+        hashCode = Util.GetRealHashCode();
     }
 
     public bool Equals(InventoryItem other)

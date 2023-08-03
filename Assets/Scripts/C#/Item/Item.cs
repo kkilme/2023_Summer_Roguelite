@@ -47,13 +47,15 @@ public abstract class Item
             case ITEMNAME.BANDAGE:
                 return new Item_Bandage(count).itemStat;
             case ITEMNAME.AMMO_9:
-                return new ItemStat("9mm Ammo", "총알", 1, 1, count, 1);
+                return new ItemStat("9mm Ammo", "총알", 1, 1, count, 30);
             case ITEMNAME.AMMO_556:
-                return new ItemStat("5.56mm Ammo", "총알", 1, 1, count, 1);
+                return new ItemStat("5.56mm Ammo", "총알", 1, 1, count, 30);
             case ITEMNAME.AMMO_762:
-                return new ItemStat("7.62mm Ammo", "총알", 1, 1, count, 1);
+                return new ItemStat("7.62mm Ammo", "총알", 1, 1, count, 30);
             case ITEMNAME.GAUGE_12:
-                return new ItemStat("12 Gauge", "총알", 2, 2, count, 12);
+                return new ItemStat("12 Gauge", "총알", 2, 1, count, 12);
+            case ITEMNAME.JERRY_CAN:
+                return new ItemStat("Jerry Can", "제리캔", 2, 2, count, 1);
             default:
                 return new ItemStat("9mm Ammo", "총알", 1, 1, count, 1);
         }

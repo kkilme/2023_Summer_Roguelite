@@ -11,6 +11,11 @@ public class LifeShip : NetworkBehaviour, IInteraction
         InteractServerRPC();
     }
 
+    public void Interactable(bool bCan)
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void InteractComplete(bool bSuccess)
     {
         

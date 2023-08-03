@@ -22,7 +22,7 @@ public class InventoryUI : MonoBehaviour
     private ScrollRect scrollRect;
     private GameObject inventoryTile;
 
-    private InventoryItem selectedInventoryItem;
+    public InventoryItem selectedInventoryItem;
     private ItemUI selectedNearItem;
 
     private Stack<ItemUI> inventoryItemUIStack;
@@ -190,8 +190,9 @@ public class InventoryUI : MonoBehaviour
     {
         if (selectedInventoryItem.itemName != ITEMNAME.NONE)
         {
-            inventory.MoveItemServerRPC(selectedInventoryItem, pos.x, pos.y);
+            var t = selectedInventoryItem;
             selectedInventoryItem = new InventoryItem();
+            inventory.MoveItemServerRPC(t, pos.x, pos.y);
         }
     }
 
