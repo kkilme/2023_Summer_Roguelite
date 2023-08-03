@@ -12,7 +12,8 @@ public class MouseInput : NetworkBehaviour
 {
     private Vector2 _screenMid;
 
-    [SerializeField] private float _sensitive = 0.5f;
+    [SerializeField] 
+    private float _sensitive = 0.5f;
 
     private int _maxX = 80;
     private int _minX = -80;
