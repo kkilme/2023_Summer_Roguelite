@@ -3,11 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 
-public class MouseInput : MonoBehaviour
+public class MouseInput : NetworkBehaviour
 {
     private Vector2 _screenMid;
 
