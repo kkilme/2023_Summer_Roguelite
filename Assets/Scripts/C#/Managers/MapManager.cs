@@ -29,6 +29,13 @@ public class MapManager : NetworkBehaviour
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;
 
+    public static MapManager Instance { get; set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         SceneEvent a = new SceneEvent();
@@ -58,16 +65,19 @@ public class MapManager : NetworkBehaviour
 
                 specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
 
-            var roomPrefabs = Resources.LoadAll<Room>("Room");
-            _monsterObjects = new GameObject[5];
+                var roomPrefabs = Resources.LoadAll<Room>("Room");
+                _monsterObjects = new GameObject[5];
 
-            NetworkManager.AddNetworkPrefab(lifeShipPrefab);
+                NetworkManager.AddNetworkPrefab(lifeShipPrefab);
 
-            for (int i = 0; i < roomPrefabs.Length; i++)
-            {
-                NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
-                roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
+                for (int i = 0; i < roomPrefabs.Length; i++)
+                {
+                    NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
+                    roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
+                }
             }
+
+            GenerateMapServerRPC();
         }
     }
 
