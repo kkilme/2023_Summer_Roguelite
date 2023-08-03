@@ -29,13 +29,6 @@ public class MapManager : NetworkBehaviour
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;
 
-    public static MapManager Instance { get; set; }
-
-    private void Awake()
-    {
-        Instance = this;
-    }
-
     private void Start()
     {
         SceneEvent a = new SceneEvent();
@@ -68,6 +61,12 @@ public class MapManager : NetworkBehaviour
                 var roomPrefabs = Resources.LoadAll<Room>("Room");
                 _monsterObjects = new GameObject[5];
 
+                for (int i = 0; i < _monsterObjects.Length; i++)
+                {
+                    _monsterObjects[i] = GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{i + 1}.prefab");
+                    NetworkManager.AddNetworkPrefab(_monsterObjects[i].gameObject);
+                }
+
                 NetworkManager.AddNetworkPrefab(lifeShipPrefab);
 
                 for (int i = 0; i < roomPrefabs.Length; i++)
@@ -78,15 +77,6 @@ public class MapManager : NetworkBehaviour
             }
 
             GenerateMapServerRPC();
-        }
-    }
-
-    public void MonsterInit()
-    {
-        for (int i = 0; i < _monsterObjects.Length; i++)
-        {
-            _monsterObjects[i] = GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{i + 1}.prefab");
-            NetworkManager.AddNetworkPrefab(_monsterObjects[i].gameObject);
         }
     }
 

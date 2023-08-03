@@ -56,8 +56,6 @@ public class ResourceManager
                 {
                     ++loadCount;
                     Debug.Log($"Load {loadCount} / {totalCount}");
-                    if (loadCount == totalCount)
-                        MapManager.Instance.MonsterInit();
                 });
             }
 
