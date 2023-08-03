@@ -24,4 +24,10 @@ public class Util
         return component;
     }
 
+    static int hashCode = int.MinValue;
+    public static int GetRealHashCode()
+    {
+        return hashCode++;
+    }
+
 }

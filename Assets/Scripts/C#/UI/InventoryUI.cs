@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,13 +22,13 @@ public class InventoryUI : MonoBehaviour
     private ScrollRect scrollRect;
     private GameObject inventoryTile;
 
-    private Item selectedInventoryItem;
+    public InventoryItem selectedInventoryItem;
     private ItemUI selectedNearItem;
 
     private Stack<ItemUI> inventoryItemUIStack;
     private Stack<ItemUI> nearItemUIStack;
 
-    private Dictionary<Item, ItemUI> inventoryDic = new Dictionary<Item, ItemUI>();
+    private Dictionary<InventoryItem, ItemUI> inventoryDic = new Dictionary<InventoryItem, ItemUI>();
     private Dictionary<GettableItem, ItemUI> nearDic = new Dictionary<GettableItem, ItemUI>();
 
     private void Awake()
@@ -60,7 +61,7 @@ public class InventoryUI : MonoBehaviour
 
     private void Update()
     {
-        if (selectedInventoryItem != null)
+        if (selectedInventoryItem.itemName != ITEMNAME.NONE)
         {
             var pos = GetGridPostion(Input.mousePosition);
             inventoryDic[selectedInventoryItem].image.rectTransform.localPosition = new Vector2(pos.x, pos.y) * 64;
@@ -77,27 +78,26 @@ public class InventoryUI : MonoBehaviour
         }
         if (Input.GetMouseButtonUp(0))
         {
-            MoveItem(GetGridPostion(Input.mousePosition));
-            PutItem(GetGridPostion(Input.mousePosition));
+            Vector2Int pos = GetGridPostion(Input.mousePosition);
+            DropItem(pos);
+            MoveItem(pos);
+            PutItem(pos);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
             RotateItem();
-        }
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            inventory.PutItemServerRPC(ITEMNAME.BANDAGE);
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            inventory.PutItemServerRPC(ITEMNAME.GAUGE_12, ROTATION_TYPE.TOP, Random.Range(2, 9));
         }
     }
 
     private void DisplayInventoryUI(object sender, Inventory.InventoryEventHandlerArgs e)
     {
         // 인벤토리에서 제거된 아이템 추출 및 삭제
-        var removedItems = inventoryDic.Keys.Except(e.Items).ToArray();
+        List<InventoryItem> inventoryItems = new List<InventoryItem>();
+
+        for (int i = 0; i < e.InventoryItems.Count; i++)
+            inventoryItems.Add(e.InventoryItems[i]);
+
+        var removedItems = inventoryDic.Keys.Except(inventoryItems).ToArray();
 
         for (int i = 0; i < removedItems.Length; i++)
         {
@@ -106,31 +106,31 @@ public class InventoryUI : MonoBehaviour
             inventoryDic.Remove(removedItems[i]);
         }
 
-        for (int i = 0; i < e.Items.Count; i++)
+        for (int i = 0; i < e.InventoryItems.Count; i++)
         {
-            if (!inventoryDic.ContainsKey(e.Items[i]))
+            if (!inventoryDic.ContainsKey(e.InventoryItems[i]))
             {
-                inventoryDic.Add(e.Items[i], inventoryItemUIStack.Pop());
+                inventoryDic.Add(e.InventoryItems[i], inventoryItemUIStack.Pop());
             }
 
-            inventoryDic[e.Items[i]].gameObject.SetActive(true);
+            inventoryDic[e.InventoryItems[i]].gameObject.SetActive(true);
             //itemImages[i] = e.Items[i].ItemStat.image;
             //itemImages[i].SetNativeSize();
 
-            if (e.ItemRotationDic[e.Items[i]].Equals(ROTATION_TYPE.TOP))
-                inventoryDic[e.Items[i]].image.rectTransform.sizeDelta = new Vector2(e.Items[i].ItemStat.sizeY, e.Items[i].ItemStat.sizeX) * 64;
+            if (e.InventoryItems[i].rotationType.Equals(ROTATION_TYPE.TOP))
+                inventoryDic[e.InventoryItems[i]].image.rectTransform.sizeDelta = new Vector2(e.InventoryItems[i].sizeY, e.InventoryItems[i].sizeX) * 64;
             else
-                inventoryDic[e.Items[i]].image.rectTransform.sizeDelta = new Vector2(e.Items[i].ItemStat.sizeX, e.Items[i].ItemStat.sizeY) * 64;
+                inventoryDic[e.InventoryItems[i]].image.rectTransform.sizeDelta = new Vector2(e.InventoryItems[i].sizeX, e.InventoryItems[i].sizeY) * 64;
 
-            inventoryDic[e.Items[i]].text.text = e.Items[i].ItemStat.currentCount.ToString();
+            inventoryDic[e.InventoryItems[i]].text.text = e.InventoryItems[i].currentCount.ToString();
 
-            if (selectedInventoryItem != null)
+            if (selectedInventoryItem.itemName != ITEMNAME.NONE)
             {
-                if (e.Items[i] != selectedInventoryItem)
-                    inventoryDic[e.Items[i]].image.rectTransform.localPosition = new Vector2(e.ItemPositionDic[e.Items[i]].x, e.ItemPositionDic[e.Items[i]].y) * 64;
+                if (!e.InventoryItems[i].Equals(selectedInventoryItem))
+                    inventoryDic[e.InventoryItems[i]].image.rectTransform.localPosition = new Vector2(e.InventoryItems[i].posX, e.InventoryItems[i].posY) * 64;
             }
             else
-                inventoryDic[e.Items[i]].image.rectTransform.localPosition = new Vector2(e.ItemPositionDic[e.Items[i]].x, e.ItemPositionDic[e.Items[i]].y) * 64;
+                inventoryDic[e.InventoryItems[i]].image.rectTransform.localPosition = new Vector2(e.InventoryItems[i].posX, e.InventoryItems[i].posY) * 64;
         }
     }
 
@@ -188,19 +188,19 @@ public class InventoryUI : MonoBehaviour
 
     private void MoveItem(Vector2Int pos)
     {
-        if (selectedInventoryItem != null)
+        if (selectedInventoryItem.itemName != ITEMNAME.NONE)
         {
             var t = selectedInventoryItem;
-            selectedInventoryItem = null;
-            inventory.MoveItem(t, pos.x, pos.y);
+            selectedInventoryItem = new InventoryItem();
+            inventory.MoveItemServerRPC(t, pos.x, pos.y);
         }
     }
 
     private void RotateItem()
     {
-        if (selectedInventoryItem != null)
+        if (selectedInventoryItem.itemName != ITEMNAME.NONE)
         {
-            inventory.RotateItem(selectedInventoryItem);
+            inventory.RotateItemServerRPC(selectedInventoryItem);
         }
     }
 
@@ -225,15 +225,18 @@ public class InventoryUI : MonoBehaviour
         if (selectedNearItem != null)
         {
             GettableItem item = nearDic.ToList().Find(x => x.Value == selectedNearItem).Key;
-            var stat = Item.GetItemStat(item.ItemName, 1);
-            if (inventory.CheckEmpty(pos.x, pos.y, stat.sizeX, stat.sizeY, ROTATION_TYPE.RIGHT))
-            {
-                inventory.PutItemServerRPC(item.ItemName, pos.x, pos.y, ROTATION_TYPE.RIGHT, item.ItemCount);
-                item.DespawnServerRPC();
-            }
-
+            inventory.PutItemServerRPC(item.GetComponent<NetworkObject>(), pos.x, pos.y);
             selectedNearItem.transform.SetParent(scrollRect.transform.GetChild(0).GetChild(0));
             selectedNearItem = null;
+        }
+    }
+
+    private void DropItem(Vector2Int pos)
+    {
+        if (selectedInventoryItem.itemName != ITEMNAME.NONE && (pos.x < 0 || pos.y < 0 || pos.x >= inventory.sizeX.Value || pos.y >= inventory.sizeY.Value))
+        {
+            inventory.DropItemServerRPC(selectedInventoryItem);
+            selectedInventoryItem = new InventoryItem();
         }
     }
 }
