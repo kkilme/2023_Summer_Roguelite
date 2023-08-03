@@ -10,13 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Default Local Group
+  m_Name: Prefabs
   m_EditorClassIdentifier: 
-  m_GroupName: Default Local Group
+  m_GroupName: Prefabs
   m_Data:
     m_SerializedData: []
   m_GUID: bbdb0ac0f1f3d664a94881934902bc75
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: e90ed7250d6f3b84c9251a4fd62a4d6a
+    m_Address: Monster
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
+  - m_GUID: 59a18a0af7362084fa3f948f303d9ee9
+    m_Address: Item
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefabs
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 39fc32033c76e3f4a88314e58142150c, type: 2}
   m_SchemaSet:

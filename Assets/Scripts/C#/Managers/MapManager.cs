@@ -30,7 +30,8 @@ public class MapManager : NetworkBehaviour
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;
 
-    public MapManager Instance { get => _instance; }
+    //Test
+    public static MapManager Instance { get => _instance; }
 
     private void Awake()
     {
@@ -65,7 +66,7 @@ public class MapManager : NetworkBehaviour
             specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
 
             var roomPrefabs = Resources.LoadAll<Room>("Room");
-            _monsterObjects = Resources.LoadAll<GameObject>("Monster");
+            _monsterObjects = new GameObject[5];
 
             NetworkManager.AddNetworkPrefab(lifeShipPrefab);
 
@@ -74,9 +75,15 @@ public class MapManager : NetworkBehaviour
                 NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
                 roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
             }
+        }
+    }
 
-            for (int i = 0; i < _monsterObjects.Length; i++)
-                NetworkManager.AddNetworkPrefab(_monsterObjects[i].gameObject);
+    public void MonsterInit()
+    {
+        for (int i = 0; i < _monsterObjects.Length; i++)
+        {
+            _monsterObjects[i] = GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{i + 1}.prefab");
+            NetworkManager.AddNetworkPrefab(_monsterObjects[i].gameObject);
         }
     }
 
@@ -85,7 +92,6 @@ public class MapManager : NetworkBehaviour
     public void GenerateMapServerRPC()
     {
         ClearMap();
-
         /*
         1. 각각의 위치에 방 종류를 랜덤으로 배정
         2. 해당 위치의 크기에 해당하는 방을 배치
