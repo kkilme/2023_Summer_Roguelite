@@ -58,16 +58,25 @@ public class MapManager : NetworkBehaviour
 
                 specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
 
-                var roomPrefabs = Resources.LoadAll<Room>("Room");
-                _monsterObjects = Resources.LoadAll<GameObject>("Monster");
+            var roomPrefabs = Resources.LoadAll<Room>("Room");
+            _monsterObjects = new GameObject[5];
 
-                for (int i = 0; i < roomPrefabs.Length; i++)
-                {
-                    roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
-                }
+            NetworkManager.AddNetworkPrefab(lifeShipPrefab);
 
-                GenerateMapServerRPC();
+            for (int i = 0; i < roomPrefabs.Length; i++)
+            {
+                NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
+                roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
             }
+        }
+    }
+
+    public void MonsterInit()
+    {
+        for (int i = 0; i < _monsterObjects.Length; i++)
+        {
+            _monsterObjects[i] = GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{i + 1}.prefab");
+            NetworkManager.AddNetworkPrefab(_monsterObjects[i].gameObject);
         }
     }
 
@@ -76,7 +85,6 @@ public class MapManager : NetworkBehaviour
     public void GenerateMapServerRPC()
     {
         ClearMap();
-
         /*
         1. 각각의 위치에 방 종류를 랜덤으로 배정
         2. 해당 위치의 크기에 해당하는 방을 배치
