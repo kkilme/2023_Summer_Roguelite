@@ -7,9 +7,12 @@ using UnityEngine.SceneManagement;
 
 public class MainScene : MonoBehaviour
 {
+    private MatchmakerClient _client;
+
     private void Start()
     {
         NetworkManager.Singleton.OnClientConnectedCallback += OnLocalClientConnectedCallback;
+        _client = GetComponent<MatchmakerClient>();
     }
 
     private void OnDestroy()
@@ -27,7 +30,7 @@ public class MainScene : MonoBehaviour
 
     public void Connect()
     {
-        NetworkManager.Singleton.StartClient();
+        _client.StartClient();
     }
 
     public void HostAndConnect()
