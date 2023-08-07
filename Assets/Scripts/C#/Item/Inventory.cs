@@ -203,7 +203,7 @@ public class Inventory : NetworkBehaviour
     }
 
     // 기준점에서 해당 크기의 공간이 비어있는지 확인하는 함수
-    public bool CheckEmpty(InventoryItem item)
+    private bool CheckEmpty(InventoryItem item)
     {
         if (!IsServer)
             return false;

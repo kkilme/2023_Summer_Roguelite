@@ -1,4 +1,3 @@
-using DTO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +11,8 @@ using UnityEngine.SceneManagement;
 
 public class WatingScene : MonoBehaviour
 {
+    [SerializeField] private GameObject StorageObj;
+
     public void StartGame()
     {
         
@@ -19,7 +20,7 @@ public class WatingScene : MonoBehaviour
 
     public void TurnOnStorage()
     {
-
+        StorageObj.SetActive(true);
     }
 
     public void TurnOnStore()
@@ -38,28 +39,20 @@ public class WatingScene : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Test();
-        }
-    }
+    //private async void Test()
+    //{
+    //    var configAssignemntHash = EconomyService.Instance.Configuration.GetConfigAssignmentHash();
 
-    private async void Test()
-    {
-        var configAssignemntHash = EconomyService.Instance.Configuration.GetConfigAssignmentHash();
+    //    try
+    //    {
+    //        var arguments = new IncrementBalanceParam("SCRAP", configAssignemntHash);
+    //        var response = await CloudCodeService.Instance.CallModuleEndpointAsync<long>("StorageModule", "SayHello", new Dictionary<string, object> { { "param", arguments } });
+    //        Debug.Log(response);
+    //    }
+    //    catch (CloudCodeException exception)
+    //    {
+    //        Debug.LogException(exception);
+    //    }
 
-        try
-        {
-            var arguments = new IncrementBalanceParam("SCRAP", configAssignemntHash);
-            var response = await CloudCodeService.Instance.CallModuleEndpointAsync<long>("StorageModule", "SayHello", new Dictionary<string, object> { { "param", arguments } });
-            Debug.Log(response);
-        }
-        catch (CloudCodeException exception)
-        {
-            Debug.LogException(exception);
-        }
-
-    }
+    //}
 }
