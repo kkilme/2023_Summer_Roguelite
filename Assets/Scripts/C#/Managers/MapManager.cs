@@ -228,11 +228,11 @@ public class MapManager : NetworkBehaviour
         //    }
         //}
 
-        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
-        {
-            var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
-            networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
-        }
+        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
+        //{
+        //    var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
+        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+        //}
     }
 
     // 기존 맵 초기화 함수
