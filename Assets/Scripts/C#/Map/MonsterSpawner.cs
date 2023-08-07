@@ -52,13 +52,11 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public void SpawnMonster(GameObject[] monsterObject)
+    public void SpawnMonster()
     {
-        System.Random _rand = new System.Random();
-
         for (short i = 0; i < _spawnerPoses.Count; ++i)
         {
-            var monster = Instantiate(monsterObject[_rand.Next(0, monsterObject.Length)], transform);
+            var monster = Instantiate(GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{Random.Range(0, 5)}"), transform);
             var monsterController = Util.GetOrAddComponent<MonsterController>(monster);
             monsterController.transform.position = _spawnerPoses[i];
             monsterController.Init(this);

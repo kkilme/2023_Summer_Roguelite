@@ -16,8 +16,8 @@ public class ResourceManager
 
     public T GetObject<T>(string name) where T : UnityEngine.Object
     {
-        if (_resources.ContainsKey(name))
-            return _resources[name] as T;
+        if (_resources.ContainsKey($"{name}.prefab"))
+            return _resources[$"{name}.prefab"] as T;
 
         Debug.LogError("Fail to Get Asset!");
         return null;
@@ -56,8 +56,6 @@ public class ResourceManager
                 {
                     ++loadCount;
                     Debug.Log($"Load {loadCount} / {totalCount}");
-                    if (loadCount == totalCount)
-                        MapManager.Instance.MonsterInit();
                 });
             }
 

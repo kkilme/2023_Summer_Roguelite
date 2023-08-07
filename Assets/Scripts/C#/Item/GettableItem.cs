@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -61,34 +62,34 @@ public class GettableItem : NetworkBehaviour, IInteraction
 
     public static GameObject GetItemPrefab(ITEMNAME itemName)
     {
-        string path = "Item/";
+        StringBuilder path = new StringBuilder("Item/");
 
         switch (itemName)
         {
             case ITEMNAME.BANDAGE:
-                path += "Bandage";
+                path.Append("Bandage");
                 break;
             case ITEMNAME.AMMO_9:
-                path += "9mm Ammo";
+                path.Append("9mm Ammo");
                 break;
             case ITEMNAME.AMMO_556:
-                path += "5.56mm Ammo";
+                path.Append("5.56mm Ammo");
                 break;
             case ITEMNAME.AMMO_762:
-                path += "7.62mm Ammo";
+                path.Append("7.62mm Ammo");
                 break;
             case ITEMNAME.GAUGE_12:
-                path += "12Gauge Ammo";
+                path.Append("12Gauge Ammo");
                 break;
             case ITEMNAME.JERRY_CAN:
-                path += "Jerry Can";
+                path.Append("Jerry Can");
                 break;
             default:
-                path += "";
+                path.Append("");
                 break;
         }
 
-        return Resources.Load(path) as GameObject;
+        return GameManager.Resource.GetObject<GameObject>(path.ToString());
     }
     public void Interactable(bool bCan)
     {
