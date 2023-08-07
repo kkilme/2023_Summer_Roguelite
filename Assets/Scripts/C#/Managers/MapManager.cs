@@ -63,7 +63,7 @@ public class MapManager : NetworkBehaviour
                     roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
             }
 
-            GenerateMapServerRPC();
+            //GenerateMapServerRPC();
         }
     }
 
