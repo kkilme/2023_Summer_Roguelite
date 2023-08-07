@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Util
@@ -24,10 +26,10 @@ public class Util
         return component;
     }
 
-    static int hashCode = int.MinValue;
     public static int GetRealHashCode()
     {
-        return hashCode++;
+        // 임시시시
+        return DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day + DateTime.Now.Hour + DateTime.Now.Minute + DateTime.Now.Second + DateTime.Now.Millisecond;
     }
 
 }

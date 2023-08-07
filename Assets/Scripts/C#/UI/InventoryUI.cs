@@ -12,23 +12,23 @@ using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    private RectTransform rectTransform;
-    private const int tileSizeWidth = 64;
-    private const int tileSizeHeight = 64;
-    private float width;
-    private float height;
-    private Inventory inventory;
+    protected RectTransform rectTransform;
+    protected const int tileSizeWidth = 64;
+    protected const int tileSizeHeight = 64;
+    protected float width;
+    protected float height;
+    protected Inventory inventory;
 
-    private ScrollRect scrollRect;
-    private GameObject inventoryTile;
+    protected ScrollRect scrollRect;
+    protected GameObject inventoryTile;
 
     public InventoryItem selectedInventoryItem;
     private ItemUI selectedNearItem;
 
-    private Stack<ItemUI> inventoryItemUIStack;
+    protected Stack<ItemUI> inventoryItemUIStack;
     private Stack<ItemUI> nearItemUIStack;
 
-    private Dictionary<InventoryItem, ItemUI> inventoryDic = new Dictionary<InventoryItem, ItemUI>();
+    protected Dictionary<InventoryItem, ItemUI> inventoryDic = new Dictionary<InventoryItem, ItemUI>();
     private Dictionary<GettableItem, ItemUI> nearDic = new Dictionary<GettableItem, ItemUI>();
 
     private void Awake()
@@ -89,7 +89,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private void DisplayInventoryUI(object sender, Inventory.InventoryEventHandlerArgs e)
+    protected void DisplayInventoryUI(object sender, Inventory.InventoryEventHandlerArgs e)
     {
         // 인벤토리에서 제거된 아이템 추출 및 삭제
         List<InventoryItem> inventoryItems = new List<InventoryItem>();
@@ -186,7 +186,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private void MoveItem(Vector2Int pos)
+    protected void MoveItem(Vector2Int pos)
     {
         if (selectedInventoryItem.itemName != ITEMNAME.NONE)
         {
@@ -196,7 +196,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private void RotateItem()
+    protected void RotateItem()
     {
         if (selectedInventoryItem.itemName != ITEMNAME.NONE)
         {
@@ -204,7 +204,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private Vector2Int GetGridPostion(Vector2 mousePosition)
+    protected Vector2Int GetGridPostion(Vector2 mousePosition)
     {
         Vector2Int gridPos = Vector2Int.zero;
 
@@ -231,7 +231,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private void DropItem(Vector2Int pos)
+    protected void DropItem(Vector2Int pos)
     {
         if (selectedInventoryItem.itemName != ITEMNAME.NONE && (pos.x < 0 || pos.y < 0 || pos.x >= inventory.sizeX.Value || pos.y >= inventory.sizeY.Value))
         {

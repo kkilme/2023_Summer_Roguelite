@@ -36,11 +36,18 @@ public class MapManager : NetworkBehaviour
         Instance = this;
     }
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
         SceneEvent a = new SceneEvent();
         a.SceneEventType = SceneEventType.LoadEventCompleted;
         Init(a);
+    }
+
+    private void Start()
+    {
+        //SceneEvent a = new SceneEvent();
+        //a.SceneEventType = SceneEventType.LoadEventCompleted;
+        //Init(a);
         //NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
     }
 
@@ -68,16 +75,16 @@ public class MapManager : NetworkBehaviour
                 var roomPrefabs = Resources.LoadAll<Room>("Room");
                 _monsterObjects = new GameObject[5];
 
-                NetworkManager.AddNetworkPrefab(lifeShipPrefab);
+                //NetworkManager.AddNetworkPrefab(lifeShipPrefab);
 
                 for (int i = 0; i < roomPrefabs.Length; i++)
                 {
-                    NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
+                    //NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
                     roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
                 }
             }
 
-            GenerateMapServerRPC();
+            //GenerateMapServerRPC();
         }
     }
 
@@ -86,7 +93,7 @@ public class MapManager : NetworkBehaviour
         for (int i = 0; i < _monsterObjects.Length; i++)
         {
             _monsterObjects[i] = GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{i + 1}.prefab");
-            NetworkManager.AddNetworkPrefab(_monsterObjects[i].gameObject);
+            //NetworkManager.AddNetworkPrefab(_monsterObjects[i].gameObject);
         }
     }
 
