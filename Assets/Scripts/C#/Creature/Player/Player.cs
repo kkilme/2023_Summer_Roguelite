@@ -19,6 +19,7 @@ public class Player : NetworkBehaviour, IAttackable
     [SerializeField]
     private InputActionAsset _iaa;
     private Rigidbody _rigidbody;
+    private SkinnedMeshRenderer _skinnedMeshRenderer;
 
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
@@ -29,13 +30,21 @@ public class Player : NetworkBehaviour, IAttackable
     public override void OnNetworkSpawn()
     {
         CinemachineVirtualCamera cam = null;
-
+        _interact = GetComponentInChildren<PlayerInteract>();
+        _interact.gameObject.SetActive(false);
         if (IsOwner) {
             cam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
             cam.Follow = _headTransform;
-            _interact = GetComponentInChildren<PlayerInteract>();
+            _interact.gameObject.SetActive(true);
             _interact.Init(this, cam.transform);
             _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa, _interact);
+            _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+            //6, 10 12 - 15
+            for (int i = 0; i < _skinnedMeshRenderer.materials.Length; ++i)
+            {
+                if (i != 6 && i != 10 && (i < 12 || i > 15))
+                    _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);
+            }
         }
 
         _playerStat = new Stat(5, 5, 10, 5, 5, 5);
@@ -68,7 +77,10 @@ public class Player : NetworkBehaviour, IAttackable
 
     public override void OnNetworkDespawn()
     {
-        _playerController.Clear();
-        _interact.Clear();
+        if (IsOwner)
+        {
+            _playerController.Clear();
+            _interact.Clear();
+        }
     }
 }
