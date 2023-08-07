@@ -8,6 +8,8 @@ using UnityEngine.AddressableAssets;
 public class ResourceManager
 { 
     private Dictionary<string, UnityEngine.Object> _resources = new Dictionary<string, UnityEngine.Object>();
+    private Dictionary<string, GameObject> _prefabs = new Dictionary<string, GameObject>();
+    private Dictionary<string, AudioClip> _clips = new Dictionary<string, AudioClip>();
 
     public void Init()
     {
@@ -19,7 +21,7 @@ public class ResourceManager
         if (_resources.ContainsKey($"{name}.prefab"))
             return _resources[$"{name}.prefab"] as T;
 
-        Debug.LogError("Fail to Get Asset!");
+        Debug.LogError($"Fail to Get {name}.prefab Asset!");
         return null;
     }
 
@@ -55,7 +57,6 @@ public class ResourceManager
                 LoadAsync<T>(op.Result[i].PrimaryKey, (obj) =>
                 {
                     ++loadCount;
-                    Debug.Log($"Load {loadCount} / {totalCount}{typeof(T) == typeof(GameObject)}");
                 });
             }
 

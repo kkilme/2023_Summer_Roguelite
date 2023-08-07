@@ -79,4 +79,10 @@ public class MouseInput : NetworkBehaviour
         Cursor.visible = bOpen;
         this.enabled = !bOpen;
     }
+
+    public void Clear()
+    {
+        this.enabled = false;
+        Cursor.visible = true;
+    }
 }
