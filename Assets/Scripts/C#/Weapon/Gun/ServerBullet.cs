@@ -67,7 +67,11 @@ public class ServerBullet : NetworkBehaviour
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Furniture")) // 충돌 대상에 따른 이펙트 종류가 많아지만 추후 코드 개선할 수 있을 듯.
             {
                 HitTargetClientRPC(hit.point, hit.normal, HitType.Object);
+            } else
+            {
+                hit.transform.gameObject.GetComponent<IAttackable>().OnDamaged((int)_dmg);
             }
+            
             GetComponent<NetworkObject>().Despawn();
         }
         else

@@ -74,6 +74,7 @@ public class Player : NetworkBehaviour, IAttackable
 
     public void OnDamaged(int damage)
     {
+        Debug.Log($"damaged {damage}");
         _playerStat.Hp -= damage;
         //사운드
         if (_playerStat.Hp <= 0 && IsOwner)
