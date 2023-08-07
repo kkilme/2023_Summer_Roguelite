@@ -72,8 +72,14 @@ public class MouseInput : NetworkBehaviour
 
     public void OnOffSettingUI(bool bOpen)
     {
-        Cursor.visible = bOpen;
         Mouse.current.WarpCursorPosition(_screenMid);
+        Cursor.visible = bOpen;
         this.enabled = !bOpen;
+    }
+
+    public void Clear()
+    {
+        this.enabled = false;
+        Cursor.visible = true;
     }
 }

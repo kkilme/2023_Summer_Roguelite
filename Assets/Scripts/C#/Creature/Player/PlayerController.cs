@@ -186,5 +186,7 @@ public class PlayerController
         _actions[4].started -= Aim;
         _actions[4].canceled -= StopAim;
         _actions[5].performed -= SwitchInventoryPannel;
+        MouseInput.Clear();
+        //_weapon.Clear();
     }
 }

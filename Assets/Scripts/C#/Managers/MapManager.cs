@@ -38,7 +38,7 @@ public class MapManager : NetworkBehaviour
 
     private void Init(SceneEvent sceneEvent)
     {
-        if (IsHost || IsServer)
+        //if (IsHost || IsServer)
         {
             if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
             {
@@ -198,22 +198,22 @@ public class MapManager : NetworkBehaviour
 
         _testMap.BuildNavMesh();
 
-        //for (int i = 0; i < rooms.Count; ++i)
-        //{
-        //    //int rand = Random.Range(0, 100);
-        //    //if (rand >= 66)
-        //    {
-        //        var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
-        //        spawner.Init();
-        //        spawner.SpawnMonster(_monsterObjects);
-        //    }
-        //}
-
-        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
+        for (int i = 0; i < rooms.Count; ++i)
         {
-            var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
-            networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+            int rand = Random.Range(0, 100);
+            if (rand >= 66)
+            {
+                var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
+                spawner.Init();
+                spawner.SpawnMonster();
+            }
         }
+
+        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
+        //{
+        //    var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
+        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+        //}
     }
 
     // 기존 맵 초기화 함수
