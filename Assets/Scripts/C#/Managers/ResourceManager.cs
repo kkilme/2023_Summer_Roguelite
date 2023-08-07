@@ -55,7 +55,7 @@ public class ResourceManager
                 LoadAsync<T>(op.Result[i].PrimaryKey, (obj) =>
                 {
                     ++loadCount;
-                    Debug.Log($"Load {loadCount} / {totalCount}");
+                    Debug.Log($"Load {loadCount} / {totalCount}{typeof(T) == typeof(GameObject)}");
                 });
             }
 

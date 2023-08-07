@@ -40,6 +40,7 @@ public class MouseInput : NetworkBehaviour
         _player = transform.parent;
         _cam = camera;
 
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         OnOffSettingUI(true);
     }
@@ -49,15 +50,14 @@ public class MouseInput : NetworkBehaviour
         RotateMouse();
     }
 
+    //현재 값과 이전 값의 차를 쓰기 굳이 가운데로 옮기지 말고
     private void RotateMouse()
     {
-        Vector2 mousePos = Mouse.current.position.ReadValue();
+        float mouseX = Input.GetAxisRaw("Mouse X") * _sensitive;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * _sensitive;
 
-        if (mousePos.x > _screenMid.x + 10 || mousePos.x < _screenMid.x - 10)
-            _rotationX = _rotationX + 10 * _sensitive * (mousePos.x - _screenMid.x) / _screenMid.x;
-
-        if (mousePos.y > _screenMid.y + 10 || mousePos.y < _screenMid.y - 10)
-            _rotationY = Mathf.Clamp(_rotationY + 10 * _sensitive * (mousePos.y - _screenMid.y) / _screenMid.x, _minX, _maxX);
+        _rotationX += mouseX;
+        _rotationY = Mathf.Clamp(_rotationY + mouseY, _minX, _maxX);
 
         _cam.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
         _player.eulerAngles = new Vector3(0, _rotationX, 0);
@@ -67,13 +67,16 @@ public class MouseInput : NetworkBehaviour
         Vector3 value = Quaternion.AngleAxis(_rotationY, cross) * (_targetOriginAngle.position - transform.position) + transform.position;
         _target.position = value;
         _target.localEulerAngles = new Vector3(-_rotationY, 0, 0);
-        Mouse.current.WarpCursorPosition(_screenMid);
     }
 
     public void OnOffSettingUI(bool bOpen)
     {
+        if (bOpen)
+            Cursor.lockState = CursorLockMode.None;
+        else
+            Cursor.lockState = CursorLockMode.Locked;
+
         Cursor.visible = bOpen;
-        Mouse.current.WarpCursorPosition(_screenMid);
         this.enabled = !bOpen;
     }
 }
