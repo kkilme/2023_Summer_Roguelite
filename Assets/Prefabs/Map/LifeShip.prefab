@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 848298429083233763}
   - component: {fileID: 848298429083233762}
   - component: {fileID: 110971364595805563}
-  m_Layer: 6
+  - component: {fileID: -1659650478387898790}
+  m_Layer: 7
   m_Name: LifeShip
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -114,3 +115,15 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-1659650478387898790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848298429083233761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1888feaeeeb2a641b4167a3c20cad82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

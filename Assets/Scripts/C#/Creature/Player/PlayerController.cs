@@ -139,35 +139,43 @@ public class PlayerController
     {
         if (_interact.Item != null)
         {
+            _interact.Item.Interact(_player);
             _actions[0].performed -= Move;
             _actions[0].canceled -= Idle;
             _actions[1].started -= Attack;
             _actions[1].canceled -= StopAttack;
             _actions[3].performed -= Reload;
+            MouseInput.enabled = false;
         }
     }
 
     private void InteractionCancel(InputAction.CallbackContext ctx)
     {
-        CompleteInteraction();
+        CancelInteraction();
     }
 
-    public void CompleteInteraction()
+    public void CancelInteraction()
     {
-        _actions[0].performed -= Move;
-        _actions[0].performed += Move;
+        if (_interact.Item != null)
+        {
+            _interact.Item?.InteractComplete(false);
 
-        _actions[0].canceled -= Idle;
-        _actions[0].canceled += Idle;
+            _actions[0].performed -= Move;
+            _actions[0].performed += Move;
 
-        _actions[1].started -= Attack;
-        _actions[1].started += Attack;
+            _actions[0].canceled -= Idle;
+            _actions[0].canceled += Idle;
 
-        _actions[1].canceled -= StopAttack;
-        _actions[1].canceled += StopAttack;
+            _actions[1].started -= Attack;
+            _actions[1].started += Attack;
 
-        _actions[3].performed -= Reload;
-        _actions[3].performed += Reload;
+            _actions[1].canceled -= StopAttack;
+            _actions[1].canceled += StopAttack;
+
+            _actions[3].performed -= Reload;
+            _actions[3].performed += Reload;
+            MouseInput.enabled = true;
+        }
     }
 
     private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
@@ -186,5 +194,7 @@ public class PlayerController
         _actions[4].started -= Aim;
         _actions[4].canceled -= StopAim;
         _actions[5].performed -= SwitchInventoryPannel;
+        MouseInput.Clear();
+        //_weapon.Clear();
     }
 }

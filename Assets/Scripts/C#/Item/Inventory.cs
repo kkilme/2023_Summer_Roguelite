@@ -5,7 +5,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Unity.Netcode;
+using Unity.Services.Economy.Model;
+using Unity.Services.Economy;
 using UnityEngine;
+using Unity.Services.Authentication;
+using UnityEngine.InputSystem.Processors;
 
 public enum ROTATION_TYPE
 {
@@ -64,20 +68,36 @@ public class Inventory : NetworkBehaviour
         items = new NetworkList<InventoryItem>();
     }
 
-    public override void OnNetworkSpawn()
+    public override async void OnNetworkSpawn()
     {
         if (IsServer)
         {
             sizeX.Value = 10;
             sizeY.Value = 12;
+
+
+            //GetInventoryResult inventoryResult = await EconomyService.Instance.PlayerInventory.GetInventoryAsync();
+
+            //for (int i = 0; i < inventoryResult.PlayersInventoryItems.Count; i++)
+            //{
+            //    if (inventoryResult.PlayersInventoryItems[i].InstanceData.GetAs<Storage.StorageItemData>().inInventory)
+            //        items.Add(inventoryResult.PlayersInventoryItems[i]);
+            //}
         }
 
         if (IsOwner)
         {
+            InitServerRPC(EconomyService.Instance.Configuration.GetConfigAssignmentHash());
             inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items);
             inventoryUI = FindObjectOfType<InventoryUI>(true);
             items.OnListChanged += OnItemChanged;
         }
+    }
+
+    [ServerRpc]
+    private void InitServerRPC(string accessToken)
+    {
+        EconomyService.Instance.PlayerInventory.GetInventoryAsync();
     }
 
     // 인벤토리안에 아이템을 넣는 함수. 매개변수인 x,y가 기준점으로 좌하단에 위치함
@@ -203,7 +223,7 @@ public class Inventory : NetworkBehaviour
     }
 
     // 기준점에서 해당 크기의 공간이 비어있는지 확인하는 함수
-    public bool CheckEmpty(InventoryItem item)
+    private bool CheckEmpty(InventoryItem item)
     {
         if (!IsServer)
             return false;
@@ -369,12 +389,16 @@ public class Inventory : NetworkBehaviour
         RemoveItemServerRPC(item , serverRpcParams);
     }
 
-    public bool hasItem(ITEMNAME itemName)
+    public bool HasItem(ITEMNAME itemName, out InventoryItem item)
     {
         for (int i = 0; i < items.Count; i++)
             if (items[i].itemName == itemName)
+            {
+                item = items[i];
                 return true;
+            }
 
+        item = new InventoryItem();
         return false;
     }
 

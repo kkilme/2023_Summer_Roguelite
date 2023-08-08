@@ -378,10 +378,17 @@ public class MonsterDeadLeaf : BehaviourLeaf
         if (_board.Stat.Hp < 1)
         {
             _board.Anim.Play(_animHash);
+            DespawnCraeture().Forget();
             return SeqStates.Running;
         }
 
         return SeqStates.Fail;
+    }
+
+    private async UniTaskVoid DespawnCraeture()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: _cts.Token);
+        _board.CurCreature.GetComponent<MonsterController>().OnNetworkDespawn();
     }
 
     public override void Clear()

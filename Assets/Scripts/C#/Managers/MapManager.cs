@@ -28,17 +28,31 @@ public class MapManager : NetworkBehaviour
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;
 
-    private void Start()
+    public static MapManager Instance { get; set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public override void OnNetworkSpawn()
     {
         SceneEvent a = new SceneEvent();
         a.SceneEventType = SceneEventType.LoadEventCompleted;
         Init(a);
+    }
+
+    private void Start()
+    {
+        //SceneEvent a = new SceneEvent();
+        //a.SceneEventType = SceneEventType.LoadEventCompleted;
+        //Init(a);
         //NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
     }
 
     private void Init(SceneEvent sceneEvent)
     {
-        if (IsHost || IsServer)
+        //if (IsHost || IsServer)
         {
             if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
             {
@@ -59,11 +73,16 @@ public class MapManager : NetworkBehaviour
 
                 var roomPrefabs = Resources.LoadAll<Room>("Room");
 
+                //NetworkManager.AddNetworkPrefab(lifeShipPrefab);
+
                 for (int i = 0; i < roomPrefabs.Length; i++)
+                {
+                    //NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
                     roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
+                }
             }
 
-            GenerateMapServerRPC();
+            //GenerateMapServerRPC();
         }
     }
 
@@ -200,20 +219,20 @@ public class MapManager : NetworkBehaviour
 
         //for (int i = 0; i < rooms.Count; ++i)
         //{
-        //    //int rand = Random.Range(0, 100);
-        //    //if (rand >= 66)
+        //    int rand = Random.Range(0, 100);
+        //    if (rand >= 66)
         //    {
         //        var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
         //        spawner.Init();
-        //        spawner.SpawnMonster(_monsterObjects);
+        //        spawner.SpawnMonster();
         //    }
         //}
 
-        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
-        {
-            var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
-            networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
-        }
+        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
+        //{
+        //    var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
+        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+        //}
     }
 
     // 기존 맵 초기화 함수
