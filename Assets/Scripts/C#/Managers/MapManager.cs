@@ -28,11 +28,25 @@ public class MapManager : NetworkBehaviour
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;
 
-    private void Start()
+    public static MapManager Instance { get; set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public override void OnNetworkSpawn()
     {
         SceneEvent a = new SceneEvent();
         a.SceneEventType = SceneEventType.LoadEventCompleted;
         Init(a);
+    }
+
+    private void Start()
+    {
+        //SceneEvent a = new SceneEvent();
+        //a.SceneEventType = SceneEventType.LoadEventCompleted;
+        //Init(a);
         //NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
     }
 
@@ -59,11 +73,16 @@ public class MapManager : NetworkBehaviour
 
                 var roomPrefabs = Resources.LoadAll<Room>("Room");
 
+                //NetworkManager.AddNetworkPrefab(lifeShipPrefab);
+
                 for (int i = 0; i < roomPrefabs.Length; i++)
+                {
+                    //NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
                     roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
+                }
             }
 
-            GenerateMapServerRPC();
+            //GenerateMapServerRPC();
         }
     }
 
