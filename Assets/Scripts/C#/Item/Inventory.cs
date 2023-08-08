@@ -15,6 +15,7 @@ using Unity.Services.CloudCode;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Unity.Services.Lobbies.Models;
 
 public enum ROTATION_TYPE
 {
@@ -86,6 +87,14 @@ public class Inventory : NetworkBehaviour
     private void Awake()
     {
         items = new NetworkList<InventoryItem>();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            SaveInventoryServerRPC(AuthenticationService.Instance.PlayerId);
+        }
     }
 
     public override void OnNetworkSpawn()
@@ -458,5 +467,43 @@ public class Inventory : NetworkBehaviour
                 return i;
 
         return -1;
+    }
+
+    [ServerRpc]
+    private void SaveInventoryServerRPC(string playerId)
+    {
+        SaveInventory(playerId);
+    }
+
+    private async void SaveInventory(string playerId)
+    {
+        // 1. 기존에 있던 인벤토리 아이템들을 삭제
+        // 2. 현재 가지고있는 인벤토리 아이템들을 추가
+
+        await CloudCodeService.Instance.CallEndpointAsync("RemoveInventoryItem",
+                new Dictionary<string, object>() { { "otherPlayerId", playerId } });
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            bool isRight = items[i].rotationType == ROTATION_TYPE.RIGHT ? true : false;
+
+            Storage.StorageItemData data = new Storage.StorageItemData()
+            {
+                inInventory = true,
+                isRight = isRight,
+                currentCount = items[i].currentCount,
+                maxCount = items[i].maxCount,
+                posX = items[i].posX,
+                posY = items[i].posY,
+                sizeX = items[i].sizeX,
+                sizeY = items[i].sizeY
+            };
+
+            await CloudCodeService.Instance.CallEndpointAsync("SavePlayerInventory", 
+                new Dictionary<string, object>() { 
+                    { "otherPlayerId", playerId }, 
+                    {"inventoryItemId", items[i].itemName.ToString() },
+                    {"item", JsonConvert.SerializeObject(data) } });
+        }
     }
 }
