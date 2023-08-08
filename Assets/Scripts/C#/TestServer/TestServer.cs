@@ -1,9 +1,13 @@
+using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
 using Unity.Services.Authentication;
 using Unity.Services.CloudCode;
 using Unity.Services.CloudSave;
+using Unity.Services.Matchmaker.Models;
 using Unity.Services.Core;
 using UnityEngine;
+using Unity.Services.Multiplay;
 
 /*
 * Note that you need to have a published script in order to use the Cloud Code SDK.

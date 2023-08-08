@@ -56,7 +56,7 @@ public class MonsterSpawner : NetworkBehaviour
     {
         for (short i = 0; i < _spawnerPoses.Count; ++i)
         {
-            var monster = Instantiate(GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{Random.Range(0, 5)}"), transform);
+            var monster = Instantiate(GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{Random.Range(1, 6)}"), transform);
             var monsterController = Util.GetOrAddComponent<MonsterController>(monster);
             monsterController.transform.position = _spawnerPoses[i];
             monsterController.Init(this);
