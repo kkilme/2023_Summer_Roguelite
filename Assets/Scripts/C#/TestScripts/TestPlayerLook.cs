@@ -9,6 +9,7 @@ public class TestPlayerLook : NetworkBehaviour
     [Header("References")]
     [SerializeField] private Transform cameraHolder;
     [SerializeField] private Transform orientation;
+    [SerializeField] private Transform _target;
 
     [Header("Look Settings")]
     [SerializeField] private float sensX = 10f;
@@ -41,6 +42,17 @@ public class TestPlayerLook : NetworkBehaviour
 
         orientation.rotation = Quaternion.Euler(0f, yRotation, 0f);
         cameraHolder.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
+
+        Ray ray = new Ray(cameraHolder.transform.position, cameraHolder.transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000))
+        {
+            _target.transform.position = hit.point;
+        }
+        else
+        {
+            _target.transform.position = ray.GetPoint(1000);
+        }
 
     }
 
