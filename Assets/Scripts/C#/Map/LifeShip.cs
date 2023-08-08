@@ -25,7 +25,7 @@ public class LifeShip : NetworkBehaviour, IInteraction
     private void InteractServerRPC(ServerRpcParams serverRpcParams = default)
     {
         var player = NetworkManager.Singleton.ConnectedClients[serverRpcParams.Receive.SenderClientId].PlayerObject.GetComponent<Player>();
-        if (player.Inventory.hasItem(ITEMNAME.JERRY_CAN))
+        if (player.Inventory.HasItem(ITEMNAME.JERRY_CAN))
         {
             // 아이템 존재
         }
