@@ -44,6 +44,7 @@ public class Player : NetworkBehaviour, IAttackable
         if (IsOwner) {
             //오버레이 카메라 추가
             _mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Add(_armNWeaponCam);
+
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);

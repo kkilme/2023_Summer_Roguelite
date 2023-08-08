@@ -50,7 +50,7 @@ public class MapManager : NetworkBehaviour
 
     private void Init(SceneEvent sceneEvent)
     {
-        //if (IsHost || IsServer)
+        if (IsHost || IsServer)
         {
             if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
             {
