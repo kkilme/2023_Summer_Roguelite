@@ -16,7 +16,7 @@ public class Gun : NetworkBehaviour
     [SerializeField] private GunData _gunData; // 총의 모든 정보 보유
 
     [SerializeField] private GunCamera _cam; // 카메라
-    [SerializeField] private Recoil _recoil; // 반동 담당
+    [SerializeField] private List<Recoil> _recoil = new List<Recoil>(); // 반동 담당
 
     [SerializeField] private Transform _effectparent; // 이펙트들 모아둘 부모 오브젝트
     [SerializeField] private TextMeshProUGUI _ammoleftText;
@@ -47,7 +47,7 @@ public class Gun : NetworkBehaviour
         {
             _animator = GetComponent<Animator>();
             _effectparent = GameObject.Find("Effect").transform;
-            _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
+            _recoil.Add(GameObject.Find("recoil").GetComponent<Recoil>());
             _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
             transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
             Init();
@@ -151,10 +151,17 @@ public class Gun : NetworkBehaviour
             _timeSinceLastShot = 0;
             _gunData.currentAmmo -= 1;
 
-            if(!_isaiming)
-                _recoil.MakeRecoil(_gunData.recoilX, _gunData.recoilY, _gunData.recoilZ); // 반동 생성
+            if (!_isaiming)
+                foreach (Recoil recoil in _recoil)
+                {
+                    recoil.MakeRecoil(_gunData.recoilX, _gunData.recoilY, _gunData.recoilZ); // 반동 생성
+                }
+
             else
-                _recoil.MakeRecoil(_gunData.aimRecoilX, _gunData.aimRecoilY, _gunData.aimRecoilZ);
+                foreach (Recoil recoil in _recoil)
+                {
+                    recoil.MakeRecoil(_gunData.aimRecoilX, _gunData.aimRecoilY, _gunData.aimRecoilZ);
+                }
         }
     }
     /// <summary>
@@ -163,7 +170,7 @@ public class Gun : NetworkBehaviour
     /// <param name="dir"></param>
     private void SpawnClientBullet(Vector3 dir)
     {
-        Debug.Log("SpawnClientBullet");
+        //Debug.Log("SpawnClientBullet");
         GameObject bullet = Instantiate(_gunData.clientBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
         bullet.GetComponent<ClientBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime);
         SpawnBulletServerRPC(dir, _cam.transform.rotation);
@@ -175,7 +182,7 @@ public class Gun : NetworkBehaviour
     [ServerRpc]
     private void SpawnBulletServerRPC(Vector3 dir, Quaternion rot)
     {
-        Debug.Log("SpawnBulletServerRPC");
+        //Debug.Log("SpawnBulletServerRPC");
         GameObject bullet = Instantiate(_gunData.serverBulletPrefab, _muzzleTransform.position, rot);
         bullet.GetComponent<ServerBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime, _gunData.damage);
         bullet.GetComponent<NetworkObject>().Spawn();
@@ -190,7 +197,7 @@ public class Gun : NetworkBehaviour
     private void SpawnBulletClientRPC(Vector3 dir)
     {
         if (IsOwner) return;
-        Debug.Log("SpawnBulletClientRPC");
+        //Debug.Log("SpawnBulletClientRPC");
         GameObject bullet = Instantiate(_gunData.clientBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
         bullet.GetComponent<ClientBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime);
     }
