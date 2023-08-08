@@ -97,7 +97,7 @@ public class Inventory : NetworkBehaviour
     [ServerRpc]
     private void InitServerRPC(string accessToken)
     {
-        EconomyService.Instance.PlayerInventory.GetInventoryAsync
+        EconomyService.Instance.PlayerInventory.GetInventoryAsync();
     }
 
     // 인벤토리안에 아이템을 넣는 함수. 매개변수인 x,y가 기준점으로 좌하단에 위치함

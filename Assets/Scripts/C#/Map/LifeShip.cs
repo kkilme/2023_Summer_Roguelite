@@ -11,6 +11,7 @@ public class LifeShip : NetworkBehaviour, IInteraction
 {
     private bool _bInteract = false;
     private bool _bFull = false;
+    private InventoryItem _item;
 
     public void Interact(Player player)
     {
@@ -33,12 +34,12 @@ public class LifeShip : NetworkBehaviour, IInteraction
     {
         var player = NetworkManager.Singleton.ConnectedClients[serverRpcParams.Receive.SenderClientId].PlayerObject.GetComponent<Player>();
 
-        if (player.Inventory.hasItem(ITEMNAME.JERRY_CAN) && !_bInteract && !_bFull)
+        if (player.Inventory.HasItem(ITEMNAME.JERRY_CAN, out _item) && !_bInteract && !_bFull)
         {
             // 아이템 존재
             Debug.Log("기름통 있음");
             _bInteract = true;
-            FillUp(player, 300).Forget();
+            FillUp(player).Forget();
         }
 
         else
@@ -49,15 +50,16 @@ public class LifeShip : NetworkBehaviour, IInteraction
     }
 
     //time 단위는 1당 10밀리초
-    private async UniTaskVoid FillUp(Player player, int time = 300)
+    private async UniTaskVoid FillUp(Player player, int time = 250)
     {
         int originTime = time;
+
         while (time > 0 && _bInteract)
         {
             //원래 time - 현재 time을 슬라이드 등으로 표시해서 남은 시간을 알 수 있게
-            Debug.Log($" 주유중... {time} / {originTime}");
+            Debug.Log($" 주유중... {originTime - time} / {originTime}");
             --time;
-            await UniTask.Delay(TimeSpan.FromMilliseconds(10));
+            await UniTask.Delay(TimeSpan.FromMilliseconds(10), ignoreTimeScale: true);
         }
 
         if (time == 0)
@@ -65,9 +67,9 @@ public class LifeShip : NetworkBehaviour, IInteraction
             Debug.Log("사용 완료");
             _bFull = true;
             //플레이어에게 다 찼다고 알리기
-
+            player.Inventory.RemoveItemServerRPC(_item);
+            _item = new InventoryItem();
             player.CancelInteraction();
-
         }
     } 
 }
