@@ -5,6 +5,7 @@ using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class Player : NetworkBehaviour, IAttackable
@@ -16,6 +17,8 @@ public class Player : NetworkBehaviour, IAttackable
     private PlayerInteract _interact;
     [SerializeField]
     private Transform _headTransform;
+    [SerializeField]
+    private Camera _armNWeaponCam;
     [SerializeField]
     private InputActionAsset _iaa;
     private Rigidbody _rigidbody;
@@ -36,6 +39,8 @@ public class Player : NetworkBehaviour, IAttackable
         if (IsOwner) {
             _followPlayerCam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
             _deadPlayerCam = GameObject.Find("DeadPlayerCam").GetComponent<CinemachineVirtualCamera>();
+            //오버레이 카메라 추가
+            Camera.main.GetComponent<UniversalAdditionalCameraData>().cameraStack.Add(_armNWeaponCam);
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);
@@ -96,6 +101,8 @@ public class Player : NetworkBehaviour, IAttackable
         }
 
         _deadPlayerCam.transform.position = transform.position + Vector3.up * 5;
+        Camera.main.GetComponent<UniversalAdditionalCameraData>().cameraStack.Clear();
+        Camera.main.cullingMask = -1;
 
         _followPlayerCam.Priority = 0;
         _followPlayerCam.Follow = null;
