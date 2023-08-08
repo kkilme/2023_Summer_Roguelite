@@ -5,6 +5,7 @@ using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class Player : NetworkBehaviour, IAttackable
@@ -17,11 +18,18 @@ public class Player : NetworkBehaviour, IAttackable
     [SerializeField]
     private Transform _headTransform;
     [SerializeField]
+    private Camera _armNWeaponCam;
+    [SerializeField]
     private InputActionAsset _iaa;
     private Rigidbody _rigidbody;
     private SkinnedMeshRenderer _skinnedMeshRenderer;
-    CinemachineVirtualCamera _followPlayerCam = null;
-    CinemachineVirtualCamera _deadPlayerCam = null;
+
+    [SerializeField]
+    private CinemachineVirtualCamera _followPlayerCam;
+    [SerializeField]
+    private CinemachineVirtualCamera _deadPlayerCam;
+    [SerializeField]
+    private Camera _mainCam;
 
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
@@ -34,8 +42,9 @@ public class Player : NetworkBehaviour, IAttackable
         _interact = GetComponentInChildren<PlayerInteract>();
         _interact.gameObject.SetActive(false);
         if (IsOwner) {
-            _followPlayerCam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
-            //_deadPlayerCam = GameObject.Find("DeadPlayerCam").GetComponent<CinemachineVirtualCamera>();
+            //오버레이 카메라 추가
+            _mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Add(_armNWeaponCam);
+
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);
@@ -48,6 +57,9 @@ public class Player : NetworkBehaviour, IAttackable
                     _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);
             }
         }
+
+        else
+            Destroy(_mainCam.transform.parent.gameObject);
 
         _playerStat = new Stat(5, 5, 10, 5, 5, 5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
@@ -96,6 +108,8 @@ public class Player : NetworkBehaviour, IAttackable
         }
 
         _deadPlayerCam.transform.position = transform.position + Vector3.up * 5;
+        _mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Clear();
+        _mainCam.cullingMask = -1;
 
         _followPlayerCam.Priority = 0;
         _followPlayerCam.Follow = null;
