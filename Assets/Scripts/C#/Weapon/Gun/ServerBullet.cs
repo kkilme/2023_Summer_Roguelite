@@ -69,7 +69,7 @@ public class ServerBullet : NetworkBehaviour
                 HitTargetClientRPC(hit.point, hit.normal, HitType.Object);
             } else
             {
-                hit.transform.gameObject.GetComponent<IAttackable>().OnDamaged((int)_dmg);
+                hit.transform.gameObject.GetComponent<IAttackable>()?.OnDamaged((int)_dmg);
             }
             
             GetComponent<NetworkObject>().Despawn();
