@@ -35,7 +35,7 @@ public class Player : NetworkBehaviour, IAttackable
         _interact.gameObject.SetActive(false);
         if (IsOwner) {
             _followPlayerCam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
-            _deadPlayerCam = GameObject.Find("DeadPlayerCam").GetComponent<CinemachineVirtualCamera>();
+            //_deadPlayerCam = GameObject.Find("DeadPlayerCam").GetComponent<CinemachineVirtualCamera>();
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);

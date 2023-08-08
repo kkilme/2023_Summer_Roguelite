@@ -68,8 +68,13 @@ public class ServerBullet : NetworkBehaviour
             {
                 HitTargetClientRPC(hit.point, hit.normal, HitType.Object);
             } else
-            {
-                hit.transform.gameObject.GetComponent<IAttackable>()?.OnDamaged((int)_dmg);
+            {   
+                if(!IsOwner)
+                {
+                    Debug.Log("coll");
+                    hit.transform.gameObject.GetComponent<IAttackable>()?.OnDamaged((int)_dmg);
+                }
+                
             }
             
             GetComponent<NetworkObject>().Despawn();

@@ -16,7 +16,7 @@ public class Gun : NetworkBehaviour
     [SerializeField] private GunData _gunData; // 총의 모든 정보 보유
 
     [SerializeField] private GunCamera _cam; // 카메라
-    [SerializeField] private List<Recoil> _recoil = new List<Recoil>(); // 반동 담당
+    [SerializeField] private Recoil _recoil; // 반동 담당
 
     [SerializeField] private Transform _effectparent; // 이펙트들 모아둘 부모 오브젝트
     [SerializeField] private TextMeshProUGUI _ammoleftText;
@@ -47,8 +47,8 @@ public class Gun : NetworkBehaviour
         {
             _animator = GetComponent<Animator>();
             _effectparent = GameObject.Find("Effect").transform;
-            _recoil.Add(GameObject.Find("recoil").GetComponent<Recoil>());
-            _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
+            _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
+            //_ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
             transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
             Init();
         }
@@ -87,21 +87,24 @@ public class Gun : NetworkBehaviour
     /// </summary>
     public void StartReload()
     {
-        StartCoroutine(Reload());
+        if (!_gunData.reloading)
+        {
+            Reload().Forget();
+        }    
     }
 
 
     /// <summary>
     /// 재장전
     /// </summary>
-    private IEnumerator Reload()
+    private async UniTaskVoid Reload()
     {
         Debug.Log("Reload Start");
         _gunData.reloading = true;
 
-        yield return new WaitForSeconds(_gunData.reloadTime);
+        await UniTask.Delay((int)(1000 * _gunData.reloadTime));
 
-        _gunData.currentAmmo = _gunData.magSize;
+         _gunData.currentAmmo = _gunData.magSize;
 
         _gunData.reloading = false;
         Debug.Log("Reload finish");
@@ -138,7 +141,6 @@ public class Gun : NetworkBehaviour
         
                 if (IsServer)
                 {
-                    Debug.Log("server");
                     SpawnBulletServerRPC(bulletDir, _cam.transform.rotation);
                 }
                 else
@@ -151,17 +153,11 @@ public class Gun : NetworkBehaviour
             _timeSinceLastShot = 0;
             _gunData.currentAmmo -= 1;
 
-            if (!_isaiming)
-                foreach (Recoil recoil in _recoil)
-                {
-                    recoil.MakeRecoil(_gunData.recoilX, _gunData.recoilY, _gunData.recoilZ); // 반동 생성
-                }
-
+            if (!_isaiming)                
+                 _recoil.MakeRecoil(_gunData.recoilX, _gunData.recoilY, _gunData.recoilZ); // 반동 생성 
             else
-                foreach (Recoil recoil in _recoil)
-                {
-                    recoil.MakeRecoil(_gunData.aimRecoilX, _gunData.aimRecoilY, _gunData.aimRecoilZ);
-                }
+                 _recoil.MakeRecoil(_gunData.aimRecoilX, _gunData.aimRecoilY, _gunData.aimRecoilZ);
+                
         }
     }
     /// <summary>

@@ -179,9 +179,24 @@ public class PlayerController
     }
 
     private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
-    {    
-        MouseInput.OnOffSettingUI(_player.Inventory.SwitchInventoryPanel());
+    {
+        bool invopen = _player.Inventory.SwitchInventoryPanel();
+        if (invopen)
+        {
+            _actions[1].started -= Attack;
+            _actions[4].started -= Aim;
+        }
+        else
+        {
+            _actions[1].started -= Attack;
+            _actions[4].started -= Aim;
+            _actions[1].started += Attack;
+            _actions[4].started += Aim;
+        }
+        
+        MouseInput.OnOffSettingUI(invopen);
     }
+
 
     public void Clear()
     {

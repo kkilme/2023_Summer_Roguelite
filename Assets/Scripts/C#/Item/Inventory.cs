@@ -90,8 +90,8 @@ public class Inventory : NetworkBehaviour
     }
 
     private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.M))
+    {   
+        if (Input.GetKeyDown(KeyCode.M) && IsOwner)
         {
             SaveInventoryServerRPC(AuthenticationService.Instance.PlayerId);
         }
@@ -499,11 +499,12 @@ public class Inventory : NetworkBehaviour
                 sizeY = items[i].sizeY
             };
 
-            await CloudCodeService.Instance.CallEndpointAsync("SavePlayerInventory", 
+            await CloudCodeService.Instance.CallEndpointAsync("SaveInventoryItems", 
                 new Dictionary<string, object>() { 
                     { "otherPlayerId", playerId }, 
                     {"inventoryItemId", items[i].itemName.ToString() },
                     {"item", JsonConvert.SerializeObject(data) } });
         }
+        Debug.Log("complete");
     }
 }
