@@ -57,6 +57,9 @@ public class Player : NetworkBehaviour, IAttackable
             }
         }
 
+        else
+            Destroy(_mainCam.transform.parent.gameObject);
+
         _playerStat = new Stat(5, 5, 10, 5, 5, 5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
