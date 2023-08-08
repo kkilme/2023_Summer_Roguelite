@@ -29,20 +29,31 @@ public class Gun : NetworkBehaviour
     private float _timeSinceLastShot;
     private bool _isaiming = false;
 
-    private void Start()
-    {
-        _animator = GetComponent<Animator>();
-        _effectparent = GameObject.Find("Effect").transform;
-        _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
-        _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
-        _cam = GameObject.Find("FollowPlayerCam").GetComponent<GunCamera>();
-        transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
-        Init();
-    }
+    //private void Start()
+    //{
+    //    _animator = GetComponent<Animator>();
+    //    _effectparent = GameObject.Find("Effect").transform;
+    //    _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
+    //    _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
+    //    //_cam = GameObject.Find("FollowPlayerCam").GetComponent<GunCamera>();
+    //    transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
+    //    Init();
+    //}
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner) _cam.DisableCamera(); // 내 플레이어 아니면 카메라 비활성화
+        _cam = GameObject.Find("FollowPlayerCam").GetComponent<GunCamera>();
+        if (IsOwner)
+        {
+            _animator = GetComponent<Animator>();
+            _effectparent = GameObject.Find("Effect").transform;
+            _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
+            _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
+            transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
+            Init();
+        }
+
+        //if (!IsOwner) _cam.DisableCamera(); // 내 플레이어 아니면 카메라 비활성화
     }
 
     private void Init()
@@ -127,7 +138,8 @@ public class Gun : NetworkBehaviour
         
                 if (IsServer)
                 {
-                    SpawnBulletServerRPC(bulletDir);
+                    Debug.Log("server");
+                    SpawnBulletServerRPC(bulletDir, _cam.transform.rotation);
                 }
                 else
                 {
@@ -151,18 +163,20 @@ public class Gun : NetworkBehaviour
     /// <param name="dir"></param>
     private void SpawnClientBullet(Vector3 dir)
     {
+        Debug.Log("SpawnClientBullet");
         GameObject bullet = Instantiate(_gunData.clientBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
         bullet.GetComponent<ClientBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime);
-        SpawnBulletServerRPC(dir);
+        SpawnBulletServerRPC(dir, _cam.transform.rotation);
     }
 
     /// <summary>
     /// 서버 총알 생성하고, ClientRPC로 모든 클라이언트에 총알 생성 지시
     /// </summary>
     [ServerRpc]
-    private void SpawnBulletServerRPC(Vector3 dir)
+    private void SpawnBulletServerRPC(Vector3 dir, Quaternion rot)
     {
-        GameObject bullet = Instantiate(_gunData.serverBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
+        Debug.Log("SpawnBulletServerRPC");
+        GameObject bullet = Instantiate(_gunData.serverBulletPrefab, _muzzleTransform.position, rot);
         bullet.GetComponent<ServerBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime, _gunData.damage);
         bullet.GetComponent<NetworkObject>().Spawn();
         SpawnBulletClientRPC(dir);
@@ -176,6 +190,7 @@ public class Gun : NetworkBehaviour
     private void SpawnBulletClientRPC(Vector3 dir)
     {
         if (IsOwner) return;
+        Debug.Log("SpawnBulletClientRPC");
         GameObject bullet = Instantiate(_gunData.clientBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
         bullet.GetComponent<ClientBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime);
     }
@@ -206,6 +221,7 @@ public class Gun : NetworkBehaviour
     /// </summary>
     public void StartShoot()
     {
+        if (!IsOwner) return;
         if (_gunData.isAutofire)
         {
             if (_cancellationTokenSource != null && !_cancellationTokenSource.Token.IsCancellationRequested)
@@ -250,9 +266,12 @@ public class Gun : NetworkBehaviour
 
     private void Update()
     {
-        _timeSinceLastShot += Time.deltaTime;
-        Debug.DrawRay(transform.position, transform.forward * 5, Color.yellow);
-        Debug.DrawRay(_cam.transform.position, _cam.transform.forward * 5, Color.red);
-        _ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
+        if (IsOwner)
+        {
+            _timeSinceLastShot += Time.deltaTime;
+            _ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
+            Debug.DrawRay(_cam.transform.position, _cam.transform.forward * 5, Color.red);
+        }
+        
     }
 }

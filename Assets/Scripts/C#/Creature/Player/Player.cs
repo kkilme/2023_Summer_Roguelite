@@ -19,6 +19,9 @@ public class Player : NetworkBehaviour, IAttackable
     [SerializeField]
     private InputActionAsset _iaa;
     private Rigidbody _rigidbody;
+    private SkinnedMeshRenderer _skinnedMeshRenderer;
+    CinemachineVirtualCamera _followPlayerCam = null;
+    CinemachineVirtualCamera _deadPlayerCam = null;
 
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
@@ -28,14 +31,22 @@ public class Player : NetworkBehaviour, IAttackable
 
     public override void OnNetworkSpawn()
     {
-        CinemachineVirtualCamera cam = null;
-
+        _interact = GetComponentInChildren<PlayerInteract>();
+        _interact.gameObject.SetActive(false);
         if (IsOwner) {
-            cam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
-            cam.Follow = _headTransform;
-            _interact = GetComponentInChildren<PlayerInteract>();
-            _interact.Init(this, cam.transform);
-            _playerController = new PlayerController(gameObject, IsOwner, cam, _iaa, _interact);
+            _followPlayerCam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
+            _deadPlayerCam = GameObject.Find("DeadPlayerCam").GetComponent<CinemachineVirtualCamera>();
+            _followPlayerCam.Follow = _headTransform;
+            _interact.gameObject.SetActive(true);
+            _interact.Init(this, _followPlayerCam.transform);
+            _playerController = new PlayerController(gameObject, IsOwner, _followPlayerCam, _iaa, _interact);
+            _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+            //6, 10 12 - 15
+            for (int i = 0; i < _skinnedMeshRenderer.materials.Length; ++i)
+            {
+                if (i != 6 && i != 10 && (i < 12 || i > 15))
+                    _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);
+            }
         }
 
         _playerStat = new Stat(5, 5, 10, 5, 5, 5);
@@ -48,6 +59,12 @@ public class Player : NetworkBehaviour, IAttackable
     {
         if (IsOwner)
             MoveCharacter(_playerController.MoveDir);
+
+        if (Input.GetKey(KeyCode.L))
+            Dead();
+
+        if (Input.GetKey(KeyCode.R))
+            TestReturn();
     }
 
     private void MoveCharacter(Vector3 dir)
@@ -57,8 +74,43 @@ public class Player : NetworkBehaviour, IAttackable
 
     public void OnDamaged(int damage)
     {
+        Debug.Log($"damaged {damage}");
         _playerStat.Hp -= damage;
         //사운드
+        if (_playerStat.Hp <= 0 && IsOwner)
+            Dead();
+    }
+
+    private void Dead()
+    {
+        for (int i = 0; i < _skinnedMeshRenderer.materials.Length; ++i)
+        {
+            if (i != 6 && i != 10 && (i < 12 || i > 15))
+                _skinnedMeshRenderer.materials[i].SetFloat("_Render", 0);
+        }
+
+        _deadPlayerCam.transform.position = transform.position + Vector3.up * 5;
+
+        _followPlayerCam.Priority = 0;
+        _followPlayerCam.Follow = null;
+        _deadPlayerCam.LookAt = _headTransform;
+        _followPlayerCam.gameObject.SetActive(false);
+        _playerController.Clear();
+        _interact.Clear();
+    }
+
+
+    //테스트용 함수
+    private void TestReturn()
+    {
+        _followPlayerCam.Priority = 10;
+        _followPlayerCam.Follow = _headTransform;
+        for (int i = 0; i < _skinnedMeshRenderer.materials.Length; ++i)
+        {
+            if (i != 6 && i != 10 && (i < 12 || i > 15))
+                _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);
+        }
+        _followPlayerCam.gameObject.SetActive(true);
     }
 
     public void OnHealed(int heal)
@@ -68,7 +120,10 @@ public class Player : NetworkBehaviour, IAttackable
 
     public override void OnNetworkDespawn()
     {
-        _playerController.Clear();
-        _interact.Clear();
+        if (IsOwner)
+        {
+            _playerController.Clear();
+            _interact.Clear();
+        }
     }
 }
