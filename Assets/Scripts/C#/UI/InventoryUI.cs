@@ -51,6 +51,7 @@ public class InventoryUI : MonoBehaviour
         DisplayNearItemUI();
         inventory.OnInventoryChanged += DisplayInventoryUI;
         inventory.OnNearItemChanged += DisplayNearItemUI;
+        inventory.EnableInventoryUI();
     }
 
     private void OnDisable()
@@ -89,7 +90,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private void DisplayInventoryUI(object sender, Inventory.InventoryEventHandlerArgs e)
+    private void DisplayInventoryUI(Inventory.InventoryEventHandlerArgs e)
     {
         // 인벤토리에서 제거된 아이템 추출 및 삭제
         List<InventoryItem> inventoryItems = new List<InventoryItem>();
