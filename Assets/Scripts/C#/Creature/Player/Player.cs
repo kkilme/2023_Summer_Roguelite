@@ -76,9 +76,15 @@ public class Player : NetworkBehaviour, IAttackable
     {
         Debug.Log($"damaged {damage}");
         _playerStat.Hp -= damage;
+        CancelInteraction();
         //사운드
         if (_playerStat.Hp <= 0 && IsOwner)
             Dead();
+    }
+
+    public void CancelInteraction()
+    {
+        _playerController.CancelInteraction();
     }
 
     private void Dead()

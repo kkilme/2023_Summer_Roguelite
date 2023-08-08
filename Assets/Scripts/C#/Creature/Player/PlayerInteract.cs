@@ -32,18 +32,19 @@ public class PlayerInteract : MonoBehaviour
             Debug.DrawLine(_cam.position, _cam.position + 3 * _cam.forward, Color.red, 5f);
 
             if (Physics.Linecast(_cam.position, _cam.position + 3 * _cam.forward, out hit))
+            {
                 if (Item == null || hit.transform != _itemTransform)
                 {
-                    IInteraction item = null;
                     ClearItem();
 
-                    if (hit.transform.TryGetComponent(out item))
+                    if (hit.transform.TryGetComponent(out IInteraction item))
                     {
                         Item = item;
                         _itemTransform = hit.transform;
                         Item.Interactable(true);
                     }
                 }
+            }
 
             else
                 ClearItem();
