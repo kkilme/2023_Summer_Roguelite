@@ -37,17 +37,15 @@ public class MapManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        SceneEvent a = new SceneEvent();
-        a.SceneEventType = SceneEventType.LoadEventCompleted;
-        Init(a);
-    }
-
-    private void Start()
-    {
         //SceneEvent a = new SceneEvent();
         //a.SceneEventType = SceneEventType.LoadEventCompleted;
         //Init(a);
-        //NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
+        NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        NetworkManager.Singleton.SceneManager.OnSceneEvent -= Init;
     }
 
     private void Init(SceneEvent sceneEvent)
@@ -56,6 +54,10 @@ public class MapManager : NetworkBehaviour
         {
             if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
             {
+                if (roomPrefabsDic.ContainsKey(ROOMSIZE.SMALL))
+                {
+                    return;
+                }
 
                 foreach (ROOMSIZE roomSize in Enum.GetValues(typeof(ROOMSIZE)))
                     roomPrefabsDic.Add(roomSize, new List<Room>());
@@ -80,9 +82,9 @@ public class MapManager : NetworkBehaviour
                     //NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
                     roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
                 }
-            }
 
-            //GenerateMapServerRPC();
+                GenerateMapServerRPC();
+            }
         }
     }
 
@@ -228,11 +230,11 @@ public class MapManager : NetworkBehaviour
         //    }
         //}
 
-        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
-        //{
-        //    var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
-        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
-        //}
+        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
+        {
+            var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
+            networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+        }
     }
 
     // 기존 맵 초기화 함수

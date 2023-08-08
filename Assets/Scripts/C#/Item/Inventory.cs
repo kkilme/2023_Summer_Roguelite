@@ -10,6 +10,11 @@ using Unity.Services.Economy;
 using UnityEngine;
 using Unity.Services.Authentication;
 using UnityEngine.InputSystem.Processors;
+using Unity.Services.Core;
+using Unity.Services.CloudCode;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 public enum ROTATION_TYPE
 {
@@ -19,12 +24,27 @@ public enum ROTATION_TYPE
 
 public class Inventory : NetworkBehaviour
 {
+    private class ResultType
+    {
+        public InventoryResponse[] inventory;
+    }
+
+    private class InventoryResponse
+    {
+        public JObject created;
+        public JObject instanceData;
+        public string inventoryItemId;
+        public JObject modified;
+        public string playersInventoryItemId;
+        public string writeLock;
+    }
+
     public NetworkVariable<int> sizeX = new NetworkVariable<int>();
     public NetworkVariable<int> sizeY = new NetworkVariable<int>();
-    private NetworkList<InventoryItem> items;
+    public NetworkList<InventoryItem> items;
     private List<GettableItem> nearItems = new List<GettableItem>();
 
-    public event EventHandler<InventoryEventHandlerArgs> OnInventoryChanged;
+    public event Action<InventoryEventHandlerArgs> OnInventoryChanged;
     public class InventoryEventHandlerArgs
     {
         public NetworkList<InventoryItem> InventoryItems { get; private set; }
@@ -56,7 +76,7 @@ public class Inventory : NetworkBehaviour
 
     public void OnItemChanged(NetworkListEvent<InventoryItem> changeEvent)
     {
-        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
+        OnInventoryChanged?.Invoke(inventoryEventHandlerArgs);
         if (changeEvent.PreviousValue.Equals(inventoryUI.selectedInventoryItem) && inventoryUI.selectedInventoryItem.itemName != ITEMNAME.NONE)
             inventoryUI.selectedInventoryItem = changeEvent.Value;
     }
@@ -68,7 +88,7 @@ public class Inventory : NetworkBehaviour
         items = new NetworkList<InventoryItem>();
     }
 
-    public override async void OnNetworkSpawn()
+    public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
@@ -87,7 +107,7 @@ public class Inventory : NetworkBehaviour
 
         if (IsOwner)
         {
-            InitServerRPC(EconomyService.Instance.Configuration.GetConfigAssignmentHash());
+            InitServerRPC(AuthenticationService.Instance.PlayerId);
             inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items);
             inventoryUI = FindObjectOfType<InventoryUI>(true);
             items.OnListChanged += OnItemChanged;
@@ -95,9 +115,33 @@ public class Inventory : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void InitServerRPC(string accessToken)
+    private void InitServerRPC(string playerID)
     {
-        EconomyService.Instance.PlayerInventory.GetInventoryAsync
+        Init(playerID);
+    }
+
+    private async void Init(string playerID)
+    {
+        var response = await CloudCodeService.Instance.CallEndpointAsync<InventoryResponse[]>("GetPlayerInventory", new Dictionary<string, object>() { { "otherPlayerId", playerID } });
+        
+        for (int i = 0; i < response.Length; i++)
+        {
+            var data = JsonConvert.DeserializeObject<Storage.StorageItemData>(response[i].instanceData.ToString());
+            if (data.inInventory)
+            {
+                ROTATION_TYPE rotationType;
+
+                if (data.isRight)
+                    rotationType = ROTATION_TYPE.RIGHT;
+                else
+                    rotationType = ROTATION_TYPE.TOP;
+
+                var item = new InventoryItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), response[i].inventoryItemId), 
+                    rotationType, data.currentCount, data.maxCount, data.sizeX, data.sizeY, data.posX, data.posY);
+
+                items.Add(item);
+            }
+        }
     }
 
     // 인벤토리안에 아이템을 넣는 함수. 매개변수인 x,y가 기준점으로 좌하단에 위치함
@@ -187,7 +231,7 @@ public class Inventory : NetworkBehaviour
     [ClientRpc]
     public void MoveItemClientRPC(ClientRpcParams clientRpcParams = default)
     {
-        OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
+        OnInventoryChanged?.Invoke(inventoryEventHandlerArgs);
     }
 
     private void TransferItemCount(InventoryItem item, InventoryItem receiveItem, ServerRpcParams serverRpcParams)
@@ -379,6 +423,11 @@ public class Inventory : NetworkBehaviour
     public System.Collections.ObjectModel.ReadOnlyCollection<GettableItem> GetNearItems()
     {
         return nearItems.AsReadOnly();
+    }
+
+    public void EnableInventoryUI()
+    {
+        OnInventoryChanged?.Invoke(inventoryEventHandlerArgs);
     }
 
     [ServerRpc]
