@@ -23,8 +23,13 @@ public class Player : NetworkBehaviour, IAttackable
     private InputActionAsset _iaa;
     private Rigidbody _rigidbody;
     private SkinnedMeshRenderer _skinnedMeshRenderer;
-    CinemachineVirtualCamera _followPlayerCam = null;
-    CinemachineVirtualCamera _deadPlayerCam = null;
+
+    [SerializeField]
+    private CinemachineVirtualCamera _followPlayerCam;
+    [SerializeField]
+    private CinemachineVirtualCamera _deadPlayerCam;
+    [SerializeField]
+    private Camera _mainCam;
 
     [ServerRpc]
     public void SetPlayerStatServerRPC(Stat stat)
@@ -37,10 +42,8 @@ public class Player : NetworkBehaviour, IAttackable
         _interact = GetComponentInChildren<PlayerInteract>();
         _interact.gameObject.SetActive(false);
         if (IsOwner) {
-            _followPlayerCam = GameObject.Find("FollowPlayerCam").GetComponent<CinemachineVirtualCamera>();
-            _deadPlayerCam = GameObject.Find("DeadPlayerCam").GetComponent<CinemachineVirtualCamera>();
             //오버레이 카메라 추가
-            Camera.main.GetComponent<UniversalAdditionalCameraData>().cameraStack.Add(_armNWeaponCam);
+            _mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Add(_armNWeaponCam);
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);
@@ -101,8 +104,8 @@ public class Player : NetworkBehaviour, IAttackable
         }
 
         _deadPlayerCam.transform.position = transform.position + Vector3.up * 5;
-        Camera.main.GetComponent<UniversalAdditionalCameraData>().cameraStack.Clear();
-        Camera.main.cullingMask = -1;
+        _mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Clear();
+        _mainCam.cullingMask = -1;
 
         _followPlayerCam.Priority = 0;
         _followPlayerCam.Follow = null;
