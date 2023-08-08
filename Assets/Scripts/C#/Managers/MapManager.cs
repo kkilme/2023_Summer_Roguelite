@@ -198,16 +198,16 @@ public class MapManager : NetworkBehaviour
 
         _testMap.BuildNavMesh();
 
-        for (int i = 0; i < rooms.Count; ++i)
-        {
-            int rand = Random.Range(0, 100);
-            if (rand >= 66)
-            {
-                var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
-                spawner.Init();
-                spawner.SpawnMonster();
-            }
-        }
+        //for (int i = 0; i < rooms.Count; ++i)
+        //{
+        //    int rand = Random.Range(0, 100);
+        //    if (rand >= 66)
+        //    {
+        //        var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
+        //        spawner.Init();
+        //        spawner.SpawnMonster();
+        //    }
+        //}
 
         //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
         //{
