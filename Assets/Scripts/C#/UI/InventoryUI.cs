@@ -60,26 +60,29 @@ public class InventoryUI : MonoBehaviour
         inventory.OnNearItemChanged -= DisplayNearItemUI;
     }
 
+    // 추후에 InputSystem으로 교체.
     private void Update()
     {
+        var pos = GetGridPostion(Input.mousePosition);
+
         if (selectedInventoryItem.itemName != ITEMNAME.NONE)
         {
-            var pos = GetGridPostion(Input.mousePosition);
             inventoryDic[selectedInventoryItem].image.rectTransform.localPosition = new Vector2(pos.x, pos.y) * 64;
         }
         if (selectedNearItem != null)
         {
-            var pos = GetGridPostion(Input.mousePosition);
             selectedNearItem.image.rectTransform.localPosition = new Vector2(pos.x, pos.y) * 64;
         }
         if (Input.GetMouseButtonDown(0))
         {
-            var pos = GetGridPostion(Input.mousePosition);
             selectedInventoryItem = inventory.SelectItem(pos.x, pos.y);
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            UseItem(pos);
         }
         if (Input.GetMouseButtonUp(0))
         {
-            Vector2Int pos = GetGridPostion(Input.mousePosition);
             DropItem(pos);
             MoveItem(pos);
             PutItem(pos);
@@ -90,6 +93,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    // 인벤토리 아이템들을 출력해주는 함수 인벤토리의 이벤트 핸들러를 통해 호출 됨.
     private void DisplayInventoryUI(Inventory.InventoryEventHandlerArgs e)
     {
         // 인벤토리에서 제거된 아이템 추출 및 삭제
@@ -135,6 +139,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    // GettableItem들을 출력해주는 함수. 인벤토리의 이벤트 핸들러를 통해 호출됨.
     private void DisplayNearItemUI(object sender, Inventory.NearItemEventHandlerArgs e)
     {
         if (e.changedType == Inventory.NearItemEventHandlerArgs.ChangedType.Added)
@@ -145,9 +150,9 @@ public class InventoryUI : MonoBehaviour
             }
 
             nearDic[e.GettableItem].gameObject.SetActive(true);
-            var stat = Item.GetItemStat(e.GettableItem.ItemName, e.GettableItem.ItemCount);
+            var stat = Item.itemDataDic[e.GettableItem.ItemName];
             nearDic[e.GettableItem].image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
-            nearDic[e.GettableItem].text.text = stat.currentCount.ToString();
+            nearDic[e.GettableItem].text.text = e.GettableItem.ItemCount.ToString();
         }
 
         else
@@ -161,6 +166,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    // Enable 시 호출되는 함수. 기존의 DisplayNearItemUI와 기능은 똑같음.
     private void DisplayNearItemUI()
     {
         var nearItems = inventory.GetNearItems();
@@ -181,12 +187,13 @@ public class InventoryUI : MonoBehaviour
             }
 
             nearDic[nearItems[i]].gameObject.SetActive(true);
-            var stat = Item.GetItemStat(nearItems[i].ItemName, nearItems[i].ItemCount);
+            var stat = Item.itemDataDic[nearItems[i].ItemName];
             nearDic[nearItems[i]].image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
-            nearDic[nearItems[i]].text.text = stat.currentCount.ToString();
+            nearDic[nearItems[i]].text.text = nearItems[i].ItemCount.ToString();
         }
     }
 
+    // 아이템 이동 시키는 함수. 조건 체크 및 기능은 Inventory에서 진행.
     private void MoveItem(Vector2Int pos)
     {
         if (selectedInventoryItem.itemName != ITEMNAME.NONE)
@@ -197,6 +204,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    // 아이템 회전 시키는 함수. 조건 체크 및 기능은 Inventory에서 진행.
     private void RotateItem()
     {
         if (selectedInventoryItem.itemName != ITEMNAME.NONE)
@@ -205,6 +213,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    // 해당 마우스 좌표를 그리드 좌표로 변환시키는 함수.
     private Vector2Int GetGridPostion(Vector2 mousePosition)
     {
         Vector2Int gridPos = Vector2Int.zero;
@@ -215,12 +224,14 @@ public class InventoryUI : MonoBehaviour
         return gridPos;
     }
 
+    // GeattableItem을 선택하는 함수
     private void SelectNearItem(ItemUI itemUI)
     {
         selectedNearItem = itemUI;
         selectedNearItem.transform.SetParent(inventoryTile.transform);
     }
 
+    // GettableItem을 인벤토리에 넣는 함수. 조건 체크 및 기능은 Inventory에서 진행
     private void PutItem(Vector2Int pos)
     {
         if (selectedNearItem != null)
@@ -232,6 +243,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    // 아이템 버리는 함수. 조건 체크 및 기능은 Inventory에서 진행
     private void DropItem(Vector2Int pos)
     {
         if (selectedInventoryItem.itemName != ITEMNAME.NONE && (pos.x < 0 || pos.y < 0 || pos.x >= inventory.sizeX.Value || pos.y >= inventory.sizeY.Value))
@@ -239,5 +251,11 @@ public class InventoryUI : MonoBehaviour
             inventory.DropItemServerRPC(selectedInventoryItem);
             selectedInventoryItem = new InventoryItem();
         }
+    }
+
+    // 아이템 사용 함수. 조건 체크 및 기능은 Inventory에서 진행
+    private void UseItem(Vector2Int pos)
+    {
+        inventory.UseItemServerRPC(pos);
     }
 }

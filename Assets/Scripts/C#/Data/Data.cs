@@ -39,8 +39,9 @@ public struct Stat : INetworkSerializable
 
     public static Stat operator +(Stat a, Stat b)
     {
-        a.MaxHp += b.MaxHp;
         a.Hp += b.Hp;
+        if (a.Hp > a.MaxHp)
+            a.Hp = a.MaxHp;
         a.Speed += b.Speed;
         a.Gold += b.Gold;
         a.Damage += b.Damage;

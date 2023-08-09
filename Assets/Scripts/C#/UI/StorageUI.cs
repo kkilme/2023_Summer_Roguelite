@@ -21,7 +21,7 @@ public class StorageUI : MonoBehaviour
     private GameObject inventoryTile;
 
     private ItemUI selectedStorageItem;
-    private PlayersInventoryItem selectedInventoryItem;
+    public PlayersInventoryItem selectedInventoryItem;
 
     private Dictionary<PlayersInventoryItem, ItemUI> inventoryDic = new Dictionary<PlayersInventoryItem, ItemUI>();
     private Dictionary<PlayersInventoryItem, ItemUI> storageDic = new Dictionary<PlayersInventoryItem, ItemUI>();
