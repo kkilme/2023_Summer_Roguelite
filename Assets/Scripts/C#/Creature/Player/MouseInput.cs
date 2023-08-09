@@ -59,8 +59,8 @@ public class MouseInput : NetworkBehaviour
         _rotationX += mouseX;
         _rotationY = Mathf.Clamp(_rotationY + mouseY, _minX, _maxX);
 
-        _cam.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
-        _cam.eulerAngles = new Vector3(-_rotationY, 0, 0);
+        //_cam.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
+        _cam.eulerAngles = new Vector3(-_rotationY, _cam.eulerAngles.y, 0);
         _player.eulerAngles = new Vector3(0, _rotationX, 0);
 
         Vector3 cross = Vector3.Cross(_targetOriginAngle.position - transform.position, Vector3.up);
