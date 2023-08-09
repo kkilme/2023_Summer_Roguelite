@@ -480,8 +480,8 @@ public class Inventory : NetworkBehaviour
         // 1. 기존에 있던 인벤토리 아이템들을 삭제
         // 2. 현재 가지고있는 인벤토리 아이템들을 추가
 
-        await CloudCodeService.Instance.CallEndpointAsync("RemoveInventoryItem",
-                new Dictionary<string, object>() { { "otherPlayerId", playerId } });
+        Storage.StorageItemData[] datas = new Storage.StorageItemData[items.Count];
+        string[] itemNames = new string[items.Count];
 
         for (int i = 0; i < items.Count; i++)
         {
@@ -499,12 +499,20 @@ public class Inventory : NetworkBehaviour
                 sizeY = items[i].sizeY
             };
 
-            await CloudCodeService.Instance.CallEndpointAsync("SaveInventoryItems", 
-                new Dictionary<string, object>() { 
-                    { "otherPlayerId", playerId }, 
-                    {"inventoryItemId", items[i].itemName.ToString() },
-                    {"item", JsonConvert.SerializeObject(data) } });
+            datas[i] = data;
+            itemNames[i] = items[i].itemName.ToString();
         }
+
+        Debug.Log(JsonConvert.SerializeObject(itemNames));
+        Debug.Log(JsonConvert.SerializeObject(datas));
+
+        await CloudCodeService.Instance.CallEndpointAsync("SaveInventoryItems",
+            new Dictionary<string, object>() {
+                    { "otherPlayerId", playerId },
+                    { "inventoryItemIds", JsonConvert.SerializeObject(itemNames) },
+                    { "item", JsonConvert.SerializeObject(datas) } 
+            });
+
         Debug.Log("complete");
     }
 }
