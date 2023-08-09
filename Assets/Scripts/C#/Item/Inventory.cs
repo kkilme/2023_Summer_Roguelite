@@ -585,9 +585,6 @@ public class Inventory : NetworkBehaviour
             itemNames[i] = items[i].itemName.ToString();
         }
 
-        Debug.Log(JsonConvert.SerializeObject(itemNames));
-        Debug.Log(JsonConvert.SerializeObject(datas));
-
         await CloudCodeService.Instance.CallEndpointAsync("SaveInventoryItems",
             new Dictionary<string, object>() {
                     { "otherPlayerId", playerId },
