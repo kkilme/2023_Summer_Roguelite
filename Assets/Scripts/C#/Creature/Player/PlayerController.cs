@@ -12,17 +12,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum AnimParam
+public enum PlayerLock
 {
-    Move,
-    Shoot,
-    Damaged,
-    Dash,
-    Dead
+    No,
+    Yes
 }
 
-public class PlayerController
+public class PlayerController : NetworkBehaviour
 {
+    //서버만 상태를 들고 있도록
+    public PlayerLock ServerLock { get; private set; }
     private Player _player;
     private PlayerInteract _interact;
 
@@ -35,21 +34,22 @@ public class PlayerController
 
     private List<InputAction> _actions = new List<InputAction>();
     public Vector3 MoveDir { get; private set; }
+    
 
-    public PlayerController(GameObject go, bool isOwner, CinemachineVirtualCamera cam, InputActionAsset iaa, PlayerInteract interact)
+    public void Init(CinemachineVirtualCamera cam, InputActionAsset iaa, PlayerInteract interact)
     {
-        _player = Util.GetOrAddComponent<Player>(go);
-        _weapon = go.GetComponentInChildren<Gun>();
+        _player = Util.GetOrAddComponent<Player>(gameObject);
+        _weapon = gameObject.GetComponentInChildren<Gun>();
         MoveDir = Vector3.zero;
-        Pi = Util.GetOrAddComponent<PlayerInput>(go);
+        Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
         Pi.actions = null;
         Pi.actions = iaa;
-        Anim = Util.GetOrAddComponent<Animator>(go);
-        MouseInput = go.GetComponentInChildren<MouseInput>();
+        Anim = Util.GetOrAddComponent<Animator>(gameObject);
+        MouseInput = gameObject.GetComponentInChildren<MouseInput>();
         
-        if (isOwner)
+        if (IsOwner)
         {
-            MouseInput = go.GetComponentInChildren<MouseInput>();
+            MouseInput = gameObject.GetComponentInChildren<MouseInput>();
             InitInputSystem();
             MouseInput.Init(cam.transform);
             _interact = interact;
@@ -139,14 +139,25 @@ public class PlayerController
     {
         if (_interact.Item != null)
         {
-            _interact.Item.Interact(_player);
+            _interact?.Item?.Interact(_player);
             _actions[0].performed -= Move;
             _actions[0].canceled -= Idle;
             _actions[1].started -= Attack;
             _actions[1].canceled -= StopAttack;
             _actions[3].performed -= Reload;
+            _actions[4].started -= Aim;
             MouseInput.enabled = false;
+            InteractionServerRPC(true);
         }
+    }
+
+    [ServerRpc]
+    private void InteractionServerRPC(bool block)
+    {
+        if (block)
+            ServerLock = PlayerLock.Yes;
+        else
+            ServerLock = PlayerLock.No;
     }
 
     private void InteractionCancel(InputAction.CallbackContext ctx)
@@ -174,7 +185,11 @@ public class PlayerController
 
             _actions[3].performed -= Reload;
             _actions[3].performed += Reload;
+
+            _actions[4].started -= Aim;
+            _actions[4].started += Aim;
             MouseInput.enabled = true;
+            InteractionServerRPC(false);
         }
     }
 

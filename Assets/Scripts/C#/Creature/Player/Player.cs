@@ -11,6 +11,7 @@ using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 public class Player : NetworkBehaviour, IAttackable
 {
     public Stat PlayerStat { get => _playerStat; }
+    public PlayerLock ServerLock { get => _playerController.ServerLock; }
     private Stat _playerStat;
     public Inventory Inventory { get; private set; }
     private PlayerController _playerController;
@@ -48,7 +49,8 @@ public class Player : NetworkBehaviour, IAttackable
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);
-            _playerController = new PlayerController(gameObject, IsOwner, _followPlayerCam, _iaa, _interact);
+            _playerController = Util.GetOrAddComponent<PlayerController>(gameObject); 
+            _playerController.Init(_followPlayerCam, _iaa, _interact);
             _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             //6, 10 12 - 15
             for (int i = 0; i < _skinnedMeshRenderer.materials.Length; ++i)
@@ -61,7 +63,7 @@ public class Player : NetworkBehaviour, IAttackable
         else
             Destroy(_mainCam.transform.parent.gameObject);
 
-        _playerStat = new Stat(5, 5, 10, 5, 5, 5);
+        _playerStat = new Stat(5, 5, 5, 5, 5, 5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
         _rigidbody = GetComponent<Rigidbody>();
@@ -81,7 +83,7 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void MoveCharacter(Vector3 dir)
     {
-        _rigidbody.velocity = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir * PlayerStat.Speed;
+        transform.position += Quaternion.AngleAxis(transform.GetChild(0).localEulerAngles.z, Vector3.up) * dir.normalized * PlayerStat.Speed;
     }
 
     public void OnDamaged(int damage)
