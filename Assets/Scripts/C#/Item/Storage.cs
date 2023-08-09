@@ -8,6 +8,7 @@ using Unity.Services.Economy;
 using UnityEngine;
 using System;
 using System.Reflection;
+using Unity.VisualScripting;
 
 public class Storage : MonoBehaviour
 {
@@ -182,6 +183,7 @@ public class Storage : MonoBehaviour
         var newItem = await EconomyService.Instance.PlayerInventory.UpdatePlayersInventoryItemAsync(item.PlayersInventoryItemId, data);
         inventoryItems.Remove(item);
         inventoryItems.Add(newItem);
+        storageUI.selectedInventoryItem = newItem;
         OnInventoryChanged?.Invoke(this, inventoryEventHandlerArgs);
     }
 
@@ -208,7 +210,7 @@ public class Storage : MonoBehaviour
 
         for (int i = 0; i < inventoryItems.Count; i++)
         {
-            var data = playerItem.InstanceData.GetAs<StorageItemData>();
+            var data = inventoryItems[i].InstanceData.GetAs<StorageItemData>();
 
             if (data.Equals(item))
                 continue;
