@@ -68,8 +68,6 @@ public class Storage : MonoBehaviour
 
         storageUI = GetComponent<StorageUI>();
 
-        await EconomyService.Instance.Configuration.SyncConfigurationAsync();
-
         GetInventoryResult inventoryResult = await EconomyService.Instance.PlayerInventory.GetInventoryAsync();
 
         for (int i = 0; i < inventoryResult.PlayersInventoryItems.Count; i++)

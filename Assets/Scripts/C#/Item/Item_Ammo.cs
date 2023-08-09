@@ -6,10 +6,9 @@ public class Item_Ammo : Item
 {
     protected AMMOTYPE ammoType;
 
-    public Item_Ammo(AMMOTYPE ammoType, ItemStat itemStat, ITEMNAME itemName)
+    public Item_Ammo(AMMOTYPE ammoType, ITEMNAME itemName)
     {
         this.ammoType = ammoType;
-        this.ItemStat = itemStat;
         this.ItemName = itemName;
     }
 

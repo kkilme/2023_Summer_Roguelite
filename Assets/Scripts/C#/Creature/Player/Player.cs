@@ -10,8 +10,8 @@ using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class Player : NetworkBehaviour, IAttackable
 {
-    public Stat PlayerStat { get => _playerStat; }
-    private Stat _playerStat;
+    public Stat PlayerStat { get => _playerStat.Value; }
+    private NetworkVariable<Stat> _playerStat = new NetworkVariable<Stat>();
     public Inventory Inventory { get; private set; }
     private PlayerController _playerController;
     private PlayerInteract _interact;
@@ -31,10 +31,9 @@ public class Player : NetworkBehaviour, IAttackable
     [SerializeField]
     private Camera _mainCam;
 
-    [ServerRpc]
-    public void SetPlayerStatServerRPC(Stat stat)
+    public void SetPlayerStat(Stat stat)
     {
-        _playerStat = stat;
+        _playerStat.Value = stat;
     }
 
     public override void OnNetworkSpawn()
@@ -61,7 +60,11 @@ public class Player : NetworkBehaviour, IAttackable
         else
             Destroy(_mainCam.transform.parent.gameObject);
 
-        _playerStat = new Stat(5, 5, 10, 5, 5, 5);
+        if (IsServer)
+        {
+            _playerStat.Value = new Stat(5, 5, 10, 5, 5, 5);
+        }
+
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
         _rigidbody = GetComponent<Rigidbody>();
@@ -86,11 +89,19 @@ public class Player : NetworkBehaviour, IAttackable
 
     public void OnDamaged(int damage)
     {
+        if (!IsServer)
+        {
+            Debug.LogError("Client Can't Modify Player Stat!");
+            return;
+        }
+
         Debug.Log($"damaged {damage}");
-        _playerStat.Hp -= damage;
+        var stat = _playerStat.Value;
+        stat.Hp -= damage;
+        _playerStat.Value = stat;
         CancelInteraction();
         //사운드
-        if (_playerStat.Hp <= 0 && IsOwner)
+        if (_playerStat.Value.Hp <= 0 && IsOwner)
             Dead();
     }
 
@@ -135,7 +146,16 @@ public class Player : NetworkBehaviour, IAttackable
 
     public void OnHealed(int heal)
     {
-        _playerStat.Hp = _playerStat.Hp + heal < _playerStat.MaxHp ? _playerStat.Hp + heal : _playerStat.MaxHp;
+        if (!IsServer)
+        {
+            Debug.LogError("Client Can't Modify Player Stat!");
+            return;
+        }
+
+        var stat = _playerStat.Value;
+        stat.Hp = Mathf.Min(stat.MaxHp, stat.Hp + heal);
+
+        _playerStat.Value = stat;
     }
 
     public override void OnNetworkDespawn()
