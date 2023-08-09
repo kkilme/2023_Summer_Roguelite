@@ -33,6 +33,12 @@ public class WatingScene : MonoBehaviour
         SceneManager.LoadScene("MainScene");
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            StorageObj.SetActive(false);
+    }
+
     public async void Start()
     {
         await UnityServices.InitializeAsync();
@@ -45,7 +51,6 @@ public class WatingScene : MonoBehaviour
             {
                 Item.itemDataDic.Add(itemName, EconomyService.Instance.Configuration.GetInventoryItem(itemName.ToString()).CustomDataDeserializable.GetAs<Storage.StorageItemData>());
             }
-            
     }
 
     //private async void Test()
