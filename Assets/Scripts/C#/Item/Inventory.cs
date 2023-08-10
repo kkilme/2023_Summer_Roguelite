@@ -610,7 +610,7 @@ public class Inventory : NetworkBehaviour
 
             if (usableItem != null)
             {
-                // 아이템 사용
+                // 아이템 사용 ture 리턴시에만 아이템 카운트 감소
                 if (usableItem.Use(GetComponent<Player>()))
                 {
                     item.currentCount -= 1;
