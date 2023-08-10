@@ -11,22 +11,24 @@ public enum ROOMSIZE
 
 public enum ROOMTYPE
 {
-    NECESSARY_START, // »çÀÌ¿¡ ÀÖ´Â ¹æµéÀº ¹«Á¶°Ç »ý¼ºµÊ
-    ARMORY, // ¹«±â°í. ¹«±â³ª ÃÑ¾ËµîÀÌ ¹èÄ¡µÇ¾î ÀÖÀ½
-    MACHINE_ROOM, // ±â°è½Ç. ¿£Áø ºÎÇ°µîÀ» ¾òÀ» ¼ö ÀÖÀ½ (±¸È£¼± Å»Ãâ ½Ã ÇÊ¿äÇÑ ¾ÆÀÌÅÛ)
+    NECESSARY_START, // ì‚¬ì´ì— ìžˆëŠ” ë°©ë“¤ì€ ë¬´ì¡°ê±´ ìƒì„±ë¨
+    ARMORY, // ë¬´ê¸°ê³ . ë¬´ê¸°ë‚˜ ì´ì•Œë“±ì´ ë°°ì¹˜ë˜ì–´ ìžˆìŒ
+    MACHINE_ROOM, // ê¸°ê³„ì‹¤. ì—”ì§„ ë¶€í’ˆë“±ì„ ì–»ì„ ìˆ˜ ìžˆìŒ (êµ¬í˜¸ì„  íƒˆì¶œ ì‹œ í•„ìš”í•œ ì•„ì´í…œ)
     NECESSARY_END,
-    MEDICAL_ROOM, // ÀÇ¹«½Ç. ÀÇ¾àÅÛ µîÀÌ ÀÖÀ½
-    BED_ROOM, // Ä§½Ç. ¿©·¯ ÀâÅÛµéÀÌ ÀÖÀ½
-    LABORATORY, // ½ÇÇè½Ç. Æ¯¼ö ÅÛµéÀÌ ÀÖÀ½
-    MANAGEMENT_ROOM, // °ü¸®½Ç. Á» ´õ ÁÁÀº ÀâÅÛµéÀÌ ÀÖÀ½
+    
+    MEDICAL_ROOM, // ì˜ë¬´ì‹¤. ì˜ì•½í…œ ë“±ì´ ìžˆìŒ
+    BED_ROOM, // ì¹¨ì‹¤. ì—¬ëŸ¬ ìž¡í…œë“¤ì´ ìžˆìŒ
+    LABORATORY, // ì‹¤í—˜ì‹¤. íŠ¹ìˆ˜ í…œë“¤ì´ ìžˆìŒ
+    MANAGEMENT_ROOM, // ê´€ë¦¬ì‹¤. ì¢€ ë” ì¢‹ì€ ìž¡í…œë“¤ì´ ìžˆìŒ
+    
     SPECIAL_START,
-    APEX_LABORATORY, // Ã·´Ü ¿¬±¸½Ç. Æ¯¼ö ¹«±â È¹µæ °¡´É
+    APEX_LABORATORY, // ì²¨ë‹¨ ì—°êµ¬ì‹¤. íŠ¹ìˆ˜ ë¬´ê¸° íšë“ ê°€ëŠ¥
     SPECIAL_END
 }
 
 public class Room : MonoBehaviour
 {
-    public Transform[] itemPlaces; // ¾ÆÀÌÅÛµéÀ» ¹èÄ¡ÇÏ±â À§ÇÑ À§Ä¡µé
+    public Transform[] itemPlaces; // ì•„ì´í…œë“¤ì„ ë°°ì¹˜í•˜ê¸° ìœ„í•œ ìœ„ì¹˜ë“¤
     public ROOMSIZE roomSize;
     public ROOMTYPE roomType;
     public MonsterSpawner monsterSpawners;
