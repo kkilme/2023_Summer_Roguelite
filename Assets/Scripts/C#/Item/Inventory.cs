@@ -611,14 +611,15 @@ public class Inventory : NetworkBehaviour
             if (usableItem != null)
             {
                 // 아이템 사용
-                usableItem.Use(GetComponent<Player>());
+                if (usableItem.Use(GetComponent<Player>()))
+                {
+                    item.currentCount -= 1;
 
-                item.currentCount -= 1;
-
-                if (item.currentCount <= 0)
-                    items.Remove(item);
-                else
-                    items[FindIndex(item)] = item;
+                    if (item.currentCount <= 0)
+                        items.Remove(item);
+                    else
+                        items[FindIndex(item)] = item;
+                }
             }
         }
     }
