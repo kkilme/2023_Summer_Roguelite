@@ -63,7 +63,7 @@ public class Player : NetworkBehaviour, IAttackable
         else
             Destroy(_mainCam.transform.parent.gameObject);
 
-        _playerStat = new Stat(5, 5, 5, 5, 5, 5);
+        _playerStat = new Stat(5, 5, 1, 5, 5, 5);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
         _rigidbody = GetComponent<Rigidbody>();
@@ -83,7 +83,7 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void MoveCharacter(Vector3 dir)
     {
-        transform.position += Quaternion.AngleAxis(transform.GetChild(0).localEulerAngles.z, Vector3.up) * dir.normalized * PlayerStat.Speed;
+        transform.position += Quaternion.AngleAxis(transform.GetChild(0).localEulerAngles.z, Vector3.up) * dir.normalized * PlayerStat.Speed * 0.1f;
     }
 
     public void OnDamaged(int damage)
@@ -116,9 +116,9 @@ public class Player : NetworkBehaviour, IAttackable
         _followPlayerCam.Priority = 0;
         _followPlayerCam.Follow = null;
         _deadPlayerCam.LookAt = _headTransform;
-        _followPlayerCam.gameObject.SetActive(false);
-        _playerController.Clear();
-        _interact.Clear();
+        //_followPlayerCam.gameObject.SetActive(false);
+        //_playerController.Clear();
+        //_interact.Clear();
     }
 
 

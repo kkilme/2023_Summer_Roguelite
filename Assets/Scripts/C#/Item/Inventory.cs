@@ -23,7 +23,7 @@ public enum ROTATION_TYPE
     RIGHT
 }
 
-public class Inventory : NetworkBehaviour
+public partial class Inventory : NetworkBehaviour
 {
     private class ResultType
     {
@@ -145,7 +145,7 @@ public class Inventory : NetworkBehaviour
                 else
                     rotationType = ROTATION_TYPE.TOP;
 
-                var item = new InventoryItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), response[i].inventoryItemId), 
+                var item = new InventoryItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), response[i].inventoryItemId),
                     rotationType, data.currentCount, data.maxCount, data.sizeX, data.sizeY, data.posX, data.posY);
 
                 items.Add(item);

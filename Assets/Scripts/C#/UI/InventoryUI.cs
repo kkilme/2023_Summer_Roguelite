@@ -10,9 +10,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryUI : MonoBehaviour
+public partial class InventoryUI : MonoBehaviour
 {
     private RectTransform rectTransform;
+    private RectTransform equipRectTransform;
     private const int tileSizeWidth = 64;
     private const int tileSizeHeight = 64;
     private float width;
@@ -25,6 +26,7 @@ public class InventoryUI : MonoBehaviour
     public InventoryItem selectedInventoryItem;
     private ItemUI selectedNearItem;
 
+    //이미지 풀링 담당
     private Stack<ItemUI> inventoryItemUIStack;
     private Stack<ItemUI> nearItemUIStack;
 
@@ -34,16 +36,23 @@ public class InventoryUI : MonoBehaviour
     private void Awake()
     {
         inventory = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Inventory>();
-        rectTransform = transform.GetChild(0).GetComponent<RectTransform>();
+        rectTransform = transform.GetChild(1).GetComponent<RectTransform>();
+        equipRectTransform = transform.GetChild(0).GetComponent<RectTransform>();
 
-        inventoryItemUIStack = new Stack<ItemUI>(transform.GetChild(0).GetComponentsInChildren<ItemUI>(true));
-        nearItemUIStack = new Stack<ItemUI>(transform.GetChild(1).GetComponentsInChildren<ItemUI>(true));
+        inventoryItemUIStack = new Stack<ItemUI>(transform.GetChild(1).GetComponentsInChildren<ItemUI>(true));
+        nearItemUIStack = new Stack<ItemUI>(transform.GetChild(2).GetComponentsInChildren<ItemUI>(true));
         nearItemUIStack.ToList().ForEach(x => x.action += SelectNearItem);
         scrollRect = GetComponentInChildren<ScrollRect>(true);
-        inventoryTile = transform.GetChild(0).gameObject;
+        inventoryTile = transform.GetChild(1).gameObject;
 
         width = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.x;
         height = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.y;
+
+        //Equip UI AABB
+        equipUIMaxX = equipRectTransform.position.x + equipRectTransform.sizeDelta.x / 2;
+        equipUIMinX = equipRectTransform.position.x - equipRectTransform.sizeDelta.x / 2;
+        equipUIMaxY = equipRectTransform.position.y + equipRectTransform.sizeDelta.y / 2;
+        equipUIMinY = equipRectTransform.position.y - equipRectTransform.sizeDelta.y / 2;
     }
 
     private void OnEnable()
@@ -76,11 +85,13 @@ public class InventoryUI : MonoBehaviour
         {
             var pos = GetGridPostion(Input.mousePosition);
             selectedInventoryItem = inventory.SelectItem(pos.x, pos.y);
+            Debug.Log(Input.mousePosition);
         }
         if (Input.GetMouseButtonUp(0))
         {
             Vector2Int pos = GetGridPostion(Input.mousePosition);
             DropItem(pos);
+            EquipItem();
             MoveItem(pos);
             PutItem(pos);
         }
@@ -211,7 +222,6 @@ public class InventoryUI : MonoBehaviour
 
         gridPos.x = Mathf.FloorToInt((mousePosition.x - rectTransform.position.x) / width);
         gridPos.y = Mathf.FloorToInt((mousePosition.y - rectTransform.position.y) / height);
-
         return gridPos;
     }
 
@@ -234,7 +244,9 @@ public class InventoryUI : MonoBehaviour
 
     private void DropItem(Vector2Int pos)
     {
-        if (selectedInventoryItem.itemName != ITEMNAME.NONE && (pos.x < 0 || pos.y < 0 || pos.x >= inventory.sizeX.Value || pos.y >= inventory.sizeY.Value))
+        if (selectedInventoryItem.itemName != ITEMNAME.NONE && 
+            (pos.x < 0 || pos.y < 0 || pos.x >= inventory.sizeX.Value || pos.y >= inventory.sizeY.Value)
+            && !(selectedInventoryItem.itemName > ITEMNAME.EQUIPSTART && selectedInventoryItem.itemName < ITEMNAME.EQUIPEND && MouseInEquipUI()))
         {
             inventory.DropItemServerRPC(selectedInventoryItem);
             selectedInventoryItem = new InventoryItem();
