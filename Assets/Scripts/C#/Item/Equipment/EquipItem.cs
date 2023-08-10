@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class EquipItem : Item
 {
-    public EquipItem(ITEMNAME itemName, ItemStat itemstat)
+    public EquipItem(ITEMNAME itemName)
     {
-        ItemStat = itemstat;
         ItemName = itemName;
     }
 

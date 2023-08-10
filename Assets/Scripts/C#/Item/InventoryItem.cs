@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Economy;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -14,32 +15,21 @@ public struct InventoryItem : INetworkSerializable, System.IEquatable<InventoryI
     public int posX, posY;
     public int hashCode;
 
-    public InventoryItem(ITEMNAME itemName, ROTATION_TYPE rotationType, int currentCount, int maxCount, int sizeX, int sizeY, int posX, int posY)
+    public InventoryItem(ITEMNAME itemName, ROTATION_TYPE rotationType, int currentCount, int posX, int posY)
     { 
         this.itemName = itemName;
+
+        var data = Item.itemDataDic[itemName];
+
         this.rotationType = rotationType;
         this.currentCount = currentCount;
-        this.maxCount = maxCount;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+        maxCount = data.maxCount;
+        sizeX = data.sizeX;
+        sizeY = data.sizeY;
         this.posX = posX;
         this.posY = posY;
         hashCode = 18181818;
         hashCode = GetHashCode();
-    }
-
-    public InventoryItem(ITEMNAME itemName, ItemStat itemStat)
-    {
-        this.itemName = itemName;
-        rotationType = ROTATION_TYPE.RIGHT;
-        currentCount = itemStat.currentCount;
-        maxCount = itemStat.maxCount;
-        sizeX = itemStat.sizeX;
-        sizeY = itemStat.sizeY;
-        posX = -1;
-        posY = -1;
-        hashCode = 18181818;
-        hashCode = Util.GetRealHashCode();
     }
 
     public bool Equals(InventoryItem other)
