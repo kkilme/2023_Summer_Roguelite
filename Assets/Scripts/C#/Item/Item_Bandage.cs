@@ -4,18 +4,15 @@ using System.Collections.Generic;
 public class Item_Bandage : Item
 {
     private int healAmount;
-    private Stat healStat;
 
-    public Item_Bandage(int count)
+    public Item_Bandage()
     {
-        ItemStat = new ItemStat("Bandage", "Heal Player", 1, 1, count, 5);
-        healStat = new Stat();
         ItemName = ITEMNAME.BANDAGE;
-        healStat.Hp = healAmount;
+        healAmount = 30;
     }
 
-    public override void Use(Player player)
+    public override bool Use(Player player)
     {
-        player.SetPlayerStatServerRPC(player.PlayerStat + healStat);
+        return player.OnHealed(30);
     }
 }

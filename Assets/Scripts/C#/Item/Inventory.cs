@@ -91,6 +91,7 @@ public class Inventory : NetworkBehaviour
 
     private void Update()
     {   
+        // 인벤토리 저장 테스트 코드
         if (Input.GetKeyDown(KeyCode.M) && IsOwner)
         {
             SaveInventoryServerRPC(AuthenticationService.Instance.PlayerId);
@@ -103,15 +104,6 @@ public class Inventory : NetworkBehaviour
         {
             sizeX.Value = 10;
             sizeY.Value = 12;
-
-
-            //GetInventoryResult inventoryResult = await EconomyService.Instance.PlayerInventory.GetInventoryAsync();
-
-            //for (int i = 0; i < inventoryResult.PlayersInventoryItems.Count; i++)
-            //{
-            //    if (inventoryResult.PlayersInventoryItems[i].InstanceData.GetAs<Storage.StorageItemData>().inInventory)
-            //        items.Add(inventoryResult.PlayersInventoryItems[i]);
-            //}
         }
 
         if (IsOwner)
@@ -129,6 +121,10 @@ public class Inventory : NetworkBehaviour
         Init(playerID);
     }
 
+    /// <summary>
+    /// 게임 시작 시 플레이어가 창고에서 넣어놨던 인벤토리 아이템들을 불러오는 함수
+    /// </summary>
+    /// <param name="playerID"></param>
     private async void Init(string playerID)
     {
         var response = await CloudCodeService.Instance.CallEndpointAsync<InventoryResponse[]>("GetPlayerInventory", new Dictionary<string, object>() { { "otherPlayerId", playerID } });
@@ -146,20 +142,26 @@ public class Inventory : NetworkBehaviour
                     rotationType = ROTATION_TYPE.TOP;
 
                 var item = new InventoryItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), response[i].inventoryItemId), 
-                    rotationType, data.currentCount, data.maxCount, data.sizeX, data.sizeY, data.posX, data.posY);
+                    rotationType, data.currentCount, data.posX, data.posY);
 
                 items.Add(item);
             }
         }
     }
 
-    // 인벤토리안에 아이템을 넣는 함수. 매개변수인 x,y가 기준점으로 좌하단에 위치함
+    /// <summary>
+    /// 인벤토리안에 아이템을 넣는 함수. 매개변수인 x,y가 기준점으로 좌하단에 위치함
+    /// </summary>
+    /// <param name="item">해당 아이템의 NetworkObject</param>
+    /// <param name="posX">넣고자 하는 x좌표</param>
+    /// <param name="posY">넣고자 하는 y좌표</param>
+    /// <param name="serverRpcParams"></param>
     [ServerRpc]
     public void PutItemServerRPC(NetworkObjectReference item, int posX, int posY, ServerRpcParams serverRpcParams = default)
     {
         NetworkObject getItem = item;
         var t = getItem.GetComponent<GettableItem>();
-        InventoryItem inventoryItem = Item.GetInventoryItem(t.ItemName, t.ItemCount);
+        InventoryItem inventoryItem = Item.GetInventoryItem(t.ItemName, ROTATION_TYPE.RIGHT, t.ItemCount, posX, posY);
         inventoryItem.posX = posX;
         inventoryItem.posY = posY;
 
@@ -197,14 +199,28 @@ public class Inventory : NetworkBehaviour
     //    }
     //}
 
-    // 인벤토리에있는 아이템을 제거함
-    [ServerRpc]
-    public void RemoveItemServerRPC(InventoryItem item, ServerRpcParams serverRpcParams = default)
+    /// <summary>
+    /// 인벤토리에있는 아이템을 제거함
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="serverRpcParams"></param>
+    public void RemoveItem(InventoryItem item)
     {
+        if (!IsServer)
+        {
+            return;
+        }
+
         items.Remove(item);
     }
 
-    // 인벤토리에 존재하는 아이템의 위치를 바꾸는 함수
+    /// <summary>
+    /// 인벤토리에 존재하는 아이템의 위치를 바꾸는 함수
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="serverRpcParams"></param>
     [ServerRpc]
     public void MoveItemServerRPC(InventoryItem item, int x, int y, ServerRpcParams serverRpcParams = default)
     {
@@ -229,7 +245,7 @@ public class Inventory : NetworkBehaviour
                 }
             };
 
-
+            // 인벤토리가 변경되지 않았기에 다시 클라에게 인벤토리 호출을 해 원상태로 복귀 시킴
             MoveItemClientRPC(clientRpcParams);
             return;
         }
@@ -243,6 +259,12 @@ public class Inventory : NetworkBehaviour
         OnInventoryChanged?.Invoke(inventoryEventHandlerArgs);
     }
 
+    /// <summary>
+    /// 아이템 합치는 함수. 아이템 최대 갯수에 맞춰 아이템 갯수를 옮겨줌.
+    /// </summary>
+    /// <param name="item">이동시킬려는 아이템</param>
+    /// <param name="receiveItem">해당 위치에 있는 아이템. 해당 아이템의 갯수가 증가함</param>
+    /// <param name="serverRpcParams"></param>
     private void TransferItemCount(InventoryItem item, InventoryItem receiveItem, ServerRpcParams serverRpcParams)
     {
         if (!IsServer)
@@ -263,7 +285,11 @@ public class Inventory : NetworkBehaviour
             items[FindIndex(item)] = item;
     }
 
-    // 아이템을 회전시키는 함수
+    /// <summary>
+    /// 아이템을 회전시키는 함수
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="serverRpcParams"></param>
     [ServerRpc]
     public void RotateItemServerRPC(InventoryItem item, ServerRpcParams serverRpcParams = default)
     {
@@ -275,7 +301,11 @@ public class Inventory : NetworkBehaviour
         items[FindIndex(item)] = item;
     }
 
-    // 기준점에서 해당 크기의 공간이 비어있는지 확인하는 함수
+    /// <summary>
+    /// 기준점에서 해당 크기의 공간이 비어있는지 확인하는 함수
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     private bool CheckEmpty(InventoryItem item)
     {
         if (!IsServer)
@@ -357,6 +387,15 @@ public class Inventory : NetworkBehaviour
     //    return false;
     //}
 
+    /// <summary>
+    /// 같은 종류의 아이템이 있는지 확인하는 함수. 만약에 같은 종류의 아이템이 발견 되면 해당 아이템도 리턴함
+    /// </summary>
+    /// <param name="hashcode">아이템이 같은 아이템인지 구분하는 매개변수</param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="itemName"></param>
+    /// <param name="item">반환되는 같은 종류의 아이템. (기존 아이템과는 다른 아이템임)</param>
+    /// <returns></returns>
     private bool CheckSameItemType(int hashcode, int x, int y, ITEMNAME itemName, out InventoryItem item)
     {
         item = new InventoryItem();
@@ -388,6 +427,12 @@ public class Inventory : NetworkBehaviour
         return false;
     }
 
+    /// <summary>
+    /// 인벤토리 좌표에 해당하는 아이템을 리턴하는 함수
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
     public InventoryItem SelectItem(int x, int y)
     {
         if (x < 0 || y < 0 || x >= sizeX.Value || y >= sizeY.Value)
@@ -410,6 +455,10 @@ public class Inventory : NetworkBehaviour
         return new InventoryItem();
     }
 
+    /// <summary>
+    /// 인벤토리창 UI 관리 함수
+    /// </summary>
+    /// <returns></returns>
     public bool SwitchInventoryPanel()
     {
         bool state = inventoryUI.gameObject.activeSelf;
@@ -417,36 +466,63 @@ public class Inventory : NetworkBehaviour
         return !state;
     }
 
+    /// <summary>
+    /// 근처에 GettableItem이 있을시 nearItems 리스트에 추가하는 함수. 이벤트 콜도 진행.
+    /// </summary>
+    /// <param name="item"></param>
     public void AddNearItem(GettableItem item)
     {
         nearItems.Add(item);
         OnNearItemChanged?.Invoke(this, new NearItemEventHandlerArgs(item, NearItemEventHandlerArgs.ChangedType.Added));
     }
 
+    /// <summary>
+    /// 근처에 GettableItem이 없어질 시 nearItems 리스트에 삭제되는 함수. 이벤트 콜도 진행.
+    /// </summary>
+    /// <param name="item"></param>
     public void RemoveNearItem(GettableItem item)
     {
         nearItems.Remove(item);
         OnNearItemChanged?.Invoke(this, new NearItemEventHandlerArgs(item, NearItemEventHandlerArgs.ChangedType.Removed));
     }
 
+    /// <summary>
+    /// nearItems 리스트를 읽기 전용으로 반환하는 함수 (외부에서 수정 방지를 위함)
+    /// </summary>
+    /// <returns></returns>
     public System.Collections.ObjectModel.ReadOnlyCollection<GettableItem> GetNearItems()
     {
         return nearItems.AsReadOnly();
     }
 
+    /// <summary>
+    /// 인벤토리 UI가 Enable 될 시 해당 함수를 호출하여 인벤토리 재정렬 작업을 함
+    /// </summary>
     public void EnableInventoryUI()
     {
         OnInventoryChanged?.Invoke(inventoryEventHandlerArgs);
     }
 
+    /// <summary>
+    /// 아이템 버리는 함수. GettableItem이 생성
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="serverRpcParams"></param>
     [ServerRpc]
     public void DropItemServerRPC(InventoryItem item, ServerRpcParams serverRpcParams = default)
     {
         var networkObj = Instantiate(GettableItem.GetItemPrefab(item.itemName), transform.position + transform.forward, Quaternion.identity).GetComponent<NetworkObject>();
         networkObj.Spawn();
-        RemoveItemServerRPC(item , serverRpcParams);
+        RemoveItem(item);
     }
 
+    /// <summary>
+    /// ItemName에 해당하는 아이템이 인벤토리에 존재하는 지 체크하는 함수
+    /// 만약 존재시 해당 아이템도 리턴함
+    /// </summary>
+    /// <param name="itemName"></param>
+    /// <param name="item"></param>
+    /// <returns></returns>
     public bool HasItem(ITEMNAME itemName, out InventoryItem item)
     {
         for (int i = 0; i < items.Count; i++)
@@ -460,6 +536,12 @@ public class Inventory : NetworkBehaviour
         return false;
     }
 
+    /// <summary>
+    /// NetworkList에는 따로 Find함수가 없기 때문에 해당 함수를 제작함.
+    /// 매개변수로 들어오는 아이템이 리스트에 있을 시 해당 아이템의 인덱스를 반환해줌.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     private int FindIndex(InventoryItem item)
     {
         for (int i = 0; i < items.Count; i++)
@@ -469,6 +551,10 @@ public class Inventory : NetworkBehaviour
         return -1;
     }
 
+    /// <summary>
+    /// 인벤토리 저장 함수. 다음 함수를 통해 게임을 나가더라도 인벤토리와 창고 인벤토리의 아이템이 연동되게 할 수 있음.
+    /// </summary>
+    /// <param name="playerId"></param>
     [ServerRpc]
     private void SaveInventoryServerRPC(string playerId)
     {
@@ -480,8 +566,8 @@ public class Inventory : NetworkBehaviour
         // 1. 기존에 있던 인벤토리 아이템들을 삭제
         // 2. 현재 가지고있는 인벤토리 아이템들을 추가
 
-        await CloudCodeService.Instance.CallEndpointAsync("RemoveInventoryItem",
-                new Dictionary<string, object>() { { "otherPlayerId", playerId } });
+        Storage.StorageItemData[] datas = new Storage.StorageItemData[items.Count];
+        string[] itemNames = new string[items.Count];
 
         for (int i = 0; i < items.Count; i++)
         {
@@ -499,12 +585,46 @@ public class Inventory : NetworkBehaviour
                 sizeY = items[i].sizeY
             };
 
-            await CloudCodeService.Instance.CallEndpointAsync("SaveInventoryItems", 
-                new Dictionary<string, object>() { 
-                    { "otherPlayerId", playerId }, 
-                    {"inventoryItemId", items[i].itemName.ToString() },
-                    {"item", JsonConvert.SerializeObject(data) } });
+            datas[i] = data;
+            itemNames[i] = items[i].itemName.ToString();
         }
+
+        await CloudCodeService.Instance.CallEndpointAsync("SaveInventoryItems",
+            new Dictionary<string, object>() {
+                    { "otherPlayerId", playerId },
+                    { "inventoryItemIds", JsonConvert.SerializeObject(itemNames) },
+                    { "item", JsonConvert.SerializeObject(datas) } 
+            });
+
         Debug.Log("complete");
+    }
+
+    /// <summary>
+    /// 아이템 사용 함수 해당 좌표에 해당하는 아이템을 선택후 사용가능한 아이템일 시 아이템 사용 및 아이템 갯수를 줄여줌.
+    /// </summary>
+    /// <param name="pos"></param>
+    [ServerRpc]
+    public void UseItemServerRPC(Vector2Int pos)
+    {
+        var item = SelectItem(pos.x, pos.y);
+
+        if (item.itemName != ITEMNAME.NONE)
+        {
+            var usableItem = Item.GetUsableItem(item.itemName);
+
+            if (usableItem != null)
+            {
+                // 아이템 사용 ture 리턴시에만 아이템 카운트 감소
+                if (usableItem.Use(GetComponent<Player>()))
+                {
+                    item.currentCount -= 1;
+
+                    if (item.currentCount <= 0)
+                        items.Remove(item);
+                    else
+                        items[FindIndex(item)] = item;
+                }
+            }
+        }
     }
 }

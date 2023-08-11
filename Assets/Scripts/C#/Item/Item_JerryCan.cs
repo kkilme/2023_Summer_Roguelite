@@ -6,11 +6,11 @@ public class Item_JerryCan : Item
 {
     public Item_JerryCan(int count)
     {
-        ItemStat = new ItemStat("Jerry Can", "asdasd", 2, 3, count, 1);
         ItemName = ITEMNAME.JERRY_CAN;
     }
 
-    public override void Use(Player player)
+    public override bool Use(Player player)
     {
+        return true;
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using Unity.Netcode;
+using Unity.Services.Economy;
 using Unity.Services.Economy.Model;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,7 +22,7 @@ public class StorageUI : MonoBehaviour
     private GameObject inventoryTile;
 
     private ItemUI selectedStorageItem;
-    private PlayersInventoryItem selectedInventoryItem;
+    public PlayersInventoryItem selectedInventoryItem;
 
     private Dictionary<PlayersInventoryItem, ItemUI> inventoryDic = new Dictionary<PlayersInventoryItem, ItemUI>();
     private Dictionary<PlayersInventoryItem, ItemUI> storageDic = new Dictionary<PlayersInventoryItem, ItemUI>();
@@ -29,7 +30,7 @@ public class StorageUI : MonoBehaviour
     private Stack<ItemUI> inventoryItemUIStack;
     private Stack<ItemUI> storageItemUIStack;
 
-    [SerializeField] private TextMeshPro scrapText;
+    [SerializeField] private TextMeshProUGUI scrapText;
 
     private void Awake()
     {
@@ -71,10 +72,13 @@ public class StorageUI : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private async void OnEnable()
     {
         storage.OnStorageChanged += DisplayStorageItem;
         storage.OnInventoryChanged += DisplayInventoryUI;
+        var balances = await EconomyService.Instance.PlayerBalances.GetBalancesAsync();
+        int amount = (int)balances.Balances[0].Balance;
+        scrapText.text = $"Scrap: {amount}";
     }
 
     private void OnDisable()
