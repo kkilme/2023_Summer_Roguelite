@@ -13,6 +13,7 @@ using Random = UnityEngine.Random;
 
 public class Gun : NetworkBehaviour
 {
+    // 추후에 따로 Gundata Struct를 만들어 네트워크로 관리할 수 있도록 개선
     [SerializeField] private GunData _gunData; // 총의 모든 정보 보유
 
     [SerializeField] private GunCamera _cam; // 카메라
@@ -85,29 +86,56 @@ public class Gun : NetworkBehaviour
     /// <summary>
     /// 재장전 코루틴 시작
     /// </summary>
-    public void StartReload()
+    public void StartReload(Inventory inventory)
+    {
+        // 서버에서 리로드 관리
+        ReloadServerRPC(inventory.GetComponent<NetworkObject>());
+    }
+
+    [ServerRpc]
+    private void ReloadServerRPC(NetworkObjectReference networkObjectReference, ServerRpcParams serverRpcParams = default)
     {
         if (!_gunData.reloading)
         {
-            Reload().Forget();
-        }    
-    }
+            NetworkObject networkObj = networkObjectReference;
+            var inventory = networkObj.GetComponent<Inventory>();
 
+            if (inventory.HasItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), _gunData.ammoType.ToString()), out InventoryItem item))
+            {
+                Reload(item.currentCount, serverRpcParams.Receive.SenderClientId).Forget();
+                inventory.RemoveItem(item);
+            }
+        }
+    }
 
     /// <summary>
     /// 재장전
     /// </summary>
-    private async UniTaskVoid Reload()
+    private async UniTaskVoid Reload(int amount, ulong targetId)
     {
         Debug.Log("Reload Start");
         _gunData.reloading = true;
 
         await UniTask.Delay((int)(1000 * _gunData.reloadTime));
 
-         _gunData.currentAmmo = _gunData.magSize;
+         _gunData.currentAmmo = amount;
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { targetId }
+            }
+        };
+        ReloadClientRPC(amount, clientRpcParams);
 
         _gunData.reloading = false;
         Debug.Log("Reload finish");
+    }
+
+    [ClientRpc]
+    private void ReloadClientRPC(int amount, ClientRpcParams clientRpcParams)
+    {
+        _gunData.currentAmmo = amount;
     }
 
     // 총 발사 가능 여부 판단
