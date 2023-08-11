@@ -12,6 +12,7 @@ using UnityEngine.SceneManagement;
 public class WatingScene : MonoBehaviour
 {
     [SerializeField] private GameObject StorageObj;
+    [SerializeField] private GameObject StoreObj;
 
     public void StartGame()
     {
@@ -25,7 +26,7 @@ public class WatingScene : MonoBehaviour
 
     public void TurnOnStore()
     {
-
+        StoreObj.SetActive(true);
     }
 
     public void Disconnect()
@@ -36,7 +37,10 @@ public class WatingScene : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            StoreObj.SetActive(false);
             StorageObj.SetActive(false);
+        }
     }
 
     public async void Start()
