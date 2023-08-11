@@ -11,7 +11,7 @@ public class Stock : ScriptableAttachment
 
     public override void ApplyAttachmentEffect()
     {
-        throw new System.NotImplementedException();
+        
     }
 
     public override void RemoveAttachmentEffect()

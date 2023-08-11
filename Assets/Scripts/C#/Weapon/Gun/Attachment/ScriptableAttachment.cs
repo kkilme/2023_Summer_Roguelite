@@ -6,7 +6,10 @@ public abstract class ScriptableAttachment : ScriptableObject
 {
     public AttachmentType attachmentType;
     public string attachmentName;
-    private GunData gundata;
+    [HideInInspector]
+    public float originalvalue;
+    [HideInInspector]
+    public GunData gundata;
 
     public void Init(GunData gundata)
     {

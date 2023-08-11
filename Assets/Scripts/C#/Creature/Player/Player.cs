@@ -50,7 +50,7 @@ public class Player : NetworkBehaviour, IAttackable
             _playerController = new PlayerController(gameObject, IsOwner, _followPlayerCam, _iaa, _interact);
             _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             //6, 10 12 - 15
-            for (int i = 0; i < _skinnedMeshRenderer.materials.Length; ++i)
+            for (int i = 0; i < _skinnedMeshRenderer?.materials.Length; ++i)
             {
                 if (i != 6 && i != 10 && (i < 12 || i > 15))
                     _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);

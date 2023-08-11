@@ -267,12 +267,22 @@ public class Gun : NetworkBehaviour
         _cam.SetTargetFOV();
     }
 
+    public void EquipAttachment(ScriptableAttachment attachment)
+    {
+        _gunData.EquipAttachment(attachment);
+    }
+
+    public void UnEquipAttachment(AttachmentType attachmenttype)
+    {
+        _gunData.UnequipAttachment(attachmenttype);
+    }
+
     private void Update()
     {
         if (IsOwner)
         {
             _timeSinceLastShot += Time.deltaTime;
-            _ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
+            //_ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
             Debug.DrawRay(_cam.transform.position, _cam.transform.forward * 5, Color.red);
         }
         

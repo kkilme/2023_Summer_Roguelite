@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[CreateAssetMenu(fileName = "Scope", menuName = "Weapon/Attachment/Scope")]
 public class Scope : ScriptableAttachment
 {
     public float zoomrate;
     public override void ApplyAttachmentEffect()
     {
-        throw new System.NotImplementedException();
+        originalvalue = gundata.aimingZoomrate;
+        gundata.aimingZoomrate = zoomrate;
     }
 
     public override void RemoveAttachmentEffect()
     {
-        throw new System.NotImplementedException();
+        gundata.aimingZoomrate = originalvalue;
     }
 
 }
