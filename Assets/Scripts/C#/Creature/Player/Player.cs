@@ -144,18 +144,24 @@ public class Player : NetworkBehaviour, IAttackable
         _followPlayerCam.gameObject.SetActive(true);
     }
 
-    public void OnHealed(int heal)
+    public bool OnHealed(int heal)
     {
         if (!IsServer)
         {
             Debug.LogError("Client Can't Modify Player Stat!");
-            return;
+            return false;
+        }
+
+        if (_playerStat.Value.Hp == _playerStat.Value.MaxHp)
+        {
+            return false;
         }
 
         var stat = _playerStat.Value;
         stat.Hp = Mathf.Min(stat.MaxHp, stat.Hp + heal);
 
         _playerStat.Value = stat;
+        return true;
     }
 
     public override void OnNetworkDespawn()

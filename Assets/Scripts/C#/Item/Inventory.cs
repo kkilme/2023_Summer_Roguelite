@@ -204,9 +204,13 @@ public class Inventory : NetworkBehaviour
     /// </summary>
     /// <param name="item"></param>
     /// <param name="serverRpcParams"></param>
-    [ServerRpc]
-    public void RemoveItemServerRPC(InventoryItem item, ServerRpcParams serverRpcParams = default)
+    public void RemoveItem(InventoryItem item)
     {
+        if (!IsServer)
+        {
+            return;
+        }
+
         items.Remove(item);
     }
 
@@ -509,7 +513,7 @@ public class Inventory : NetworkBehaviour
     {
         var networkObj = Instantiate(GettableItem.GetItemPrefab(item.itemName), transform.position + transform.forward, Quaternion.identity).GetComponent<NetworkObject>();
         networkObj.Spawn();
-        RemoveItemServerRPC(item , serverRpcParams);
+        RemoveItem(item);
     }
 
     /// <summary>
@@ -610,15 +614,16 @@ public class Inventory : NetworkBehaviour
 
             if (usableItem != null)
             {
-                // 아이템 사용
-                usableItem.Use(GetComponent<Player>());
+                // 아이템 사용 ture 리턴시에만 아이템 카운트 감소
+                if (usableItem.Use(GetComponent<Player>()))
+                {
+                    item.currentCount -= 1;
 
-                item.currentCount -= 1;
-
-                if (item.currentCount <= 0)
-                    items.Remove(item);
-                else
-                    items[FindIndex(item)] = item;
+                    if (item.currentCount <= 0)
+                        items.Remove(item);
+                    else
+                        items[FindIndex(item)] = item;
+                }
             }
         }
     }

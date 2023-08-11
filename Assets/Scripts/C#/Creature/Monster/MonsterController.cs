@@ -36,11 +36,14 @@ public class MonsterController : NetworkBehaviour, IAttackable
     private MonsterBlackBoard _board;
     private MonsterDetect _detect;
     private MonsterAttack _attack;
-    private Stat _stat;
+    private NetworkVariable<Stat> _stat = new NetworkVariable<Stat>();
 
     public void Init(MonsterSpawner spawner)
     {
-        _stat = new Stat(1, 1, 5, 1, 1, 5);
+        if (IsServer)
+        {
+            _stat.Value = new Stat(1, 1, 5, 1, 1, 5);
+        }
         _attack = gameObject.GetComponentInChildren<MonsterAttack>();
         _detect = gameObject.GetComponentInChildren<MonsterDetect>();
         MakeBehaviour(spawner);
@@ -51,7 +54,7 @@ public class MonsterController : NetworkBehaviour, IAttackable
     private void ChildInit()
     {
         _detect.Init(_tree, _board);
-        _attack.Init(_stat);
+        _attack.Init(_stat.Value);
     }
 
     private void MakeBehaviour(MonsterSpawner spawner)
@@ -59,9 +62,9 @@ public class MonsterController : NetworkBehaviour, IAttackable
         _tree = new BehaviourTree();
         var agent = Util.GetOrAddComponent<NavMeshAgent>(gameObject);
         Animator animator = Util.GetOrAddComponent<Animator>(gameObject);
-        _board = new MonsterBlackBoard(transform, animator, agent, _stat, spawner);
+        _board = new MonsterBlackBoard(transform, animator, agent, _stat.Value, spawner);
 
-        agent.speed = _stat.Speed;
+        agent.speed = _stat.Value.Speed;
         
         //데미지를 입고 죽을 경우
         BehaviourSequence deadSeq = new BehaviourSequence(_tree);
@@ -146,9 +149,15 @@ public class MonsterController : NetworkBehaviour, IAttackable
         _tree.CheckSeq();
     }
 
-    public void OnHealed(int heal)
+    public bool OnHealed(int heal)
     {
+        if (_board.Stat.Hp == _board.Stat.MaxHp)
+        {
+            return false;
+        }
+
         _board.Stat.Hp = _board.Stat.Hp + heal < _board.Stat.MaxHp ? _board.Stat.Hp + heal : _board.Stat.MaxHp;
+        return true;
     }
 
     public override void OnNetworkDespawn()

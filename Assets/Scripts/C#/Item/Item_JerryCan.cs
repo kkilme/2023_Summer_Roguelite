@@ -9,7 +9,8 @@ public class Item_JerryCan : Item
         ItemName = ITEMNAME.JERRY_CAN;
     }
 
-    public override void Use(Player player)
+    public override bool Use(Player player)
     {
+        return true;
     }
 }

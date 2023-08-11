@@ -6,5 +6,5 @@ public interface IAttackable
 {
     public void OnDamaged(int damage);
 
-    public void OnHealed(int heal);
+    public bool OnHealed(int heal);
 }

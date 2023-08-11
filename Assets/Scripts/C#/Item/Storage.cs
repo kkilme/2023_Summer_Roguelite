@@ -210,7 +210,7 @@ public class Storage : MonoBehaviour
         {
             var data = inventoryItems[i].InstanceData.GetAs<StorageItemData>();
 
-            if (data.Equals(item))
+            if (inventoryItems[i].Equals(playerItem))
                 continue;
 
             if (data.isRight)

@@ -67,7 +67,7 @@ public class LifeShip : NetworkBehaviour, IInteraction
             Debug.Log("사용 완료");
             _bFull = true;
             //플레이어에게 다 찼다고 알리기
-            player.Inventory.RemoveItemServerRPC(_item);
+            player.Inventory.RemoveItem(_item);
             _item = new InventoryItem();
             player.CancelInteraction();
         }
