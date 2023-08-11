@@ -77,8 +77,8 @@ public class Player : NetworkBehaviour, IAttackable
         if (Input.GetKey(KeyCode.L))
             Dead();
 
-        if (Input.GetKey(KeyCode.R))
-            TestReturn();
+        //if (Input.GetKey(KeyCode.R))
+        //    TestReturn();
     }
 
     private void MoveCharacter(Vector3 dir)
