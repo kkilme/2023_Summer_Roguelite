@@ -542,7 +542,7 @@ public class Inventory : NetworkBehaviour
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    private int FindIndex(InventoryItem item)
+    public int FindIndex(InventoryItem item)
     {
         for (int i = 0; i < items.Count; i++)
             if (items[i].Equals(item))

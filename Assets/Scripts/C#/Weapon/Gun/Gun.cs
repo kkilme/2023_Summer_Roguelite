@@ -100,11 +100,33 @@ public class Gun : NetworkBehaviour
             NetworkObject networkObj = networkObjectReference;
             var inventory = networkObj.GetComponent<Inventory>();
 
-            if (inventory.HasItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), _gunData.ammoType.ToString()), out InventoryItem item))
+            int requiredAmmo = _gunData.magSize - _gunData.currentAmmo;
+            int fillAmount = 0;
+
+            while (fillAmount < requiredAmmo)
             {
-                Reload(item.currentCount, serverRpcParams.Receive.SenderClientId).Forget();
-                inventory.RemoveItem(item);
+                if (inventory.HasItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), _gunData.ammoType.ToString()), out InventoryItem item))
+                {
+                    if (fillAmount + item.currentCount < requiredAmmo)
+                    {
+                        // 총알 아이템의 현재 갯수를 모두 소모해도 탄약이 더 필요하다면 선택된 총알 아이템 제거
+                        fillAmount += item.currentCount;
+                        inventory.RemoveItem(item);
+                    }
+                    else
+                    {
+                        int removedCount = requiredAmmo - fillAmount;
+                        item.currentCount -= removedCount;
+                        fillAmount = requiredAmmo;
+                        inventory.items[inventory.FindIndex(item)] = item;
+                    }
+                }
+                else
+                    break;
             }
+
+            if (fillAmount > 0)
+                Reload(fillAmount, serverRpcParams.Receive.SenderClientId).Forget();
         }
     }
 
