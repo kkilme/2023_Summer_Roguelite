@@ -10,10 +10,9 @@ using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class Player : NetworkBehaviour, IAttackable
 {
-
     public PlayerLock ServerLock { get => _playerController.ServerLock; }
-
     public Stat PlayerStat { get => _playerStat.Value; }
+    [SerializeField]
     private NetworkVariable<Stat> _playerStat = new NetworkVariable<Stat>();
     public Inventory Inventory { get; private set; }
     private PlayerController _playerController;
@@ -26,6 +25,7 @@ public class Player : NetworkBehaviour, IAttackable
     private InputActionAsset _iaa;
     private Rigidbody _rigidbody;
     private SkinnedMeshRenderer _skinnedMeshRenderer;
+    private Transform _rotationTransform;
 
     [SerializeField]
     private CinemachineVirtualCamera _followPlayerCam;
@@ -59,6 +59,7 @@ public class Player : NetworkBehaviour, IAttackable
                 if (i != 6 && i != 10 && (i < 12 || i > 15))
                     _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);
             }
+            _rotationTransform = transform.GetChild(0).GetChild(0);
         }
 
         else
@@ -87,7 +88,7 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void MoveCharacter(Vector3 dir)
     {
-        transform.position += Quaternion.AngleAxis(transform.GetChild(0).localEulerAngles.z, Vector3.up) * dir.normalized * PlayerStat.Speed * 0.1f;
+        transform.position += Quaternion.AngleAxis(_rotationTransform.localEulerAngles.z, Vector3.up) * dir.normalized * PlayerStat.Speed * 0.1f;
     }
 
     public void OnDamaged(int damage)
@@ -133,7 +134,6 @@ public class Player : NetworkBehaviour, IAttackable
         //_interact.Clear();
     }
 
-
     //테스트용 함수
     private void TestReturn()
     {
@@ -157,7 +157,16 @@ public class Player : NetworkBehaviour, IAttackable
 
         var stat = _playerStat.Value;
         stat.Hp = Mathf.Min(stat.MaxHp, stat.Hp + heal);
+        _playerStat.Value = stat;
+    }
 
+    public void EquipArmor(ITEMNAME itemName, EquipStat equipStat)
+    {
+        var stat = _playerStat.Value;
+        if (itemName > ITEMNAME.SUBWEAPONEND && itemName < ITEMNAME.HEADEND)
+            stat.ClothEquip = equipStat;
+        else
+            stat.HeadEquip = equipStat;
         _playerStat.Value = stat;
     }
 

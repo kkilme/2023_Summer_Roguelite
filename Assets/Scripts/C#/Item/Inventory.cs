@@ -83,6 +83,7 @@ public partial class Inventory : NetworkBehaviour
     }
 
     private InventoryUI inventoryUI;
+    private Player curPlayer;
 
     private void Awake()
     {
@@ -112,6 +113,7 @@ public partial class Inventory : NetworkBehaviour
             inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items);
             inventoryUI = FindObjectOfType<InventoryUI>(true);
             items.OnListChanged += OnItemChanged;
+            curPlayer = GetComponent<Player>();
         }
     }
 
@@ -611,7 +613,7 @@ public partial class Inventory : NetworkBehaviour
             if (usableItem != null)
             {
                 // 아이템 사용
-                usableItem.Use(GetComponent<Player>());
+                usableItem.Use(curPlayer);
 
                 item.currentCount -= 1;
 

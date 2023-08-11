@@ -4,6 +4,11 @@ using UnityEngine;
 
 public partial class InventoryUI : MonoBehaviour
 {
+    private ItemUI weaponItemUI;
+    private ItemUI subWeaponItemUI;
+    private ItemUI headItemUI;
+    private ItemUI clothItemUI;
+
     private float equipUIMaxX;
     private float equipUIMinX;
     private float equipUIMaxY;
@@ -23,8 +28,9 @@ public partial class InventoryUI : MonoBehaviour
         if (selectedInventoryItem.itemName > ITEMNAME.EQUIPSTART && selectedInventoryItem.itemName < ITEMNAME.EQUIPEND && MouseInEquipUI())
         {
             //장착...
-            inventory.EquipItem(selectedInventoryItem);
+            var t = selectedInventoryItem;
             selectedInventoryItem = new InventoryItem();
+            inventory.EquipServerRPC(t);
         }
     }
 }
