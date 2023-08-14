@@ -235,7 +235,18 @@ public partial class InventoryUI : MonoBehaviour
     // GeattableItem을 선택하는 함수
     private void SelectNearItem(ItemUI itemUI)
     {
-        
+        var newUi = inventoryItemUIStack.Pop();
+        newUi.gameObject.SetActive(true);
+
+        selectedNearItem = nearDic.ToList().Find(x => x.Value == itemUI).Key;
+        selectedNearItemUi = newUi;
+
+        var stat = Item.itemDataDic[selectedNearItem.ItemName];
+        newUi.text.text = itemUI.text.text;
+        newUi.image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
+
+        nearItemUIStack.Push(itemUI);
+        itemUI.gameObject.SetActive(false);
     }
 
     // GettableItem을 인벤토리에 넣는 함수. 조건 체크 및 기능은 Inventory에서 진행
