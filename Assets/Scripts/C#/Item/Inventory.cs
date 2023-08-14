@@ -23,7 +23,7 @@ public enum ROTATION_TYPE
     RIGHT
 }
 
-public class Inventory : NetworkBehaviour
+public partial class Inventory : NetworkBehaviour
 {
     private class ResultType
     {
@@ -83,10 +83,12 @@ public class Inventory : NetworkBehaviour
     }
 
     private InventoryUI inventoryUI;
+    private Player curPlayer;
 
     private void Awake()
     {
         items = new NetworkList<InventoryItem>();
+        EquipInit();
     }
 
     private void Update()
@@ -112,6 +114,7 @@ public class Inventory : NetworkBehaviour
             inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items);
             inventoryUI = FindObjectOfType<InventoryUI>(true);
             items.OnListChanged += OnItemChanged;
+            curPlayer = GetComponent<Player>();
         }
     }
 
@@ -615,11 +618,10 @@ public class Inventory : NetworkBehaviour
             if (usableItem != null)
             {
                 // 아이템 사용 ture 리턴시에만 아이템 카운트 감소
-                if (usableItem.Use(GetComponent<Player>()))
+                if (usableItem.Use(curPlayer))
                 {
                     item.currentCount -= 1;
-
-                    if (item.currentCount <= 0)
+                if (item.currentCount <= 0)
                         items.Remove(item);
                     else
                         items[FindIndex(item)] = item;

@@ -243,7 +243,7 @@ public class BehaviourRandomSelector : BehaviourSequenceNode
 {
     System.Random _rand;
 
-    public BehaviourRandomSelector(CancellationTokenSource cts, BehaviourSequence parent) : base(cts, parent) 
+    public BehaviourRandomSelector(CancellationTokenSource cts, BehaviourSequence parent) : base(cts, parent)
     {
         _rand = new System.Random();
     }

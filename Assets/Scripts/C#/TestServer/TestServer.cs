@@ -8,6 +8,7 @@ using Unity.Services.Matchmaker.Models;
 using Unity.Services.Core;
 using UnityEngine;
 using Unity.Services.Multiplay;
+using Unity.Services.Economy;
 
 /*
 * Note that you need to have a published script in order to use the Cloud Code SDK.
@@ -33,13 +34,22 @@ public class TestServer : MonoBehaviour
     {
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        await EconomyService.Instance.Configuration.SyncConfigurationAsync();
+        
+        // 아이템 데이터 생성
+        foreach (ITEMNAME itemName in Enum.GetValues(typeof(ITEMNAME)))
+            if ((int)itemName % 100 != 0)
+            {
+                Item.itemDataDic.TryAdd(itemName, EconomyService.Instance.Configuration.GetInventoryItem(itemName.ToString()).CustomDataDeserializable.GetAs<Storage.StorageItemData>());
+                //Item.itemDataDic.Add(itemName, EconomyService.Instance.Configuration.GetInventoryItem(itemName.ToString()).CustomDataDeserializable.GetAs<Storage.StorageItemData>());
+            }
     }
 
-    /*
-    * Populate a Dictionary<string,object> with the arguments and invoke the script.
-    * Deserialize the response into a CloudCodeResponse object
-    */
-    public async void OnClick()
+/*
+* Populate a Dictionary<string,object> with the arguments and invoke the script.
+* Deserialize the response into a CloudCodeResponse object
+*/
+public async void OnClick()
     {
         var client = CloudSaveService.Instance.Data;
         var data = new Dictionary<string, object> { { "test", "testData" } };

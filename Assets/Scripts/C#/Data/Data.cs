@@ -7,6 +7,32 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 [Serializable]
+public struct EquipStat : INetworkSerializable
+{
+    public int Durability;
+    public int Armor;
+
+    public EquipStat(int durability = 0, int armor = 0)
+    {
+        Durability = durability;
+        Armor = armor;
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref Durability);
+        serializer.SerializeValue(ref Armor);
+    }
+
+    public static EquipStat operator +(EquipStat a, EquipStat b)
+    {
+        a.Durability = a.Durability + b.Durability < 100 ? a.Durability + b.Durability : 100;
+        a.Armor += b.Armor;
+        return a;
+    }
+}
+
+[Serializable]
 public struct Stat : INetworkSerializable
 {
     public int MaxHp;
@@ -15,9 +41,11 @@ public struct Stat : INetworkSerializable
     public int Gold;
     public int Damage;
     public int Range;
+    public EquipStat HeadEquip;
+    public EquipStat ClothEquip;
 
     public Stat(int maxHp = 0, int hp = 0, 
-        float speed = 0, int gold = 0, int damage = 0, int range = 0)
+        float speed = 0, int gold = 0, int damage = 0, int range = 0, EquipStat head = new EquipStat(), EquipStat cloth = new EquipStat())
     {
         MaxHp = maxHp;
         Hp = hp;
@@ -25,6 +53,8 @@ public struct Stat : INetworkSerializable
         Gold = gold;
         Damage = damage;
         Range = range;
+        HeadEquip = head;
+        ClothEquip = cloth;
     }
 
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
@@ -35,6 +65,8 @@ public struct Stat : INetworkSerializable
         serializer.SerializeValue(ref Gold);
         serializer.SerializeValue(ref Damage);
         serializer.SerializeValue(ref Range);
+        serializer.SerializeValue(ref HeadEquip);
+        serializer.SerializeValue(ref ClothEquip);
     }
 
     public static Stat operator +(Stat a, Stat b)
