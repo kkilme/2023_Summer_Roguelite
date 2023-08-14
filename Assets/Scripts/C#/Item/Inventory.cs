@@ -88,6 +88,7 @@ public partial class Inventory : NetworkBehaviour
     private void Awake()
     {
         items = new NetworkList<InventoryItem>();
+        EquipInit();
     }
 
     private void Update()

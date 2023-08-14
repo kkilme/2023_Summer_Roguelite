@@ -24706,7 +24706,7 @@ RectTransform:
   m_Children:
   - {fileID: 4042007633847914483}
   m_Father: {fileID: 9069979425088649987}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -24918,7 +24918,7 @@ RectTransform:
   m_Children:
   - {fileID: 552447583715561055}
   m_Father: {fileID: 9069979425088649987}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -24995,7 +24995,7 @@ RectTransform:
   m_Children:
   - {fileID: 2140498126725663768}
   m_Father: {fileID: 9069979425088649987}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -25070,10 +25070,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4605404694190769222}
-  - {fileID: 6018910791662701076}
   - {fileID: 7437365438450163723}
   - {fileID: 8682322681767011101}
+  - {fileID: 4605404694190769222}
+  - {fileID: 6018910791662701076}
   m_Father: {fileID: 7987636530209808170}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -25372,14 +25372,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7701405345934376157}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8736092128902393961}
   m_Father: {fileID: 9069979425088649987}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -25476,6 +25476,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13a5801ae08e7d9459561206f241aeef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  equipItemUI:
+  - {fileID: 5315586791763595889}
+  - {fileID: 8413757107021871206}
+  - {fileID: 5572510370185340694}
+  - {fileID: 7938426014562673109}
 --- !u!1 &7987636530447383250
 GameObject:
   m_ObjectHideFlags: 0

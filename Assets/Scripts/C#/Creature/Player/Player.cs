@@ -163,10 +163,10 @@ public class Player : NetworkBehaviour, IAttackable
     public void EquipArmor(ITEMNAME itemName, EquipStat equipStat)
     {
         var stat = _playerStat.Value;
-        if (itemName > ITEMNAME.SUBWEAPONEND && itemName < ITEMNAME.HEADEND)
-            stat.ClothEquip = equipStat;
-        else
+        if (itemName > ITEMNAME.SUBWEAPONEND && itemName <= ITEMNAME.HEADEND)
             stat.HeadEquip = equipStat;
+        else
+            stat.ClothEquip = equipStat;
         _playerStat.Value = stat;
     }
 

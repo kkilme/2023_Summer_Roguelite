@@ -19,6 +19,9 @@ public class EquipItem : Item
             case ITEMNAME.TESTRAREHEAD:
                 _equipStat = new EquipStat(100, 40);
                 break;
+            default:
+                _equipStat = new EquipStat();
+                break;
         }
     }
 

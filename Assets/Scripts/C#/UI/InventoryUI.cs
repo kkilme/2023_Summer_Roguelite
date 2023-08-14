@@ -47,12 +47,7 @@ public partial class InventoryUI : MonoBehaviour
 
         width = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.x;
         height = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.y;
-
-        //Equip UI AABB
-        equipUIMaxX = equipRectTransform.position.x + equipRectTransform.sizeDelta.x / 2;
-        equipUIMinX = equipRectTransform.position.x - equipRectTransform.sizeDelta.x / 2;
-        equipUIMaxY = equipRectTransform.position.y + equipRectTransform.sizeDelta.y / 2;
-        equipUIMinY = equipRectTransform.position.y - equipRectTransform.sizeDelta.y / 2;
+        EquipInit();
     }
 
     private void OnEnable()
@@ -84,8 +79,10 @@ public partial class InventoryUI : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(0))
         {
+            //인벤토리가 클릭됐는지 검사
             selectedInventoryItem = inventory.SelectItem(pos.x, pos.y);
-            Debug.Log(Input.mousePosition);
+            if (selectedInventoryItem.itemName == ITEMNAME.NONE)
+                SelectEquip();
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -238,6 +235,7 @@ public partial class InventoryUI : MonoBehaviour
     private void SelectNearItem(ItemUI itemUI)
     {
         selectedNearItem = itemUI;
+        
         selectedNearItem.transform.SetParent(inventoryTile.transform);
     }
 
