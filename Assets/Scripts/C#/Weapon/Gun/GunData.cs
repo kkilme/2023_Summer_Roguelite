@@ -99,7 +99,7 @@ public struct GunData : INetworkSerializable
         this.fireRate = fireRate;
         this.isAutofire = isAutofire;
         this.availableAttachmentTypes = availableAttachmentTypes;
-        this.equippedAttachments = equippedAttachments;
+        this.equippedAttachments = new AttachmentDictionary();
         this.recoilX = recoilX;
         this.recoilY = recoilY;
         this.recoilZ = recoilZ;
@@ -127,6 +127,7 @@ public struct GunData : INetworkSerializable
         this.fireRate = fireRate;
         this.isAutofire = isAutofire;
         this.availableAttachmentTypes = availableAttachmentTypes;
+        this.equippedAttachments = new AttachmentDictionary();
         this.recoilX = recoilX;
         this.recoilY = recoilY;
         this.recoilZ = recoilZ;
@@ -237,7 +238,7 @@ public struct GunData : INetworkSerializable
 
     public void UnequipAttachment(ATTACHMENT_TYPE attachmenttype)
     {
-        equippedAttachments[attachmenttype].RemoveAttachmentEffect();
+        //equippedAttachments[attachmenttype].RemoveAttachmentEffect();
         equippedAttachments[attachmenttype] = ATTACHMENT_NAME.None;
     }
 
