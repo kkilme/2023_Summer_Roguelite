@@ -13,7 +13,6 @@ public class FlashBang : Throwable
     [SerializeField] private float effectDuration;
 
     private Image flashBangEffectImage;
-    private Rigidbody rigidbody;
 
     public override void OnNetworkSpawn()
     {
@@ -24,7 +23,7 @@ public class FlashBang : Throwable
 
         if (IsServer)
         {
-            rigidbody = GetComponent<Rigidbody>();
+            rigidbody = Util.GetOrAddComponent<Rigidbody>(gameObject);
             Throw();
         }
     }

@@ -5,13 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class SmokeGrenade : Throwable
 {
     [SerializeField] private float effectDuration;
 
-    private Rigidbody rigidbody;
     private ParticleSystem particleSystem;
 
     public override void OnNetworkSpawn()
@@ -21,7 +21,7 @@ public class SmokeGrenade : Throwable
         if (IsServer)
         {
             // 서버만 리지드바디 생성
-            rigidbody = GetComponent<Rigidbody>();
+            rigidbody = Util.GetOrAddComponent<Rigidbody>(gameObject); 
             Throw();
         }
     }
