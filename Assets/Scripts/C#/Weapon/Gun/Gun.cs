@@ -140,7 +140,7 @@ public class Gun : NetworkBehaviour
 
         await UniTask.Delay((int)(1000 * _gunData.reloadTime));
 
-         _gunData.currentAmmo = amount;
+         _gunData.currentAmmo += amount;
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams
