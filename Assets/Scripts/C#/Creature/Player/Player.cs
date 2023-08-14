@@ -84,6 +84,15 @@ public class Player : NetworkBehaviour, IAttackable
 
         if (Input.GetKey(KeyCode.R))
             TestReturn();
+
+        if (Input.GetKeyDown(KeyCode.G))
+            TestThrowFlashBang();
+    }
+
+    private void TestThrowFlashBang()
+    {
+        var obj = Instantiate(GameManager.Resource.GetObject<GameObject>("Weapon/Smoke Grenade"), _headTransform.position + _headTransform.forward, transform.rotation);
+        obj.GetComponent<NetworkObject>().Spawn();
     }
 
     private void MoveCharacter(Vector3 dir)
