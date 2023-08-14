@@ -7,13 +7,13 @@ public class Scope : ScriptableAttachment
     public float zoomrate;
     public override void ApplyAttachmentEffect()
     {
-        originalvalue = gundata.aimingZoomrate;
-        gundata.aimingZoomrate = zoomrate;
+        originalvalue = gundata.zoomRate;
+        gundata.zoomRate = zoomrate;
     }
 
     public override void RemoveAttachmentEffect()
     {
-        gundata.aimingZoomrate = originalvalue;
+        gundata.zoomRate = originalvalue;
     }
 
 }

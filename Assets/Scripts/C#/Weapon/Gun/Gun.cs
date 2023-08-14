@@ -14,7 +14,7 @@ using Random = UnityEngine.Random;
 public class Gun : NetworkBehaviour
 {
     // 추후에 따로 Gundata Struct를 만들어 네트워크로 관리할 수 있도록 개선
-    [SerializeField] private GunData _gunData; // 총의 모든 정보 보유
+    private GunData _gunData; // 총의 모든 정보 보유
 
     [SerializeField] private GunCamera _cam; // 카메라
     [SerializeField] private Recoil _recoil; // 반동 담당
@@ -44,13 +44,9 @@ public class Gun : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _cam = GameObject.Find("FollowPlayerCam").GetComponent<GunCamera>();
+
         if (IsOwner)
         {
-            _animator = GetComponent<Animator>();
-            _effectparent = GameObject.Find("Effect").transform;
-            _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
-            _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
-            transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
             Init();
         }
 
@@ -59,27 +55,22 @@ public class Gun : NetworkBehaviour
 
     private void Init()
     {
-        SetGunData(_gunData);
-        _gunData.reloading = false;
-        _gunData.currentAmmo = _gunData.magSize;
+        SetGunData(GunDataFactory.GetGunData(GUN_NAME.TestAssaultRifle)); // test
+
+        _animator = GetComponent<Animator>();
+        _effectparent = GameObject.Find("Effect").transform;
+        _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
+        _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
+        transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
         _cam.SetZoomSpeed(_gunData.zoomSpeed);
 
         //SetAnimatorTransitionDuration();
     }
 
-    private void OnDisable() => _gunData.reloading = false;
     public void SetGunData(GunData gunData)
     {
-        if (!gunData.isFirstRef)
-            this._gunData = gunData;
-        else
-            gunData.isFirstRef = false;
-            this._gunData = gunData.Clone(); // 처음 gunData 사용 시 clone해야함
-    }
-
-    private void SetAnimatorTransitionDuration() 
-    {
-        // 총 별로 우클릭 시 총을 들어올리는 애니메이션 속도를 조절하고 싶었으나, 애니메이터 컨트롤러의 트랜지션을 직접 수정할 수 있는 방법은 없어보임.
+        gunData.Init();
+        _gunData = gunData;
     }
 
 
@@ -89,24 +80,23 @@ public class Gun : NetworkBehaviour
     public void StartReload(Inventory inventory)
     {
         // 서버에서 리로드 관리
-        ReloadServerRPC(inventory.GetComponent<NetworkObject>());
+        ReloadServerRPC(_gunData, inventory.GetComponent<NetworkObject>());
     }
 
     [ServerRpc]
-    private void ReloadServerRPC(NetworkObjectReference networkObjectReference, ServerRpcParams serverRpcParams = default)
-    {
-        if (!_gunData.reloading)
+    private void ReloadServerRPC(GunData gunData, NetworkObjectReference networkObjectReference, ServerRpcParams serverRpcParams = default)
+    {   
+        if (!gunData.isReloading)
         {
             NetworkObject networkObj = networkObjectReference;
             var inventory = networkObj.GetComponent<Inventory>();
 
-            int requiredAmmo = _gunData.magSize - _gunData.currentAmmo;
+            int requiredAmmo = gunData.magSize - gunData.currentAmmo;
             int fillAmount = 0;
 
             while (fillAmount < requiredAmmo)
             {
-
-                if (inventory.HasItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), _gunData.ammoType.ToString()), out InventoryItem item))
+                if (inventory.HasItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), gunData.ammoType.ToString()), out InventoryItem item))
                 {
                     if (fillAmount + item.currentCount < requiredAmmo)
                     {
@@ -123,26 +113,27 @@ public class Gun : NetworkBehaviour
                     }
                 }
                 else
+                {
+                    Debug.Log("You don't have any proper ammo");
                     break;
-
+                }
             }
-
             if (fillAmount > 0)
-                Reload(fillAmount, serverRpcParams.Receive.SenderClientId).Forget();
+                Reload(gunData, fillAmount, serverRpcParams.Receive.SenderClientId).Forget();
         }
     }
 
     /// <summary>
     /// 재장전
     /// </summary>
-    private async UniTaskVoid Reload(int amount, ulong targetId)
+    private async UniTaskVoid Reload(GunData gunData, int amount, ulong targetId)
     {
         Debug.Log("Reload Start");
-        _gunData.reloading = true;
+        gunData.isReloading = true;
 
-        await UniTask.Delay((int)(1000 * _gunData.reloadTime));
+        await UniTask.Delay((int)(1000 * gunData.reloadTime));
 
-         _gunData.currentAmmo = amount;
+        gunData.currentAmmo += amount;
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -152,18 +143,18 @@ public class Gun : NetworkBehaviour
         };
         ReloadClientRPC(amount, clientRpcParams);
 
-        _gunData.reloading = false;
+        gunData.isReloading = false;
         Debug.Log("Reload finish");
     }
 
     [ClientRpc]
     private void ReloadClientRPC(int amount, ClientRpcParams clientRpcParams)
-    {
-        _gunData.currentAmmo = amount;
+    {   
+        _gunData.currentAmmo += amount;
     }
 
     // 총 발사 가능 여부 판단
-    private bool CanShoot() => !_gunData.reloading && _gunData.currentAmmo > 0 && (_timeSinceLastShot > 1f / _gunData.fireRate || _gunData.isAutofire);
+    private bool CanShoot() => !_gunData.isReloading && _gunData.currentAmmo > 0 && (_timeSinceLastShot > 1f / _gunData.fireRate || _gunData.isAutofire);
 
 
     /// <summary>
@@ -175,8 +166,8 @@ public class Gun : NetworkBehaviour
         {   
             for(int i = 0; i < _gunData.bulletsPerShoot; i++)
             {
-                float spreadx = Random.Range(-_gunData.spread, _gunData.spread) / 10; // 탄퍼짐
-                float spready = Random.Range(-_gunData.spread, _gunData.spread) / 10;
+                float spreadx = Random.Range(-_gunData.spreadRate, _gunData.spreadRate) / 10; // 탄퍼짐
+                float spready = Random.Range(-_gunData.spreadRate, _gunData.spreadRate) / 10;
                 Vector3 bulletDir;
                 Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
 
@@ -193,7 +184,7 @@ public class Gun : NetworkBehaviour
         
                 if (IsServer)
                 {
-                    SpawnBulletServerRPC(bulletDir, _cam.transform.rotation);
+                    SpawnBulletServerRPC(bulletDir);
                 }
                 else
                 {
@@ -219,19 +210,19 @@ public class Gun : NetworkBehaviour
     private void SpawnClientBullet(Vector3 dir)
     {
         //Debug.Log("SpawnClientBullet");
-        GameObject bullet = Instantiate(_gunData.clientBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
+        GameObject bullet = BulletFactory.CreateBullet(BULLET_TYPE.Client, _muzzleTransform.position);
         bullet.GetComponent<ClientBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime);
-        SpawnBulletServerRPC(dir, _cam.transform.rotation);
+        SpawnBulletServerRPC(dir);
     }
 
     /// <summary>
     /// 서버 총알 생성하고, ClientRPC로 모든 클라이언트에 총알 생성 지시
     /// </summary>
     [ServerRpc]
-    private void SpawnBulletServerRPC(Vector3 dir, Quaternion rot)
+    private void SpawnBulletServerRPC(Vector3 dir)
     {
         //Debug.Log("SpawnBulletServerRPC");
-        GameObject bullet = Instantiate(_gunData.serverBulletPrefab, _muzzleTransform.position, rot);
+        GameObject bullet = BulletFactory.CreateBullet(BULLET_TYPE.Server, _muzzleTransform.position);
         bullet.GetComponent<ServerBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime, _gunData.damage);
         bullet.GetComponent<NetworkObject>().Spawn();
         SpawnBulletClientRPC(dir);
@@ -246,7 +237,7 @@ public class Gun : NetworkBehaviour
     {
         if (IsOwner) return;
         //Debug.Log("SpawnBulletClientRPC");
-        GameObject bullet = Instantiate(_gunData.clientBulletPrefab, _muzzleTransform.position, _cam.transform.rotation);
+        GameObject bullet = BulletFactory.CreateBullet(BULLET_TYPE.Client, _muzzleTransform.position);
         bullet.GetComponent<ClientBullet>().Init(dir, _gunData.bulletSpeed, _gunData.bulletLifetime);
     }
 
@@ -309,7 +300,7 @@ public class Gun : NetworkBehaviour
     {   
         _isaiming = true;
         _animator.SetBool("Aiming", true);
-        _cam.SetTargetFOV(_gunData.aimingZoomrate);
+        _cam.SetTargetFOV(_gunData.zoomRate);
     }
 
     public void StopAim()
@@ -324,7 +315,7 @@ public class Gun : NetworkBehaviour
         _gunData.EquipAttachment(attachment);
     }
 
-    public void UnEquipAttachment(AttachmentType attachmenttype)
+    public void UnEquipAttachment(ATTACHMENT_TYPE attachmenttype)
     {
         _gunData.UnequipAttachment(attachmenttype);
     }
@@ -336,7 +327,10 @@ public class Gun : NetworkBehaviour
             _timeSinceLastShot += Time.deltaTime;
             _ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
             Debug.DrawRay(_cam.transform.position, _cam.transform.forward * 5, Color.red);
-        }
-        
+        }    
+    }
+    private void OnDisable()
+    {
+        _gunData.isReloading = false;
     }
 }

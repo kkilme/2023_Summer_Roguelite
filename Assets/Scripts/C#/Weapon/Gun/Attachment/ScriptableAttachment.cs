@@ -4,17 +4,16 @@ using UnityEngine;
 
 public abstract class ScriptableAttachment : ScriptableObject
 {
-    public AttachmentType attachmentType;
-    public string attachmentName;
+    public ATTACHMENT_TYPE attachmentType;
+    public ATTACHMENT_NAME attachmentName;
     [HideInInspector]
     public float originalvalue;
     [HideInInspector]
     public GunData gundata;
 
-    public void Init(GunData gundata)
+    public void SetGunData(GunData gundata)
     {
         this.gundata = gundata;
-        ApplyAttachmentEffect();
     }
 
     public abstract void ApplyAttachmentEffect();
