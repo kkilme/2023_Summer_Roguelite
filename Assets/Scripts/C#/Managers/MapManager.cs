@@ -40,20 +40,20 @@ public class MapManager : NetworkBehaviour
     {
         //SceneEvent a = new SceneEvent();
         //a.SceneEventType = SceneEventType.LoadEventCompleted;
-        //Init(a);
-        NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
+        Init();
+        //NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
     }
 
     public override void OnNetworkDespawn()
     {
-        NetworkManager.Singleton.SceneManager.OnSceneEvent -= Init;
+        //NetworkManager.Singleton.SceneManager.OnSceneEvent -= Init;
     }
 
-    private void Init(SceneEvent sceneEvent)
+    private void Init()
     {
         if (IsHost || IsServer)
         {
-            if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
+            //if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
             {
                 if (roomPrefabsDic.ContainsKey(ROOMSIZE.SMALL))
                 {
@@ -159,13 +159,13 @@ public class MapManager : NetworkBehaviour
             networkObj.Spawn();
 
             // 아이템 배치
-            var itemPlaces = obj.GetComponent<Room>().itemPlaces;
-            Array values = Enum.GetValues(typeof(ITEMNAME));
-            for (int j = 0; j < itemPlaces.Length; j++)
-            {
-                Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
-                    .GetComponent<NetworkObject>().Spawn();
-            }
+            //var itemPlaces = obj.GetComponent<Room>().itemPlaces;
+            //Array values = Enum.GetValues(typeof(ITEMNAME));
+            //for (int j = 0; j < itemPlaces.Length; j++)
+            //{
+            //    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
+            //        .GetComponent<NetworkObject>().Spawn();
+            //}
 
             //networkObj.TrySetParent(roomPositionList[idx].transform);
 
@@ -194,13 +194,13 @@ public class MapManager : NetworkBehaviour
                 networkObj.Spawn();
 
                 // 아이템 배치
-                var itemPlaces = obj.GetComponent<Room>().itemPlaces;
-                Array values = Enum.GetValues(typeof(ITEMNAME));
-                for (int j = 0; j < itemPlaces.Length; j++)
-                {
-                    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
-                        .GetComponent<NetworkObject>().Spawn();
-                }
+                //var itemPlaces = obj.GetComponent<Room>().itemPlaces;
+                //Array values = Enum.GetValues(typeof(ITEMNAME));
+                //for (int j = 0; j < itemPlaces.Length; j++)
+                //{
+                //    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
+                //        .GetComponent<NetworkObject>().Spawn();
+                //}
 
                 //networkObj.TrySetParent(roomPositionList[idx].transform);
 
@@ -226,13 +226,13 @@ public class MapManager : NetworkBehaviour
                 networkObj.Spawn();
 
                 // 아이템 배치
-                var itemPlaces = obj.GetComponent<Room>().itemPlaces;
-                Array values = Enum.GetValues(typeof(ITEMNAME));
-                for (int j = 0; j < itemPlaces.Length; j++)
-                {
-                    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[room.roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
-                        .GetComponent<NetworkObject>().Spawn();
-                }
+                //var itemPlaces = obj.GetComponent<Room>().itemPlaces;
+                //Array values = Enum.GetValues(typeof(ITEMNAME));
+                //for (int j = 0; j < itemPlaces.Length; j++)
+                //{
+                //    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[room.roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
+                //        .GetComponent<NetworkObject>().Spawn();
+                //}
 
                 //networkObj.TrySetParent(roomPositionList[i].transform);
 
@@ -270,11 +270,11 @@ public class MapManager : NetworkBehaviour
         //    }
         //}
 
-        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
-        {
-            var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
-            networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
-        }
+        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
+        //{
+        //    var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
+        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+        //}
     }
 
     // 기존 맵 초기화 함수

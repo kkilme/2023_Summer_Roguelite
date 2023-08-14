@@ -29,7 +29,7 @@ public class PlayerInteract : MonoBehaviour
         if (_interactions > 0)
         {
             RaycastHit hit;
-            Debug.DrawLine(_cam.position, _cam.position + 3 * _cam.forward, Color.red, 5f);
+            //Debug.DrawLine(_cam.position, _cam.position + 3 * _cam.forward, Color.red, 5f);
 
             if (Physics.Linecast(_cam.position, _cam.position + 3 * _cam.forward, out hit))
             {
