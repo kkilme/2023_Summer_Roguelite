@@ -245,8 +245,6 @@ public partial class InventoryUI : MonoBehaviour
         newUi.text.text = itemUI.text.text;
         newUi.image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
 
-
-
         nearItemUIStack.Push(itemUI);
         itemUI.gameObject.SetActive(false);
     }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -52,8 +53,8 @@ public partial class InventoryUI : MonoBehaviour
             if (input.x >= equipUISize[i, 0].x && input.x <= equipUISize[i, 1].x 
                 && input.y >= equipUISize[i, 0].y && input.y <= equipUISize[i, 1].y)
             {
-                selectedInventoryItem = inventory.SelectEquip((ITEMNAME)(1000 + i * 100));
-                equipItemUI[i].gameObject.SetActive(false);
+                selectedInventoryItem = inventory.SelectEquip((ITEMNAME)(1100 + i * 100));
+                SelectEquipItem(equipItemUI[i]);
                 break;
             }
         }
@@ -68,6 +69,19 @@ public partial class InventoryUI : MonoBehaviour
             selectedInventoryItem = new InventoryItem();
             inventory.EquipServerRPC(t);
         }
+    }
+
+    private void SelectEquipItem(ItemUI itemUI)
+    {
+        var newUi = inventoryItemUIStack.Pop();
+        newUi.gameObject.SetActive(true);
+
+        var stat = Item.itemDataDic[selectedInventoryItem.itemName];
+
+        newUi.text.text = itemUI.text.text;
+        newUi.image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
+
+        itemUI.gameObject.SetActive(false);
     }
 
     [ClientRpc]
