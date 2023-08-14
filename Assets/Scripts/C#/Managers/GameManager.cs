@@ -2,6 +2,9 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Economy;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -31,12 +34,15 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
     }
 
-    private void Init()
+    private async void Init()
     {
         Instance = this;
         DontDestroyOnLoad(gameObject);
         Resource = new ResourceManager();
         Resource.Init();
+        await UnityServices.InitializeAsync();
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        await EconomyService.Instance.Configuration.SyncConfigurationAsync();
     }
 
     public async UniTaskVoid LoadSceneAsync(SceneName next)
