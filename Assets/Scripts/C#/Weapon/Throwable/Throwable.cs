@@ -10,5 +10,5 @@ public abstract class Throwable : NetworkBehaviour
     [SerializeField] protected float explosionTime; // 던지고 나서 터지기 까지 걸리는 시간
 
     protected abstract void Throw();
-    protected abstract void Explode();
+    [ServerRpc] protected virtual void ExplodeServerRPC() { }
 }
