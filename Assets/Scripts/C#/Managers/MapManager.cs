@@ -14,7 +14,8 @@ public class MapManager : NetworkBehaviour
     private Dictionary<ROOMSIZE, List<Room>> roomPrefabsDic = new Dictionary<ROOMSIZE, List<Room>>();
     private Dictionary<ROOMTYPE, int[]> roomCountDic = new Dictionary<ROOMTYPE, int[]>(); // 0번 인덱스는 현재 룸 카운트. 1번 인덱스는 최대 룸 카운트
     private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // 해당 방 타입이 special 타입일 시 해당 방의 생성확률을 정의해줌 (0 ~ 1)
-
+    private Dictionary<ROOMTYPE, RandomWeightPicker<ITEMNAME>> roomsItemDic = new Dictionary<ROOMTYPE, RandomWeightPicker<ITEMNAME>>(); // 방에 해당하는 아이템들이 매핑되어 있음.
+    
     [SerializeField] private RoomPosition[] roomPositions;
     [SerializeField] private Transform[] lifeShipPositions;
     [SerializeField] private GameObject lifeShipPrefab;
@@ -73,6 +74,45 @@ public class MapManager : NetworkBehaviour
 
                 specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
 
+                // 방들 추가
+                roomsItemDic.Add(ROOMTYPE.ARMORY, new RandomWeightPicker<ITEMNAME>());
+                roomsItemDic.Add(ROOMTYPE.MACHINE_ROOM, new RandomWeightPicker<ITEMNAME>());
+                roomsItemDic.Add(ROOMTYPE.APEX_LABORATORY, new RandomWeightPicker<ITEMNAME>());
+                roomsItemDic.Add(ROOMTYPE.BED_ROOM, new RandomWeightPicker<ITEMNAME>());
+                roomsItemDic.Add(ROOMTYPE.LABORATORY, new RandomWeightPicker<ITEMNAME>());
+                roomsItemDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new RandomWeightPicker<ITEMNAME>());
+                roomsItemDic.Add(ROOMTYPE.MEDICAL_ROOM, new RandomWeightPicker<ITEMNAME>());
+
+                // 방에 해당하는 아이템 및 가중치 추가
+                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_762, 10);
+                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_9, 30);
+                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_556, 10);
+                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.GAUGE_12, 20);
+                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.BANDAGE, 5);
+
+                roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.JERRY_CAN, 50);
+
+                roomsItemDic[ROOMTYPE.APEX_LABORATORY].Add(ITEMNAME.AMMO_556, 100);
+
+                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.BANDAGE, 5);
+                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.AMMO_9, 10);
+                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.JERRY_CAN, 0.1f);
+
+                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.BANDAGE, 10f);
+                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.AMMO_762, 3f);
+                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.GAUGE_12, 2f);
+
+                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.BANDAGE, 2f);
+                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.JERRY_CAN, 0.5f);
+                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_9, 10f);
+                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_556, 7.5f);
+                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.GAUGE_12, 8f);
+                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_762, 6f);
+
+                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.BANDAGE, 30f);
+                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_9, 10f);
+                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_762, 5f);
+
                 var roomPrefabs = Resources.LoadAll<Room>("Room");
 
                 //NetworkManager.AddNetworkPrefab(lifeShipPrefab);
@@ -123,7 +163,7 @@ public class MapManager : NetworkBehaviour
             //Array values = Enum.GetValues(typeof(ITEMNAME));
             //for (int j = 0; j < itemPlaces.Length; j++)
             //{
-            //    Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(1, values.Length))), itemPlaces[j].position, Quaternion.identity)
+            //    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
             //        .GetComponent<NetworkObject>().Spawn();
             //}
 
@@ -158,7 +198,7 @@ public class MapManager : NetworkBehaviour
                 //Array values = Enum.GetValues(typeof(ITEMNAME));
                 //for (int j = 0; j < itemPlaces.Length; j++)
                 //{
-                //    Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(1, values.Length))), itemPlaces[j].position, Quaternion.identity)
+                //    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
                 //        .GetComponent<NetworkObject>().Spawn();
                 //}
 
@@ -190,7 +230,7 @@ public class MapManager : NetworkBehaviour
                 //Array values = Enum.GetValues(typeof(ITEMNAME));
                 //for (int j = 0; j < itemPlaces.Length; j++)
                 //{
-                //    Instantiate(GettableItem.GetItemPrefab((ITEMNAME)values.GetValue(Random.Range(1, values.Length))), itemPlaces[j].position, Quaternion.identity)
+                //    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[room.roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
                 //        .GetComponent<NetworkObject>().Spawn();
                 //}
 

@@ -122,7 +122,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Reload(InputAction.CallbackContext ctx)
     {
-        _weapon?.StartReload();
+        _weapon?.StartReload(_player.Inventory);
     }
 
     private void Aim(InputAction.CallbackContext ctx)

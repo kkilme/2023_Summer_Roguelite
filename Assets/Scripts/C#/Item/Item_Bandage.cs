@@ -11,8 +11,8 @@ public class Item_Bandage : Item
         healAmount = 30;
     }
 
-    public override void Use(Player player)
+    public override bool Use(Player player)
     {
-        player.OnHealed(30);
+        return player.OnHealed(30);
     }
 }

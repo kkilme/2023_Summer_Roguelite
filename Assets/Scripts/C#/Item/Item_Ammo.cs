@@ -12,5 +12,5 @@ public class Item_Ammo : Item
         this.ItemName = itemName;
     }
 
-    public override void Use(Player player) { }
+    public override bool Use(Player player) { return true; }
 }

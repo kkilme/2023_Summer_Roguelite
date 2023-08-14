@@ -31,7 +31,7 @@ public abstract class Item
 
     public ITEMNAME ItemName { get; protected set; }
 
-    public abstract void Use(Player player);
+    public abstract bool Use(Player player);
 
     /// <summary>
     /// 사용가능한 아이템을 리턴하는 함수
