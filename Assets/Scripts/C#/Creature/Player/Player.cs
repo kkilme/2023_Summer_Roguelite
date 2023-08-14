@@ -10,7 +10,9 @@ using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class Player : NetworkBehaviour, IAttackable
 {
+    public PlayerLock ServerLock { get => _playerController.ServerLock; }
     public Stat PlayerStat { get => _playerStat.Value; }
+    [SerializeField]
     private NetworkVariable<Stat> _playerStat = new NetworkVariable<Stat>();
     public Inventory Inventory { get; private set; }
     private PlayerController _playerController;
@@ -23,6 +25,7 @@ public class Player : NetworkBehaviour, IAttackable
     private InputActionAsset _iaa;
     private Rigidbody _rigidbody;
     private SkinnedMeshRenderer _skinnedMeshRenderer;
+    private Transform _rotationTransform;
 
     [SerializeField]
     private CinemachineVirtualCamera _followPlayerCam;
@@ -46,7 +49,8 @@ public class Player : NetworkBehaviour, IAttackable
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);
-            _playerController = new PlayerController(gameObject, IsOwner, _followPlayerCam, _iaa, _interact);
+            _playerController = Util.GetOrAddComponent<PlayerController>(gameObject); 
+            _playerController.Init(_followPlayerCam, _iaa, _interact);
             _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             //6, 10 12 - 15
             for (int i = 0; i < _skinnedMeshRenderer?.materials.Length; ++i)
@@ -54,6 +58,7 @@ public class Player : NetworkBehaviour, IAttackable
                 if (i != 6 && i != 10 && (i < 12 || i > 15))
                     _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);
             }
+            _rotationTransform = transform.GetChild(0).GetChild(0);
         }
 
         else
@@ -63,7 +68,6 @@ public class Player : NetworkBehaviour, IAttackable
         {
             _playerStat.Value = new Stat(5, 5, 10, 5, 5, 5);
         }
-
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
         _rigidbody = GetComponent<Rigidbody>();
@@ -77,13 +81,22 @@ public class Player : NetworkBehaviour, IAttackable
         if (Input.GetKey(KeyCode.L))
             Dead();
 
-        //if (Input.GetKey(KeyCode.R))
-        //    TestReturn();
+        if (Input.GetKey(KeyCode.R))
+            TestReturn();
+
+        if (Input.GetKeyDown(KeyCode.G))
+            TestThrowFlashBang();
+    }
+
+    private void TestThrowFlashBang()
+    {
+        var obj = Instantiate(GameManager.Resource.GetObject<GameObject>("Weapon/Smoke Grenade"), _headTransform.position + _headTransform.forward, transform.rotation);
+        obj.GetComponent<NetworkObject>().Spawn();
     }
 
     private void MoveCharacter(Vector3 dir)
     {
-        _rigidbody.velocity = Quaternion.AngleAxis(transform.eulerAngles.y, Vector3.up) * dir * PlayerStat.Speed;
+        transform.position += Quaternion.AngleAxis(_rotationTransform.localEulerAngles.z, Vector3.up) * dir.normalized * PlayerStat.Speed * 0.1f;
     }
 
     public void OnDamaged(int damage)
@@ -124,11 +137,10 @@ public class Player : NetworkBehaviour, IAttackable
         _followPlayerCam.Priority = 0;
         _followPlayerCam.Follow = null;
         _deadPlayerCam.LookAt = _headTransform;
-        _followPlayerCam.gameObject.SetActive(false);
-        _playerController.Clear();
-        _interact.Clear();
+        //_followPlayerCam.gameObject.SetActive(false);
+        //_playerController.Clear();
+        //_interact.Clear();
     }
-
 
     //테스트용 함수
     private void TestReturn()
@@ -158,7 +170,18 @@ public class Player : NetworkBehaviour, IAttackable
 
         var stat = _playerStat.Value;
         stat.Hp = Mathf.Min(stat.MaxHp, stat.Hp + heal);
+        _playerStat.Value = stat;
 
+        return true;
+    }
+
+    public bool EquipArmor(ITEMNAME itemName, EquipStat equipStat)
+    {
+        var stat = _playerStat.Value;
+        if (itemName > ITEMNAME.SUBWEAPONEND && itemName <= ITEMNAME.HEADEND)
+            stat.HeadEquip = equipStat;
+        else
+            stat.ClothEquip = equipStat;
         _playerStat.Value = stat;
         return true;
     }

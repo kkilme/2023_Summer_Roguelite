@@ -28,6 +28,7 @@ public class MouseInput : NetworkBehaviour
 
     private Transform _target;
     private Transform _targetOriginAngle;
+    private Transform _rootTarget;
 
     [SerializeField] private bool checkTruefortest = false;
 
@@ -37,6 +38,7 @@ public class MouseInput : NetworkBehaviour
         _screenMid.y = Screen.height >> 1;
         _target = transform.GetChild(0);
         _targetOriginAngle = transform.GetChild(1);
+        _rootTarget = transform.GetChild(2);
         _player = transform.parent;
         _cam = camera;
 
@@ -61,13 +63,15 @@ public class MouseInput : NetworkBehaviour
 
         //_cam.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
         _cam.eulerAngles = new Vector3(-_rotationY, _cam.eulerAngles.y, 0);
-        _player.eulerAngles = new Vector3(0, _rotationX, 0);
+        //_player.eulerAngles = new Vector3(0, _rotationX, 0);
 
         Vector3 cross = Vector3.Cross(_targetOriginAngle.position - transform.position, Vector3.up);
 
         Vector3 value = Quaternion.AngleAxis(_rotationY, cross) * (_targetOriginAngle.position - transform.position) + transform.position;
         _target.position = value;
         _target.localEulerAngles = new Vector3(-_rotationY, 0, 0);
+        value = Quaternion.AngleAxis(_rotationX, Vector3.up) * (_targetOriginAngle.position - transform.position) + transform.position;
+        _rootTarget.position = value;
     }
 
     public void OnOffSettingUI(bool bOpen)

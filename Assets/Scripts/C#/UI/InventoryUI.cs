@@ -10,9 +10,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryUI : MonoBehaviour
+public partial class InventoryUI : MonoBehaviour
 {
     private RectTransform rectTransform;
+    private RectTransform equipRectTransform;
     private const int tileSizeWidth = 64;
     private const int tileSizeHeight = 64;
     private float width;
@@ -23,8 +24,10 @@ public class InventoryUI : MonoBehaviour
     private GameObject inventoryTile;
 
     public InventoryItem selectedInventoryItem;
-    private ItemUI selectedNearItem;
+    private ItemUI selectedNearItemUi;
+    private GettableItem selectedNearItem;
 
+    //이미지 풀링 담당
     private Stack<ItemUI> inventoryItemUIStack;
     private Stack<ItemUI> nearItemUIStack;
 
@@ -34,16 +37,18 @@ public class InventoryUI : MonoBehaviour
     private void Awake()
     {
         inventory = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Inventory>();
-        rectTransform = transform.GetChild(0).GetComponent<RectTransform>();
+        rectTransform = transform.GetChild(1).GetComponent<RectTransform>();
+        equipRectTransform = transform.GetChild(0).GetComponent<RectTransform>();
 
-        inventoryItemUIStack = new Stack<ItemUI>(transform.GetChild(0).GetComponentsInChildren<ItemUI>(true));
-        nearItemUIStack = new Stack<ItemUI>(transform.GetChild(1).GetComponentsInChildren<ItemUI>(true));
+        inventoryItemUIStack = new Stack<ItemUI>(transform.GetChild(1).GetComponentsInChildren<ItemUI>(true));
+        nearItemUIStack = new Stack<ItemUI>(transform.GetChild(2).GetComponentsInChildren<ItemUI>(true));
         nearItemUIStack.ToList().ForEach(x => x.action += SelectNearItem);
         scrollRect = GetComponentInChildren<ScrollRect>(true);
-        inventoryTile = transform.GetChild(0).gameObject;
+        inventoryTile = transform.GetChild(1).gameObject;
 
         width = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.x;
         height = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.y;
+        EquipInit();
     }
 
     private void OnEnable()
@@ -69,13 +74,16 @@ public class InventoryUI : MonoBehaviour
         {
             inventoryDic[selectedInventoryItem].image.rectTransform.localPosition = new Vector2(pos.x, pos.y) * 64;
         }
-        if (selectedNearItem != null)
+        if (selectedNearItemUi != null)
         {
-            selectedNearItem.image.rectTransform.localPosition = new Vector2(pos.x, pos.y) * 64;
+            selectedNearItemUi.image.rectTransform.localPosition = new Vector2(pos.x, pos.y) * 64;
         }
         if (Input.GetMouseButtonDown(0))
         {
+            //인벤토리가 클릭됐는지 검사
             selectedInventoryItem = inventory.SelectItem(pos.x, pos.y);
+            if (selectedInventoryItem.itemName == ITEMNAME.NONE)
+                SelectEquip();
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -84,6 +92,7 @@ public class InventoryUI : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             DropItem(pos);
+            EquipItem();
             MoveItem(pos);
             PutItem(pos);
         }
@@ -220,25 +229,35 @@ public class InventoryUI : MonoBehaviour
 
         gridPos.x = Mathf.FloorToInt((mousePosition.x - rectTransform.position.x) / width);
         gridPos.y = Mathf.FloorToInt((mousePosition.y - rectTransform.position.y) / height);
-
         return gridPos;
     }
 
     // GeattableItem을 선택하는 함수
     private void SelectNearItem(ItemUI itemUI)
     {
-        selectedNearItem = itemUI;
-        selectedNearItem.transform.SetParent(inventoryTile.transform);
+        var newUi = inventoryItemUIStack.Pop();
+        newUi.gameObject.SetActive(true);
+
+        selectedNearItem = nearDic.ToList().Find(x => x.Value == itemUI).Key;
+        selectedNearItemUi = newUi;
+
+        var stat = Item.itemDataDic[selectedNearItem.ItemName];
+        newUi.text.text = itemUI.text.text;
+        newUi.image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
+
+        nearItemUIStack.Push(itemUI);
+        itemUI.gameObject.SetActive(false);
     }
 
     // GettableItem을 인벤토리에 넣는 함수. 조건 체크 및 기능은 Inventory에서 진행
     private void PutItem(Vector2Int pos)
     {
-        if (selectedNearItem != null)
+        if (selectedNearItemUi != null)
         {
-            GettableItem item = nearDic.ToList().Find(x => x.Value == selectedNearItem).Key;
-            inventory.PutItemServerRPC(item.GetComponent<NetworkObject>(), pos.x, pos.y);
-            selectedNearItem.transform.SetParent(scrollRect.transform.GetChild(0).GetChild(0));
+            inventory.PutItemServerRPC(selectedNearItem.GetComponent<NetworkObject>(), pos.x, pos.y);
+            inventoryItemUIStack.Push(selectedNearItemUi);
+            selectedNearItemUi.gameObject.SetActive(false);
+            selectedNearItemUi = null;
             selectedNearItem = null;
         }
     }
@@ -246,7 +265,9 @@ public class InventoryUI : MonoBehaviour
     // 아이템 버리는 함수. 조건 체크 및 기능은 Inventory에서 진행
     private void DropItem(Vector2Int pos)
     {
-        if (selectedInventoryItem.itemName != ITEMNAME.NONE && (pos.x < 0 || pos.y < 0 || pos.x >= inventory.sizeX.Value || pos.y >= inventory.sizeY.Value))
+        if (selectedInventoryItem.itemName != ITEMNAME.NONE && 
+            (pos.x < 0 || pos.y < 0 || pos.x >= inventory.sizeX.Value || pos.y >= inventory.sizeY.Value)
+            && !(selectedInventoryItem.itemName > ITEMNAME.EQUIPSTART && selectedInventoryItem.itemName < ITEMNAME.EQUIPEND && MouseInEquipUI()))
         {
             inventory.DropItemServerRPC(selectedInventoryItem);
             selectedInventoryItem = new InventoryItem();

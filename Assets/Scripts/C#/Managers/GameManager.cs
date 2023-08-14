@@ -2,7 +2,11 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Economy;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -31,12 +35,22 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
     }
 
-    private void Init()
+    private async void Init()
     {
         Instance = this;
         DontDestroyOnLoad(gameObject);
         Resource = new ResourceManager();
         Resource.Init();
+        await UnityServices.InitializeAsync();
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        await EconomyService.Instance.Configuration.SyncConfigurationAsync();
+
+        // 아이템 데이터 생성
+        foreach (ITEMNAME itemName in Enum.GetValues(typeof(ITEMNAME)))
+            if (itemName != ITEMNAME.NONE && !Item.itemDataDic.ContainsKey(ITEMNAME.JERRY_CAN))
+            {
+                Item.itemDataDic.Add(itemName, EconomyService.Instance.Configuration.GetInventoryItem(itemName.ToString()).CustomDataDeserializable.GetAs<Storage.StorageItemData>());
+            }
     }
 
     public async UniTaskVoid LoadSceneAsync(SceneName next)
