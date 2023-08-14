@@ -163,9 +163,11 @@ public class Player : NetworkBehaviour, IAttackable
         var stat = _playerStat.Value;
         stat.Hp = Mathf.Min(stat.MaxHp, stat.Hp + heal);
         _playerStat.Value = stat;
+
+        return true;
     }
 
-    public void EquipArmor(ITEMNAME itemName, EquipStat equipStat)
+    public bool EquipArmor(ITEMNAME itemName, EquipStat equipStat)
     {
         var stat = _playerStat.Value;
         if (itemName > ITEMNAME.SUBWEAPONEND && itemName <= ITEMNAME.HEADEND)

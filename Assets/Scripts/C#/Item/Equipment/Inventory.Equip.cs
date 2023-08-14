@@ -120,7 +120,7 @@ public partial class Inventory : NetworkBehaviour
 
         else
         {
-            RemoveItemServerRPC(item, serverRpcParams);
+            RemoveItem(item);
             var equip = Item.GetUsableItem(item.itemName);
             equip.Use(curPlayer);
             //inventoryUI clientRpc로 전달

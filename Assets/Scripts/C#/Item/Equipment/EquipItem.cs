@@ -25,8 +25,8 @@ public class EquipItem : Item
         }
     }
 
-    public override void Use(Player player)
+    public override bool Use(Player player)
     {
-        player.EquipArmor(ItemName, _equipStat);
+        return player.EquipArmor(ItemName, _equipStat);
     }
 }
