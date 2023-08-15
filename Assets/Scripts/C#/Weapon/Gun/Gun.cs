@@ -12,7 +12,8 @@ using Random = UnityEngine.Random;
 
 
 public class Gun : NetworkBehaviour
-{
+{   
+    public ref GunData GunData { get => ref _gunData; }
     // 추후에 따로 Gundata Struct를 만들어 네트워크로 관리할 수 있도록 개선
     private GunData _gunData; // 총의 모든 정보 보유
 
@@ -23,6 +24,8 @@ public class Gun : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI _ammoleftText;
 
     [SerializeField] private Transform _muzzleTransform; // 총알이 생성되는 위치
+
+    [SerializeField] public Attachment testatt1; // 테스트용 부착물
 
     private Animator _animator;
 
@@ -85,7 +88,8 @@ public class Gun : NetworkBehaviour
 
     [ServerRpc]
     private void ReloadServerRPC(GunData gunData, NetworkObjectReference networkObjectReference, ServerRpcParams serverRpcParams = default)
-    {   
+    {
+        Debug.Log(gunData.isReloading);
         if (!gunData.isReloading)
         {
             NetworkObject networkObj = networkObjectReference;
@@ -297,9 +301,10 @@ public class Gun : NetworkBehaviour
     }
 
     public void Aim()
-    {   
+    {
         _isaiming = true;
         _animator.SetBool("Aiming", true);
+        //Debug.Log(_gunData.zoomRate);
         _cam.SetTargetFOV(_gunData.zoomRate);
     }
 
@@ -308,16 +313,6 @@ public class Gun : NetworkBehaviour
         _isaiming = false;
         _animator.SetBool("Aiming", false);
         _cam.SetTargetFOV();
-    }
-
-    public void EquipAttachment(ScriptableAttachment attachment)
-    {
-        _gunData.EquipAttachment(attachment);
-    }
-
-    public void UnEquipAttachment(ATTACHMENT_TYPE attachmenttype)
-    {
-        _gunData.UnequipAttachment(attachmenttype);
     }
 
     private void Update()

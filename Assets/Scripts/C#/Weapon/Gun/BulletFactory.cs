@@ -8,10 +8,10 @@ public class BulletFactory: MonoBehaviour
     {
         if (type == BULLET_TYPE.Client)
         {
-            return Instantiate(GameManager.Resource.GetObject<GameObject>("serverbullet"), pos, Quaternion.identity);
+            return Instantiate(GameManager.Resource.GetObject<GameObject>("Bullet/BulletClient"), pos, Quaternion.identity);
         } else if (type == BULLET_TYPE.Server)
         {
-            return Instantiate(GameManager.Resource.GetObject<GameObject>("clientbullet"), pos, Quaternion.identity);
+            return Instantiate(GameManager.Resource.GetObject<GameObject>("Bullet/BulletServer"), pos, Quaternion.identity);
         }
         else
         {

@@ -59,6 +59,7 @@ public class Player : NetworkBehaviour, IAttackable
                     _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);
             }
             _rotationTransform = transform.GetChild(0).GetChild(0);
+            if (_rotationTransform == null) _rotationTransform = transform; // SJPlayer용 테스트코드
         }
 
         else
@@ -81,8 +82,8 @@ public class Player : NetworkBehaviour, IAttackable
         if (Input.GetKey(KeyCode.L))
             Dead();
 
-        if (Input.GetKey(KeyCode.R))
-            TestReturn();
+        //if (Input.GetKey(KeyCode.R))
+        //    TestReturn();
 
         if (Input.GetKeyDown(KeyCode.G))
             TestThrowFlashBang();

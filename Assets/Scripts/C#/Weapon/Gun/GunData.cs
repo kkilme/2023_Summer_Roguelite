@@ -7,22 +7,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum ATTACHMENT_TYPE
-{
-    [Tooltip("조준경")]
-    Scope,
-    [Tooltip("개머리판, 반동감소")]
-    Stock,
-    [Tooltip("탄창")]
-    Mag,
-    [Tooltip("총구")]
-    Muzzle,
-    [Tooltip("그립")]
-    Grip,
-    [Tooltip("라이트")]
-    Flashlight,
-}
-
 public enum AMMO_TYPE
 {
     AMMO_9,
@@ -41,12 +25,7 @@ public enum GUN_NAME
     TestSubMachinegun
 }
 
-public enum ATTACHMENT_NAME
-{   
-    None,
-    ScopeX2,
-    TestMag
-}
+
 
 public struct GunData : INetworkSerializable
 {
@@ -86,6 +65,8 @@ public struct GunData : INetworkSerializable
 
     public bool isReloading;
 
+    public int hashcode; // 유니크하게 수정할 필요가 잇을 듯?
+
     public GunData(GUN_NAME gunName, float damage, float bulletSpeed, int bulletsPerShoot, float bulletLifetime, float spreadRate, float zoomSpeed, float zoomRate, float fireRate, bool isAutofire, AttachmentTypeList availableAttachmentTypes, float recoilX, float recoilY, float recoilZ, float aimRecoilX, float aimRecoilY, float aimRecoilZ, AMMO_TYPE ammoType, int currentAmmo, int magSize, float reloadTime) : this()
     {
         this.gunName = gunName;
@@ -111,6 +92,8 @@ public struct GunData : INetworkSerializable
         this.magSize = magSize;
         this.reloadTime = reloadTime;
         this.isReloading = false;
+        this.hashcode = 1111;
+        this.hashcode = GetHashCode();
     }
 
 
@@ -139,6 +122,8 @@ public struct GunData : INetworkSerializable
         this.magSize = magSize;
         this.reloadTime = reloadTime;
         this.isReloading = false;
+        this.hashcode = 1111;
+        this.hashcode = GetHashCode();
     }
 
     // C# 10.0 미만에서 구조체는 매개변수 없는 생성자 불가
@@ -167,6 +152,8 @@ public struct GunData : INetworkSerializable
         this.magSize = 180;
         this.reloadTime = 1.5f;
         this.isReloading = false;
+        this.hashcode = 1111;
+        this.hashcode = GetHashCode();
     }
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
     {
@@ -198,6 +185,8 @@ public struct GunData : INetworkSerializable
         serializer.SerializeValue(ref availableAttachmentTypes);
         serializer.SerializeValue(ref equippedAttachments);
 
+        serializer.SerializeValue(ref hashcode);
+
     }
 
     public void Init()
@@ -211,35 +200,22 @@ public struct GunData : INetworkSerializable
     /// <returns></returns>
     private void InitAttachmentDict()
     {
-        if (equippedAttachments.Count == 0) return;
+        if (equippedAttachments.Count == availableAttachmentTypes.Count) return;
         foreach (ATTACHMENT_TYPE attachmentType in this.availableAttachmentTypes)
         {
             equippedAttachments.Add(attachmentType, ATTACHMENT_NAME.None);
         }
     }
 
-    public void EquipAttachment(ScriptableAttachment attachment)
+    // 해당 부착물이 장착 가능한지 체크
+    public bool CheckEquippableAttachment(Attachment attachment)
     {
-        if (!equippedAttachments.ContainsKey(attachment.attachmentType))
+        if (!availableAttachmentTypes.Contains(attachment.attachmentType))
         {
             Debug.Log("This attachment is not equippable on this weapon!");
-            return;
+            return false;
         }
-
-        // 이미 해당 부착물 타입 장착중일 시 먼저 해제 
-        if (equippedAttachments[attachment.attachmentType] != ATTACHMENT_NAME.None)
-        {
-            UnequipAttachment(attachment.attachmentType);
-        }
-
-        equippedAttachments[attachment.attachmentType] = attachment.attachmentName;
-        attachment.ApplyAttachmentEffect();
-    }
-
-    public void UnequipAttachment(ATTACHMENT_TYPE attachmenttype)
-    {
-        //equippedAttachments[attachmenttype].RemoveAttachmentEffect();
-        equippedAttachments[attachmenttype] = ATTACHMENT_NAME.None;
+        else return true;
     }
 
 }
@@ -251,7 +227,7 @@ public class AttachmentDictionary : Dictionary<ATTACHMENT_TYPE, ATTACHMENT_NAME>
     {
         int count = Count;
         serializer.SerializeValue(ref count);
-        
+
         if (serializer.IsReader) // IsReader: 역직렬화
         {
             Clear();

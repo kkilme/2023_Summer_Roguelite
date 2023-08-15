@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Gun", menuName = "Weapon/Gun")]
-
+// 구조체로 수정해서 이제 사용 안함
 public class GunDataClass : ScriptableObject
 {
 
@@ -30,7 +30,7 @@ public class GunDataClass : ScriptableObject
     [Header("Attachment")]
     [Tooltip("부착 가능한 부착물 종류")]
     public List<ATTACHMENT_TYPE> availableAttachmentTypes = new List<ATTACHMENT_TYPE>();
-    public Dictionary<ATTACHMENT_TYPE, ScriptableAttachment> attachments = new Dictionary<ATTACHMENT_TYPE, ScriptableAttachment>(); // 장착중인 부착물
+    public Dictionary<ATTACHMENT_TYPE, Attachment> attachments = new Dictionary<ATTACHMENT_TYPE, Attachment>(); // 장착중인 부착물
 
     [Header("Recoil")] // 반동
     public float recoilX;
@@ -70,29 +70,6 @@ public class GunDataClass : ScriptableObject
         }
     }
 
-    public void EquipAttachment(ScriptableAttachment attachment)
-    {
-        if (!attachments.ContainsKey(attachment.attachmentType))
-        {
-            Debug.Log("장착 할 수 없는 부착물");
-            return;
-        }
-
-        // 이미 해당 부착물 타입 장착중일 시 먼저 해제 
-        if (attachments[attachment.attachmentType] != null)
-        {
-            UnequipAttachment(attachment.attachmentType);
-        }
-
-        attachments[attachment.attachmentType] = attachment;
-        attachment.ApplyAttachmentEffect();
-    }
-
-    public void UnequipAttachment(ATTACHMENT_TYPE attachmenttype)
-    {
-        attachments[attachmenttype].RemoveAttachmentEffect();
-        attachments[attachmenttype] = null;
-    }
 
 }
 
