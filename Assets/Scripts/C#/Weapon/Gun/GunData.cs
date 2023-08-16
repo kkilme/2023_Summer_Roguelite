@@ -9,7 +9,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public enum AMMO_TYPE
-{
+{   
+    NONE,
     AMMO_9,
     AMMO_556,
     AMMO_762,
@@ -117,31 +118,60 @@ public struct GunData : INetworkSerializable
     }
 
     // C# 10.0 미만에서 구조체는 매개변수 없는 생성자 불가
-    public GunData(ITEMNAME gunName = ITEMNAME.TESTASSAULTRIFLE)
+    //public GunData(ITEMNAME gunName = ITEMNAME.TESTASSAULTRIFLE)
+    //{
+    //    this.gunName = gunName;
+    //    this.damage = 10;
+    //    this.bulletSpeed = 30;
+    //    this.bulletsPerShoot = 1;
+    //    this.bulletLifetime = 5;
+    //    this.spreadRate = 0;
+    //    this.zoomSpeed = 5;
+    //    this.zoomRate = 1.2f;
+    //    this.fireRate = 5;
+    //    this.isAutofire = true;
+    //    this.availableAttachmentTypes = new AttachmentTypeList { ATTACHMENT_TYPE.Scope, ATTACHMENT_TYPE.Stock, ATTACHMENT_TYPE.Mag, ATTACHMENT_TYPE.Muzzle, ATTACHMENT_TYPE.Grip, ATTACHMENT_TYPE.Flashlight };
+    //    this.equippedAttachments = new AttachmentDictionary();
+    //    this.recoilX = -1.2f;
+    //    this.recoilY = 0.4f;
+    //    this.recoilZ = 0;
+    //    this.aimRecoilX = -0.6f;
+    //    this.aimRecoilY = 0.2f;
+    //    this.aimRecoilZ = 0;
+    //    this.ammoType = AMMO_TYPE.AMMO_556;
+    //    this.currentAmmo = 180;
+    //    this.magSize = 180;
+    //    this.reloadTime = 1.5f;
+    //    this.isReloading = false;
+    //    this.hashcode = 1111;
+    //    this.hashcode = GetHashCode();
+    //}
+
+    public GunData(ITEMNAME gunName = ITEMNAME.NONE)
     {
         this.gunName = gunName;
-        this.damage = 10;
-        this.bulletSpeed = 30;
-        this.bulletsPerShoot = 1;
-        this.bulletLifetime = 5;
+        this.damage = 0;
+        this.bulletSpeed = 0;
+        this.bulletsPerShoot = 0;
+        this.bulletLifetime = 0;
         this.spreadRate = 0;
-        this.zoomSpeed = 5;
-        this.zoomRate = 1.2f;
-        this.fireRate = 5;
-        this.isAutofire = true;
-        this.availableAttachmentTypes = new AttachmentTypeList { ATTACHMENT_TYPE.Scope, ATTACHMENT_TYPE.Stock, ATTACHMENT_TYPE.Mag, ATTACHMENT_TYPE.Muzzle, ATTACHMENT_TYPE.Grip, ATTACHMENT_TYPE.Flashlight };
+        this.zoomSpeed = 0;
+        this.zoomRate = 0f;
+        this.fireRate = 0;
+        this.isAutofire = false;
+        this.availableAttachmentTypes = new AttachmentTypeList { };
         this.equippedAttachments = new AttachmentDictionary();
-        this.recoilX = -1.2f;
-        this.recoilY = 0.4f;
+        this.recoilX = 0;
+        this.recoilY = 0;
         this.recoilZ = 0;
-        this.aimRecoilX = -0.6f;
-        this.aimRecoilY = 0.2f;
+        this.aimRecoilX = 0;
+        this.aimRecoilY = 0;
         this.aimRecoilZ = 0;
-        this.ammoType = AMMO_TYPE.AMMO_556;
-        this.currentAmmo = 180;
-        this.magSize = 180;
-        this.reloadTime = 1.5f;
-        this.isReloading = false;
+        this.ammoType = AMMO_TYPE.NONE;
+        this.currentAmmo = 0;
+        this.magSize = 0;
+        this.reloadTime = 999;
+        this.isReloading = true;
         this.hashcode = 1111;
         this.hashcode = GetHashCode();
     }
@@ -181,7 +211,7 @@ public struct GunData : INetworkSerializable
 
     public void Init()
     {
-        InitAttachmentDict();
+        if(gunName != ITEMNAME.NONE) InitAttachmentDict();
     }
     /// <summary>
     /// AttachmentTypeList를 사용하여 Key값은 ATTACHMENT_TYPE, Value값은 ATTACHMENT_NAME.None으로 equippedAttachments 초기화. 
