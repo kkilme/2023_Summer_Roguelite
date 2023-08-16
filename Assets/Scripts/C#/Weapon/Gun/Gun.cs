@@ -63,7 +63,7 @@ public class Gun : NetworkBehaviour
         _animator = GetComponent<Animator>();
         _effectparent = GameObject.Find("Effect").transform;
         _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
-        _ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
+        //_ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
         transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
         _cam.SetZoomSpeed(_gunData.zoomSpeed);
 
@@ -320,7 +320,7 @@ public class Gun : NetworkBehaviour
         if (IsOwner)
         {
             _timeSinceLastShot += Time.deltaTime;
-            _ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
+            //_ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
             Debug.DrawRay(_cam.transform.position, _cam.transform.forward * 5, Color.red);
         }    
     }

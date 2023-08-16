@@ -2,31 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipItem : Item
+public class ArmorItem : Item
 {
-    private EquipStat _equipStat;
+    public EquipStat EquipStat { get; private set; }
 
-    public EquipItem() { }
+    public ArmorItem() { }
     
-    public EquipItem(ITEMNAME itemName)
+    public ArmorItem(ITEMNAME itemName)
     {
         ItemName = itemName;
         switch (itemName)
         {
             case ITEMNAME.TESTHEAD:
-                _equipStat = new EquipStat(100, 20);
+                EquipStat = new EquipStat(100, 20);
                 break;
             case ITEMNAME.TESTRAREHEAD:
-                _equipStat = new EquipStat(100, 40);
+                EquipStat = new EquipStat(100, 40);
                 break;
             default:
-                _equipStat = new EquipStat();
+                EquipStat = new EquipStat();
                 break;
         }
     }
 
     public override bool Use(Player player)
     {
-        return player.EquipArmor(ItemName, _equipStat);
+        return player.Equip(this);
     }
 }
