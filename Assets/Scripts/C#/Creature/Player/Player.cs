@@ -46,7 +46,6 @@ public class Player : NetworkBehaviour, IAttackable
         if (IsOwner) {
             //오버레이 카메라 추가
             _mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Add(_armNWeaponCam);
-
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);
@@ -54,12 +53,13 @@ public class Player : NetworkBehaviour, IAttackable
             _playerController.Init(_followPlayerCam, _iaa, _interact);
             _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             //6, 10 12 - 15
-            for (int i = 0; i < _skinnedMeshRenderer.materials.Length; ++i)
+            for (int i = 0; i < _skinnedMeshRenderer?.materials.Length; ++i)
             {
                 if (i != 6 && i != 10 && (i < 12 || i > 15))
                     _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);
             }
             _rotationTransform = transform.GetChild(0).GetChild(0);
+            if (_rotationTransform == null) _rotationTransform = transform; // SJPlayer용 테스트코드
         }
 
         else
@@ -82,8 +82,8 @@ public class Player : NetworkBehaviour, IAttackable
         if (Input.GetKey(KeyCode.L))
             Dead();
 
-        if (Input.GetKey(KeyCode.R))
-            TestReturn();
+        //if (Input.GetKey(KeyCode.R))
+        //    TestReturn();
 
         if (Input.GetKeyDown(KeyCode.G))
             TestThrowFlashBang();
