@@ -13,6 +13,8 @@ public class EquipItem : Item
         ItemName = itemName;
         switch (itemName)
         {
+            case var _ when ITEMNAME.WEAPONSTART < itemName && ITEMNAME.WEAPONEND > itemName:
+                break;
             case ITEMNAME.TESTHEAD:
                 _equipStat = new EquipStat(100, 20);
                 break;
