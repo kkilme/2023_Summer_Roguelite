@@ -87,7 +87,10 @@ public class MapManager : NetworkBehaviour
                 roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_9, 30);
                 roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_556, 10);
                 roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.GAUGE_12, 20);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.BANDAGE, 5);
+                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTASSAULTRIFLE, 8);
+                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTMACHINEGUN, 6);
+                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTRAREHEAD, 5);
+                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTHEAD, 5);
 
                 roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.JERRY_CAN, 50);
 
@@ -96,10 +99,12 @@ public class MapManager : NetworkBehaviour
                 roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.BANDAGE, 5);
                 roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.AMMO_9, 10);
                 roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.JERRY_CAN, 0.1f);
+                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
 
                 roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.BANDAGE, 10f);
                 roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.AMMO_762, 3f);
                 roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.GAUGE_12, 2f);
+                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
 
                 roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.BANDAGE, 2f);
                 roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.JERRY_CAN, 0.5f);
@@ -107,10 +112,14 @@ public class MapManager : NetworkBehaviour
                 roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_556, 7.5f);
                 roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.GAUGE_12, 8f);
                 roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_762, 6f);
+                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
+
 
                 roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.BANDAGE, 30f);
                 roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_9, 10f);
                 roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_762, 5f);
+                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
+
 
                 var roomPrefabs = Resources.LoadAll<Room>("Room");
 
