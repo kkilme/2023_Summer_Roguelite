@@ -91,7 +91,7 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void TestThrowFlashBang()
     {
-        var obj = Instantiate(GameManager.Resource.GetObject<GameObject>("Weapon/Smoke Grenade"), _headTransform.position + _headTransform.forward, transform.rotation);
+        var obj = Instantiate(GameManager.Resource.GetObject<GameObject>("Weapon/FlashBang"), _headTransform.position + _headTransform.forward, transform.rotation);
         obj.GetComponent<NetworkObject>().Spawn();
     }
 

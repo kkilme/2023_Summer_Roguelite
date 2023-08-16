@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Unity.Services.Lobbies.Models;
+using Unity.Collections;
 
 public enum ROTATION_TYPE
 {
@@ -317,6 +318,9 @@ public partial class Inventory : NetworkBehaviour
         if (item.posX < 0 || item.posY < 0 || item.posX >= sizeX.Value || item.posY >= sizeY.Value)
             return false;
 
+        if (item.posX + item.sizeX - 1 >= sizeX.Value || item.posY + item.sizeY - 1 >= sizeY.Value)
+            return false;
+
         int itemSizeX, itemSizeY;
 
         if (item.rotationType == ROTATION_TYPE.RIGHT)
@@ -399,7 +403,7 @@ public partial class Inventory : NetworkBehaviour
     /// <param name="itemName"></param>
     /// <param name="item">반환되는 같은 종류의 아이템. (기존 아이템과는 다른 아이템임)</param>
     /// <returns></returns>
-    private bool CheckSameItemType(int hashcode, int x, int y, ITEMNAME itemName, out InventoryItem item)
+    private bool CheckSameItemType(FixedString128Bytes hashcode, int x, int y, ITEMNAME itemName, out InventoryItem item)
     {
         item = new InventoryItem();
 
