@@ -43,6 +43,7 @@ public class MonsterController : NetworkBehaviour, IAttackable
         if (IsServer)
         {
             _stat.Value = new Stat(1, 1, 5, 1, 1, 5);
+            _board.Stat = _stat.Value;
         }
         _tree.CheckSeq();
     }
