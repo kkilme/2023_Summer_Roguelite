@@ -27,7 +27,7 @@ public partial class Inventory : NetworkBehaviour
             case ITEMNAME.WEAPONEND:
                 if (WeaponItem.Value.itemName != ITEMNAME.NONE)
                 {
-                    var equip = Item.GetUsableItem(item);
+                    var equip = Item.GetUsableItem(ITEMNAME.WEAPONEND);
                     equip.Use(curPlayer);
                     invenItem = WeaponItem.Value;
                     invenItem.posX = pos.x;
@@ -39,7 +39,7 @@ public partial class Inventory : NetworkBehaviour
             case ITEMNAME.SUBWEAPONEND:
                 if (SubWeaponItem.Value.itemName != ITEMNAME.NONE)
                 {
-                    var equip = Item.GetUsableItem(item);
+                    var equip = Item.GetUsableItem(ITEMNAME.SUBWEAPONEND);
                     equip.Use(curPlayer);
                     invenItem = SubWeaponItem.Value;
                     invenItem.posX = pos.x;
@@ -51,7 +51,7 @@ public partial class Inventory : NetworkBehaviour
             case ITEMNAME.HEADEND:
                 if (HeadItem.Value.itemName != ITEMNAME.NONE)
                 {
-                    var equip = Item.GetUsableItem(item);
+                    var equip = Item.GetUsableItem(ITEMNAME.HEADEND);
                     equip.Use(curPlayer);
                     invenItem = HeadItem.Value;
                     invenItem.posX = pos.x;
@@ -63,7 +63,7 @@ public partial class Inventory : NetworkBehaviour
             case ITEMNAME.CLOTHEND:
                 if (ClothItem.Value.itemName != ITEMNAME.NONE)
                 {
-                    var equip = Item.GetUsableItem(item);
+                    var equip = Item.GetUsableItem(ITEMNAME.CLOTHEND);
                     equip.Use(curPlayer);
                     invenItem = ClothItem.Value;
                     invenItem.posX = pos.x;
