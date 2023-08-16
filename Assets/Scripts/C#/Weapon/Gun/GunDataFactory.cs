@@ -4,13 +4,13 @@ using UnityEngine;
 
 public static class GunDataFactory
 {
-    public static GunData GetGunData(GUN_NAME name)
+    public static GunData GetGunData(ITEMNAME name)
     {
         switch (name)
         {
-            case GUN_NAME.TestAssaultRifle:
+            case ITEMNAME.TESTASSAULTRIFLE:
                 return new GunData(
-                    gunName: GUN_NAME.TestAssaultRifle,
+                    gunName: ITEMNAME.TESTASSAULTRIFLE,
                     damage: 10,
                     bulletSpeed: 3,
                     bulletsPerShoot: 1,
@@ -32,9 +32,9 @@ public static class GunDataFactory
                     magSize: 180,
                     reloadTime: 1.5f
                   ) ;
-            case GUN_NAME.TestMachinegun:
+            case ITEMNAME.TESTMACHINEGUN:
                 return new GunData(
-                    gunName: GUN_NAME.TestMachinegun,
+                    gunName: ITEMNAME.TESTMACHINEGUN,
                     damage: 1,
                     bulletSpeed: 30,
                     bulletsPerShoot: 1,
@@ -56,31 +56,31 @@ public static class GunDataFactory
                     magSize: 300,
                     reloadTime: 4f
                   );
-            case GUN_NAME.TestShotgun:
+            //case ITEMNAME.TESTSHOTGUN:
                 
-                return new GunData(
-                    gunName: GUN_NAME.TestMachinegun,
-                    damage: 5,
-                    bulletSpeed: 20,
-                    bulletsPerShoot: 5,
-                    bulletLifetime: 5,
-                    spreadRate: 0.7f,
-                    zoomSpeed: 4,
-                    zoomRate: 1.2f,
-                    fireRate: 0.4f,
-                    isAutofire: false,
-                    availableAttachmentTypes: new AttachmentTypeList() { ATTACHMENT_TYPE.Mag, ATTACHMENT_TYPE.Grip, ATTACHMENT_TYPE.Scope },
-                    recoilX: -6f,
-                    recoilY: 0,
-                    recoilZ: 0,
-                    aimRecoilX: -4f,
-                    aimRecoilY: 0,
-                    aimRecoilZ: 0,
-                    ammoType: AMMO_TYPE.GAUGE_12,
-                    currentAmmo: 30,
-                    magSize: 30,
-                    reloadTime: 3f
-                  );
+            //    return new GunData(
+            //        gunName: ITEMNAME.TESTMACHINEGUN,
+            //        damage: 5,
+            //        bulletSpeed: 20,
+            //        bulletsPerShoot: 5,
+            //        bulletLifetime: 5,
+            //        spreadRate: 0.7f,
+            //        zoomSpeed: 4,
+            //        zoomRate: 1.2f,
+            //        fireRate: 0.4f,
+            //        isAutofire: false,
+            //        availableAttachmentTypes: new AttachmentTypeList() { ATTACHMENT_TYPE.Mag, ATTACHMENT_TYPE.Grip, ATTACHMENT_TYPE.Scope },
+            //        recoilX: -6f,
+            //        recoilY: 0,
+            //        recoilZ: 0,
+            //        aimRecoilX: -4f,
+            //        aimRecoilY: 0,
+            //        aimRecoilZ: 0,
+            //        ammoType: AMMO_TYPE.GAUGE_12,
+            //        currentAmmo: 30,
+            //        magSize: 30,
+            //        reloadTime: 3f
+            //      );
             default:
                 return new GunData();
         }

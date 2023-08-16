@@ -12,7 +12,13 @@ public enum ITEMNAME
     GAUGE_12,
     JERRY_CAN,
     EQUIPSTART = 1000,
-    WEAPONSTART = 1000,
+    //WEAPONSTART = 1000,
+    TESTASSAULTRIFLE,
+    //TESTSHOTGUN,
+    TESTMACHINEGUN,
+    //TESTSNIPERRIFLE,
+    //TESTHANDGUN,
+    //TESTSUBMACHINEGUN,
     WEAPONEND = 1100,
     SUBWEAPONSTART = 1100,
     SUBWEAPONEND = 1200,
@@ -43,7 +49,8 @@ public abstract class Item
         return item switch
         {
             ITEMNAME.BANDAGE => new Item_Bandage(),
-            > ITEMNAME.EQUIPSTART and < ITEMNAME.EQUIPEND => new ArmorItem(item),
+            > ITEMNAME.EQUIPSTART and <= ITEMNAME.WEAPONEND => new Item_Gun(item),
+            > ITEMNAME.HEADSTART and < ITEMNAME.EQUIPEND => new ArmorItem(item),
             _ => null,
         };
     }

@@ -26,7 +26,8 @@ public partial class Inventory : NetworkBehaviour
             case ITEMNAME.WEAPONEND:
                 if (WeaponItem.Value.itemName != ITEMNAME.NONE)
                 {
-                    var equip = Item.GetUsableItem(ITEMNAME.WEAPONEND);
+                    var equip = Item.GetUsableItem(item);
+                    Debug.Log(equip.ItemName);
                     equip.Use(curPlayer);
                     invenItem = WeaponItem.Value;
                     invenItem.posX = pos.x;
