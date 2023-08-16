@@ -4,13 +4,13 @@ using UnityEngine;
 
 public static class GunDataFactory
 {
-    public static GunData GetGunData(GUN_NAME name)
+    public static GunData GetGunData(ITEMNAME name)
     {
         switch (name)
         {
-            case GUN_NAME.TestAssaultRifle:
+            case ITEMNAME.TestAssaultRifle:
                 return new GunData(
-                    gunName: GUN_NAME.TestAssaultRifle,
+                    gunName: ITEMNAME.TestAssaultRifle,
                     damage: 10,
                     bulletSpeed: 3,
                     bulletsPerShoot: 1,
@@ -32,9 +32,9 @@ public static class GunDataFactory
                     magSize: 180,
                     reloadTime: 1.5f
                   ) ;
-            case GUN_NAME.TestMachinegun:
+            case ITEMNAME.TestMachinegun:
                 return new GunData(
-                    gunName: GUN_NAME.TestMachinegun,
+                    gunName: ITEMNAME.TestMachinegun,
                     damage: 1,
                     bulletSpeed: 30,
                     bulletsPerShoot: 1,
@@ -56,10 +56,10 @@ public static class GunDataFactory
                     magSize: 300,
                     reloadTime: 4f
                   );
-            case GUN_NAME.TestShotgun:
+            case ITEMNAME.TestShotgun:
                 
                 return new GunData(
-                    gunName: GUN_NAME.TestMachinegun,
+                    gunName: ITEMNAME.TestMachinegun,
                     damage: 5,
                     bulletSpeed: 20,
                     bulletsPerShoot: 5,

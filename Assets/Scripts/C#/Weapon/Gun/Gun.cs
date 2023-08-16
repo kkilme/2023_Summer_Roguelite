@@ -58,7 +58,7 @@ public class Gun : NetworkBehaviour
 
     private void Init()
     {
-        SetGunData(GunDataFactory.GetGunData(GUN_NAME.TestAssaultRifle)); // test
+        SetGunData(GunDataFactory.GetGunData(ITEMNAME.TestAssaultRifle)); // test
 
         _animator = GetComponent<Animator>();
         _effectparent = GameObject.Find("Effect").transform;

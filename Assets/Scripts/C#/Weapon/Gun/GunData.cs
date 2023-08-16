@@ -15,21 +15,10 @@ public enum AMMO_TYPE
     GAUGE_12
 }
 
-public enum GUN_NAME
-{
-    TestAssaultRifle,
-    TestShotgun,
-    TestMachinegun,
-    TestSniperRifle,
-    TestHandgun,
-    TestSubMachinegun
-}
-
-
 
 public struct GunData : INetworkSerializable
 {
-    public GUN_NAME gunName;
+    public ITEMNAME gunName;
 
     public float damage;
     //public float maxDistance; // 총알을 사용하기 때문에 일단 사용 안함
@@ -67,7 +56,7 @@ public struct GunData : INetworkSerializable
 
     public int hashcode; // 유니크하게 수정할 필요가 잇을 듯?
 
-    public GunData(GUN_NAME gunName, float damage, float bulletSpeed, int bulletsPerShoot, float bulletLifetime, float spreadRate, float zoomSpeed, float zoomRate, float fireRate, bool isAutofire, AttachmentTypeList availableAttachmentTypes, float recoilX, float recoilY, float recoilZ, float aimRecoilX, float aimRecoilY, float aimRecoilZ, AMMO_TYPE ammoType, int currentAmmo, int magSize, float reloadTime) : this()
+    public GunData(ITEMNAME gunName, float damage, float bulletSpeed, int bulletsPerShoot, float bulletLifetime, float spreadRate, float zoomSpeed, float zoomRate, float fireRate, bool isAutofire, AttachmentTypeList availableAttachmentTypes, float recoilX, float recoilY, float recoilZ, float aimRecoilX, float aimRecoilY, float aimRecoilZ, AMMO_TYPE ammoType, int currentAmmo, int magSize, float reloadTime) : this()
     {
         this.gunName = gunName;
         this.damage = damage;
@@ -97,7 +86,7 @@ public struct GunData : INetworkSerializable
     }
 
 
-    public GunData(GUN_NAME gunName, float damage, float zoomSpeed, float zoomRate, float fireRate, bool isAutofire, AttachmentTypeList availableAttachmentTypes, float recoilX, float recoilY, float recoilZ, float aimRecoilX, float aimRecoilY, float aimRecoilZ, AMMO_TYPE ammoType, int magSize, float reloadTime) : this()
+    public GunData(ITEMNAME gunName, float damage, float zoomSpeed, float zoomRate, float fireRate, bool isAutofire, AttachmentTypeList availableAttachmentTypes, float recoilX, float recoilY, float recoilZ, float aimRecoilX, float aimRecoilY, float aimRecoilZ, AMMO_TYPE ammoType, int magSize, float reloadTime) : this()
     {
         this.gunName = gunName;
         this.damage = damage;
@@ -127,7 +116,7 @@ public struct GunData : INetworkSerializable
     }
 
     // C# 10.0 미만에서 구조체는 매개변수 없는 생성자 불가
-    public GunData(GUN_NAME gunName = GUN_NAME.TestAssaultRifle)
+    public GunData(ITEMNAME gunName = ITEMNAME.TestAssaultRifle)
     {
         this.gunName = gunName;
         this.damage = 10;
