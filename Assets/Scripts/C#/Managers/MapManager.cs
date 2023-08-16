@@ -225,16 +225,16 @@ public class MapManager : NetworkBehaviour
                 var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
                 networkObj.Spawn();
 
-                // 아이템 배치
-                //var itemPlaces = obj.GetComponent<Room>().itemPlaces;
-                //Array values = Enum.GetValues(typeof(ITEMNAME));
-                //for (int j = 0; j < itemPlaces.Length; j++)
-                //{
-                //    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[room.roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
-                //        .GetComponent<NetworkObject>().Spawn();
-                //}
+                //아이템 배치
+                var itemPlaces = obj.GetComponent<Room>().itemPlaces;
+                Array values = Enum.GetValues(typeof(ITEMNAME));
+                for (int j = 0; j < itemPlaces.Length; j++)
+                {
+                    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[room.roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
+                        .GetComponent<NetworkObject>().Spawn();
+                }
 
-                //networkObj.TrySetParent(roomPositionList[i].transform);
+                networkObj.TrySetParent(roomPositionList[i].transform);
 
                 ++roomCountDic[room.roomType][0];
                 break;
@@ -270,11 +270,11 @@ public class MapManager : NetworkBehaviour
         //    }
         //}
 
-        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
-        //{
-        //    var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
-        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
-        //}
+        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
+        {
+            var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
+            networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+        }
     }
 
     // 기존 맵 초기화 함수

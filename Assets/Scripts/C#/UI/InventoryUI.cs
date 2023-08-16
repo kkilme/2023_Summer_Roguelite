@@ -122,6 +122,11 @@ public partial class InventoryUI : MonoBehaviour
 
         for (int i = 0; i < e.InventoryItems.Count; i++)
         {
+            //if (e.InventoryItems[i].posX < 0 || e.InventoryItems[i].posY < 0)
+            //{
+            //    continue;
+            //}
+
             if (!inventoryDic.ContainsKey(e.InventoryItems[i]))
             {
                 inventoryDic.Add(e.InventoryItems[i], inventoryItemUIStack.Pop());
@@ -176,7 +181,7 @@ public partial class InventoryUI : MonoBehaviour
     }
 
     // Enable 시 호출되는 함수. 기존의 DisplayNearItemUI와 기능은 똑같음.
-    private void DisplayNearItemUI()
+    public void DisplayNearItemUI()
     {
         var nearItems = inventory.GetNearItems();
         var removedItems = nearDic.Keys.Except(nearItems).ToArray();
