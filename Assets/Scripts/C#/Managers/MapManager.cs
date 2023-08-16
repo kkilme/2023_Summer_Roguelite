@@ -38,22 +38,21 @@ public class MapManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        //SceneEvent a = new SceneEvent();
-        //a.SceneEventType = SceneEventType.LoadEventCompleted;
-        Init();
-        //NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
+        SceneEvent a = new SceneEvent();
+        a.SceneEventType = SceneEventType.LoadEventCompleted;
+        NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
     }
 
     public override void OnNetworkDespawn()
     {
-        //NetworkManager.Singleton.SceneManager.OnSceneEvent -= Init;
+        NetworkManager.Singleton.SceneManager.OnSceneEvent -= Init;
     }
 
-    private void Init()
+    private void Init(SceneEvent sceneEvent)
     {
         if (IsHost || IsServer)
         {
-            //if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
+            if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
             {
                 if (roomPrefabsDic.ContainsKey(ROOMSIZE.SMALL))
                 {
@@ -259,22 +258,22 @@ public class MapManager : NetworkBehaviour
 
         _testMap.BuildNavMesh();
 
-        //for (int i = 0; i < rooms.Count; ++i)
-        //{
-        //    int rand = Random.Range(0, 100);
-        //    if (rand >= 66)
-        //    {
-        //        var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
-        //        spawner.Init();
-        //        spawner.SpawnMonster();
-        //    }
-        //}
+        for (int i = 0; i < rooms.Count; ++i)
+        {
+            int rand = Random.Range(0, 100);
+            if (rand >= 66)
+            {
+                var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
+                spawner.Init();
+                spawner.SpawnMonster();
+            }
+        }
 
-        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
-        //{
-        //    var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
-        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
-        //}
+        for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
+        {
+            var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
+            networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+        }
     }
 
     // 기존 맵 초기화 함수
