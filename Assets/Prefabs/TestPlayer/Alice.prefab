@@ -4929,7 +4929,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2958491320564212934}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.551251, y: 4.113092, z: -21.586748}
+  m_LocalPosition: {x: 4.5512505, y: 4.1130915, z: -21.586748}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8960,12 +8960,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cd18fb95a29aed489b1979401224fc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gunData: {fileID: 11400000, guid: ad49830d2ab68df47806de8918dd64af, type: 2}
-  _cam: {fileID: 0}
+  _cam: {fileID: 8460789160260414853}
   _recoil: {fileID: 0}
   _effectparent: {fileID: 0}
   _ammoleftText: {fileID: 0}
   _muzzleTransform: {fileID: 6990704090754810038}
+  testatt1: {fileID: 0}
 --- !u!95 &7353003887809452689
 Animator:
   serializedVersion: 4
@@ -12627,6 +12627,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24bf4713a0eb8e540996f13af536c861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerStat:
+    m_InternalValue:
+      MaxHp: 0
+      Hp: 0
+      Speed: 0
+      Gold: 0
+      Damage: 0
+      Range: 0
+      HeadEquip:
+        Durability: 0
+        Armor: 0
+      ClothEquip:
+        Durability: 0
+        Armor: 0
   _headTransform: {fileID: 5011541019279030174}
   _armNWeaponCam: {fileID: 7108971362263995103}
   _iaa: {fileID: -944628639613478452, guid: cdebec3a46c28d14095deb8d9c2bdc54, type: 3}
