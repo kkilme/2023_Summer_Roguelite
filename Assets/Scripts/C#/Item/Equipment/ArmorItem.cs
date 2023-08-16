@@ -2,19 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipItem : Item
+public class ArmorItem : Item
 {
+    public ArmorItem() { }
     private EquipStat _equipStat;
-
-    public EquipItem() { }
     
-    public EquipItem(ITEMNAME itemName)
+    public ArmorItem(ITEMNAME itemName)
     {
         ItemName = itemName;
+
         switch (itemName)
         {
-            case var _ when ITEMNAME.WEAPONSTART < itemName && ITEMNAME.WEAPONEND > itemName:
-                break;
             case ITEMNAME.TESTHEAD:
                 _equipStat = new EquipStat(100, 20);
                 break;
@@ -29,6 +27,6 @@ public class EquipItem : Item
 
     public override bool Use(Player player)
     {
-        return player.EquipArmor(ItemName, _equipStat);
+        return player.Equip(ItemName, _equipStat);
     }
 }
