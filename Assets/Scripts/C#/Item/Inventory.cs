@@ -174,6 +174,24 @@ public partial class Inventory : NetworkBehaviour
             items.Add(inventoryItem);
             getItem.Despawn();
         }
+        else
+        {
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }
+                }
+            };
+
+            PutItemClientRPC(clientRpcParams);
+        }
+    }
+
+    [ClientRpc]
+    public void PutItemClientRPC(ClientRpcParams clientRpcParams)
+    {
+        inventoryUI.DisplayNearItemUI();
     }
 
     // 인벤토리안에 아이템을 자동으로 넣어주는 함수.
