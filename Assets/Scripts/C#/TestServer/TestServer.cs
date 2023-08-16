@@ -26,25 +26,6 @@ public class TestServer : MonoBehaviour
         public string welcomeMessage;
     }
 
-    /*
-     * Initialize all Unity Services and Sign In an anonymous player.
-     * You can perform this operation in a more centralized spot in your project
-     */
-    public async void Awake()
-    {
-        await UnityServices.InitializeAsync();
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        await EconomyService.Instance.Configuration.SyncConfigurationAsync();
-        
-        // 아이템 데이터 생성
-        foreach (ITEMNAME itemName in Enum.GetValues(typeof(ITEMNAME)))
-            if ((int)itemName % 100 != 0)
-            {
-                Item.itemDataDic.TryAdd(itemName, EconomyService.Instance.Configuration.GetInventoryItem(itemName.ToString()).CustomDataDeserializable.GetAs<Storage.StorageItemData>());
-                //Item.itemDataDic.Add(itemName, EconomyService.Instance.Configuration.GetInventoryItem(itemName.ToString()).CustomDataDeserializable.GetAs<Storage.StorageItemData>());
-            }
-    }
-
 /*
 * Populate a Dictionary<string,object> with the arguments and invoke the script.
 * Deserialize the response into a CloudCodeResponse object
