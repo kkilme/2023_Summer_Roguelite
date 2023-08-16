@@ -181,11 +181,11 @@ public class Player : NetworkBehaviour, IAttackable
         var stat = _playerStat.Value;
         switch (equip)
         {
-            case var _ when equip > ITEMNAME.HEADSTART && equip < ITEMNAME.HEADEND:
+            case var _ when equip > ITEMNAME.HEADSTART && equip <= ITEMNAME.HEADEND:
                 stat.HeadEquip = equipStat;
                 break;
 
-            case var _ when equip > ITEMNAME.CLOTHEND && equip < ITEMNAME.CLOTHSTART:
+            case var _ when equip > ITEMNAME.CLOTHSTART && equip <= ITEMNAME.CLOTHEND:
                 stat.ClothEquip = equipStat;
                 break;
         }
