@@ -4,29 +4,29 @@ using UnityEngine;
 
 public class ArmorItem : Item
 {
-    public EquipStat EquipStat { get; private set; }
-
     public ArmorItem() { }
+    private EquipStat _equipStat;
     
     public ArmorItem(ITEMNAME itemName)
     {
         ItemName = itemName;
+
         switch (itemName)
         {
             case ITEMNAME.TESTHEAD:
-                EquipStat = new EquipStat(100, 20);
+                _equipStat = new EquipStat(100, 20);
                 break;
             case ITEMNAME.TESTRAREHEAD:
-                EquipStat = new EquipStat(100, 40);
+                _equipStat = new EquipStat(100, 40);
                 break;
             default:
-                EquipStat = new EquipStat();
+                _equipStat = new EquipStat();
                 break;
         }
     }
 
     public override bool Use(Player player)
     {
-        return player.Equip(this);
+        return player.Equip(ItemName, _equipStat);
     }
 }

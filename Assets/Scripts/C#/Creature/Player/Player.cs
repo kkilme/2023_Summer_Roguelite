@@ -176,23 +176,27 @@ public class Player : NetworkBehaviour, IAttackable
         return true;
     }
 
-    public bool Equip(Item equip)
+    public bool Equip(ITEMNAME equip, EquipStat equipStat)
     {
         var stat = _playerStat.Value;
-        switch (equip.ItemName)
+        switch (equip)
         {
-            case var _ when equip.ItemName > ITEMNAME.HEADSTART && equip.ItemName < ITEMNAME.HEADEND:
-                ArmorItem head = equip as ArmorItem;
-                stat.HeadEquip = head.EquipStat;
+            case var _ when equip > ITEMNAME.HEADSTART && equip < ITEMNAME.HEADEND:
+                stat.HeadEquip = equipStat;
                 break;
 
-            case var _ when equip.ItemName > ITEMNAME.CLOTHEND && equip.ItemName < ITEMNAME.CLOTHSTART:
-                ArmorItem cloth = equip as ArmorItem;
-                stat.ClothEquip = cloth.EquipStat;
+            case var _ when equip > ITEMNAME.CLOTHEND && equip < ITEMNAME.CLOTHSTART:
+                stat.ClothEquip = equipStat;
                 break;
         }
 
         _playerStat.Value = stat;
+        return true;
+    }
+
+    public bool Equip(GunData gunStat)
+    {
+
         return true;
     }
 
