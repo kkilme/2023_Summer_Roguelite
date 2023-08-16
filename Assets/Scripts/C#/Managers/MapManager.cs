@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Collections;
@@ -136,6 +137,21 @@ public class MapManager : NetworkBehaviour
         }
     }
 
+    private async UniTaskVoid MonsterGeneration()
+    {
+        for (int i = 0; i < rooms.Count; ++i)
+        {
+            int rand = Random.Range(0, 100);
+            if (rand >= 66)
+            {
+                var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
+                spawner.Init();
+                spawner.SpawnMonster();
+                await UniTask.Delay(TimeSpan.FromMilliseconds(10));
+            }
+        }
+    }
+
     // 맵 생성 함수
     [ServerRpc]
     public void GenerateMapServerRPC()
@@ -267,16 +283,7 @@ public class MapManager : NetworkBehaviour
 
         _testMap.BuildNavMesh();
 
-        //for (int i = 0; i < rooms.Count; ++i)
-        //{
-        //    int rand = Random.Range(0, 100);
-        //    if (rand >= 66)
-        //    {
-        //        var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
-        //        spawner.Init();
-        //        spawner.SpawnMonster();
-        //    }
-        //}
+        MonsterGeneration().Forget();
 
         for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
         {
