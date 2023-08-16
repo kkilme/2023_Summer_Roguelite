@@ -196,6 +196,7 @@ public class Player : NetworkBehaviour, IAttackable
 
     public bool Equip(GunData gunData)
     {
+        Debug.Log(gunData.gunName);
         gameObject.GetComponentInChildren<Gun>().SetGunData(gunData);
         return true;
     }

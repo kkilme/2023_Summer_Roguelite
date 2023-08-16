@@ -49,7 +49,8 @@ public abstract class Item
         return item switch
         {
             ITEMNAME.BANDAGE => new Item_Bandage(),
-            > ITEMNAME.EQUIPSTART and < ITEMNAME.EQUIPEND => new ArmorItem(item),
+            > ITEMNAME.EQUIPSTART and < ITEMNAME.WEAPONEND => new Item_Gun(item),
+            > ITEMNAME.HEADSTART and < ITEMNAME.EQUIPEND => new ArmorItem(item),
             _ => null,
         };
     }

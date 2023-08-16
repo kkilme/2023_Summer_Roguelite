@@ -90,6 +90,12 @@ public class GettableItem : NetworkBehaviour, IInteraction
             case ITEMNAME.TESTRAREHEAD:
                 path.Append("Test Rare Head");
                 break;
+            case ITEMNAME.TESTASSAULTRIFLE:
+                path.Append("TestAssaultRifle");
+                break;
+            case ITEMNAME.TESTMACHINEGUN:
+                path.Append("TestMachinegun");
+                break;
             default:
                 path.Append("");
                 break;

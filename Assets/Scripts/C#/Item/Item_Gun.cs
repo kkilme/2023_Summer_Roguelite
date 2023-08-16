@@ -6,10 +6,10 @@ public class Item_Gun : Item
 {
     protected GunData gunData;
 
-    public Item_Gun(GunData gunData, ITEMNAME itemName)
+    public Item_Gun(ITEMNAME itemName)
     {
-        this.gunData = gunData;
         this.ItemName = itemName;
+        this.gunData = GunDataFactory.GetGunData(itemName);
     }
 
     public override bool Use(Player player) {
