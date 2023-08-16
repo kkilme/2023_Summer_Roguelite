@@ -167,13 +167,13 @@ public class MapManager : NetworkBehaviour
             networkObj.Spawn();
 
             // 아이템 배치
-            //var itemPlaces = obj.GetComponent<Room>().itemPlaces;
-            //Array values = Enum.GetValues(typeof(ITEMNAME));
-            //for (int j = 0; j < itemPlaces.Length; j++)
-            //{
-            //    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
-            //        .GetComponent<NetworkObject>().Spawn();
-            //}
+            var itemPlaces = obj.GetComponent<Room>().itemPlaces;
+            Array values = Enum.GetValues(typeof(ITEMNAME));
+            for (int j = 0; j < itemPlaces.Length; j++)
+            {
+                Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
+                    .GetComponent<NetworkObject>().Spawn();
+            }
 
             //networkObj.TrySetParent(roomPositionList[idx].transform);
 
@@ -201,14 +201,14 @@ public class MapManager : NetworkBehaviour
                 var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
                 networkObj.Spawn();
 
-                // 아이템 배치
-                //var itemPlaces = obj.GetComponent<Room>().itemPlaces;
-                //Array values = Enum.GetValues(typeof(ITEMNAME));
-                //for (int j = 0; j < itemPlaces.Length; j++)
-                //{
-                //    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
-                //        .GetComponent<NetworkObject>().Spawn();
-                //}
+                //아이템 배치
+                var itemPlaces = obj.GetComponent<Room>().itemPlaces;
+                Array values = Enum.GetValues(typeof(ITEMNAME));
+                for (int j = 0; j < itemPlaces.Length; j++)
+                {
+                    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
+                        .GetComponent<NetworkObject>().Spawn();
+                }
 
                 //networkObj.TrySetParent(roomPositionList[idx].transform);
 
@@ -267,16 +267,16 @@ public class MapManager : NetworkBehaviour
 
         _testMap.BuildNavMesh();
 
-        for (int i = 0; i < rooms.Count; ++i)
-        {
-            int rand = Random.Range(0, 100);
-            if (rand >= 66)
-            {
-                var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
-                spawner.Init();
-                spawner.SpawnMonster();
-            }
-        }
+        //for (int i = 0; i < rooms.Count; ++i)
+        //{
+        //    int rand = Random.Range(0, 100);
+        //    if (rand >= 66)
+        //    {
+        //        var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
+        //        spawner.Init();
+        //        spawner.SpawnMonster();
+        //    }
+        //}
 
         for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
         {
