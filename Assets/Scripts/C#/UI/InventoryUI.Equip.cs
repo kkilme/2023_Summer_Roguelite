@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public partial class InventoryUI : MonoBehaviour
 {
@@ -53,8 +54,9 @@ public partial class InventoryUI : MonoBehaviour
             if (input.x >= equipUISize[i, 0].x && input.x <= equipUISize[i, 1].x 
                 && input.y >= equipUISize[i, 0].y && input.y <= equipUISize[i, 1].y)
             {
-                selectedInventoryItem = inventory.SelectEquip((ITEMNAME)(1100 + i * 100));
-                SelectEquipItem(equipItemUI[i]);
+                selectedInventoryItem = inventory.SelectEquip((ITEMNAME)(1100 + i * 100), GetGridPostion(Input.mousePosition));
+                equipItemUI[i].gameObject.SetActive(false);
+                //SelectEquipItem(equipItemUI[i]);
                 break;
             }
         }

@@ -19,49 +19,61 @@ public partial class Inventory : NetworkBehaviour
         ClothItem = new NetworkVariable<InventoryItem>();
     }
 
-    public InventoryItem SelectEquip(ITEMNAME item)
+    public InventoryItem SelectEquip(ITEMNAME item, Vector2Int pos)
     {
+        InventoryItem invenItem = new InventoryItem();
         switch (item)
         {
             case ITEMNAME.WEAPONEND:
-                if (WeaponItem.Value.itemName == ITEMNAME.NONE)
-                    return new InventoryItem();
-                else
+                if (WeaponItem.Value.itemName != ITEMNAME.NONE)
                 {
                     var equip = Item.GetUsableItem(item);
                     equip.Use(curPlayer);
-                    return WeaponItem.Value;
+                    invenItem = WeaponItem.Value;
+                    invenItem.posX = pos.x;
+                    invenItem.posY = pos.y;
+                    items.Add(invenItem);
+                    WeaponItem.Value = new InventoryItem();
                 }
+                break;
             case ITEMNAME.SUBWEAPONEND:
-                if (SubWeaponItem.Value.itemName == ITEMNAME.NONE)
-                    return new InventoryItem();
-                else
+                if (SubWeaponItem.Value.itemName != ITEMNAME.NONE)
                 {
                     var equip = Item.GetUsableItem(item);
                     equip.Use(curPlayer);
-                    return SubWeaponItem.Value;
+                    invenItem = SubWeaponItem.Value;
+                    invenItem.posX = pos.x;
+                    invenItem.posY = pos.y;
+                    items.Add(invenItem);
+                    SubWeaponItem.Value = new InventoryItem();
                 }
+                break;
             case ITEMNAME.HEADEND:
-                if (HeadItem.Value.itemName == ITEMNAME.NONE)
-                    return new InventoryItem();
-                else
+                if (HeadItem.Value.itemName != ITEMNAME.NONE)
                 {
                     var equip = Item.GetUsableItem(item);
                     equip.Use(curPlayer);
-                    return HeadItem.Value;
+                    invenItem = HeadItem.Value;
+                    invenItem.posX = pos.x;
+                    invenItem.posY = pos.y;
+                    items.Add(invenItem);
+                    HeadItem.Value = new InventoryItem();
                 }
+                break;
             case ITEMNAME.CLOTHEND:
-                if (ClothItem.Value.itemName == ITEMNAME.NONE)
-                    return new InventoryItem();
-                else
+                if (ClothItem.Value.itemName != ITEMNAME.NONE)
                 {
                     var equip = Item.GetUsableItem(item);
                     equip.Use(curPlayer);
-                    return ClothItem.Value;
+                    invenItem = ClothItem.Value;
+                    invenItem.posX = pos.x;
+                    invenItem.posY = pos.y;
+                    items.Add(invenItem);
+                    ClothItem.Value = new InventoryItem();
                 }
-            default:
-                return new InventoryItem();
+                break;
         };
+        return invenItem;
     }
 
     [ServerRpc]

@@ -122,6 +122,11 @@ public partial class InventoryUI : MonoBehaviour
 
         for (int i = 0; i < e.InventoryItems.Count; i++)
         {
+            //if (e.InventoryItems[i].posX < 0 || e.InventoryItems[i].posY < 0)
+            //{
+            //    continue;
+            //}
+
             if (!inventoryDic.ContainsKey(e.InventoryItems[i]))
             {
                 inventoryDic.Add(e.InventoryItems[i], inventoryItemUIStack.Pop());
