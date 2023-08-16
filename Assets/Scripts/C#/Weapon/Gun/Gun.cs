@@ -58,7 +58,7 @@ public class Gun : NetworkBehaviour
 
     private void Init()
     {
-        SetGunData(GunDataFactory.GetGunData(ITEMNAME.TestAssaultRifle)); // test
+        SetGunData(GunDataFactory.GetGunData(ITEMNAME.TESTASSAULTRIFLE)); // test
 
         _animator = GetComponent<Animator>();
         _effectparent = GameObject.Find("Effect").transform;
@@ -83,11 +83,11 @@ public class Gun : NetworkBehaviour
     public void StartReload(Inventory inventory)
     {
         // 서버에서 리로드 관리
-        ReloadServerRPC(_gunData, inventory.GetComponent<NetworkObject>());
+        ReloadServerRPC(ref _gunData, inventory.GetComponent<NetworkObject>());
     }
 
     [ServerRpc]
-    private void ReloadServerRPC(GunData gunData, NetworkObjectReference networkObjectReference, ServerRpcParams serverRpcParams = default)
+    private void ReloadServerRPC(ref GunData gunData, NetworkObjectReference networkObjectReference, ServerRpcParams serverRpcParams = default)
     {
         Debug.Log(gunData.isReloading);
         if (!gunData.isReloading)
@@ -122,40 +122,43 @@ public class Gun : NetworkBehaviour
                     break;
                 }
             }
-            if (fillAmount > 0)
-                Reload(gunData, fillAmount, serverRpcParams.Receive.SenderClientId).Forget();
+            //if (fillAmount > 0)
+                //UniTask.Void(async () =>
+                //{
+                //    await gunData.Reload(fillAmount);
+                //});
         }
     }
 
     /// <summary>
     /// 재장전
     /// </summary>
-    private async UniTaskVoid Reload(GunData gunData, int amount, ulong targetId)
-    {
-        Debug.Log("Reload Start");
-        gunData.isReloading = true;
+    //private async UniTaskVoid Reload(int amount, ulong targetId)
+    //{
+    //    Debug.Log("Reload Start");
+    //    gunData.isReloading = true;
 
-        await UniTask.Delay((int)(1000 * gunData.reloadTime));
+    //    await UniTask.Delay((int)(1000 * gunData.reloadTime));
 
-        gunData.currentAmmo += amount;
-        ClientRpcParams clientRpcParams = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { targetId }
-            }
-        };
-        ReloadClientRPC(amount, clientRpcParams);
+    //    gunData.currentAmmo += amount;
+    //    ClientRpcParams clientRpcParams = new ClientRpcParams
+    //    {
+    //        Send = new ClientRpcSendParams
+    //        {
+    //            TargetClientIds = new ulong[] { targetId }
+    //        }
+    //    };
+    //    ReloadClientRPC(amount, clientRpcParams);
 
-        gunData.isReloading = false;
-        Debug.Log("Reload finish");
-    }
+    //    gunData.isReloading = false;
+    //    Debug.Log("Reload finish");
+    //}
 
-    [ClientRpc]
-    private void ReloadClientRPC(int amount, ClientRpcParams clientRpcParams)
-    {   
-        _gunData.currentAmmo += amount;
-    }
+    //[ClientRpc]
+    //private void ReloadClientRPC(int amount, ClientRpcParams clientRpcParams)
+    //{   
+    //    _gunData.currentAmmo += amount;
+    //}
 
     // 총 발사 가능 여부 판단
     private bool CanShoot() => !_gunData.isReloading && _gunData.currentAmmo > 0 && (_timeSinceLastShot > 1f / _gunData.fireRate || _gunData.isAutofire);

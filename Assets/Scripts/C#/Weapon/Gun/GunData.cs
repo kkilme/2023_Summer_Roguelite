@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -116,7 +117,7 @@ public struct GunData : INetworkSerializable
     }
 
     // C# 10.0 미만에서 구조체는 매개변수 없는 생성자 불가
-    public GunData(ITEMNAME gunName = ITEMNAME.TestAssaultRifle)
+    public GunData(ITEMNAME gunName = ITEMNAME.TESTASSAULTRIFLE)
     {
         this.gunName = gunName;
         this.damage = 10;
@@ -205,6 +206,18 @@ public struct GunData : INetworkSerializable
             return false;
         }
         else return true;
+    }
+
+    public async UniTask Reload(int amount)
+    {
+        Debug.Log("Reload Start");
+        isReloading = true;
+
+        await UniTask.Delay((int)(1000 * reloadTime));
+
+        currentAmmo += amount;
+        isReloading = false;
+        Debug.Log("Reload finish");
     }
 
 }

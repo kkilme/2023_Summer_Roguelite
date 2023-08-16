@@ -194,9 +194,9 @@ public class Player : NetworkBehaviour, IAttackable
         return true;
     }
 
-    public bool Equip(GunData gunStat)
+    public bool Equip(GunData gunData)
     {
-
+        gameObject.GetComponentInChildren<Gun>().SetGunData(gunData);
         return true;
     }
 

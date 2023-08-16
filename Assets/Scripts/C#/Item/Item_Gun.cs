@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item_Ammo : Item
+public class Item_Gun : Item
 {
-    protected AMMO_TYPE ammoType;
+    protected GunData gunData;
 
-    public Item_Ammo(AMMO_TYPE ammoType, ITEMNAME itemName)
+    public Item_Gun(GunData gunData, ITEMNAME itemName)
     {
-        this.ammoType = ammoType;
+        this.gunData = gunData;
         this.ItemName = itemName;
     }
 
-    public override bool Use(Player player) { return true; }
+    public override bool Use(Player player) {
+        player.Equip(gunData);
+        return true; 
+    }
 }
