@@ -31,6 +31,9 @@ public class GunCamera : MonoBehaviour
         _zoomspeed = target;
     }
 
+    /// <summary>
+    /// 인자 없을 시 기본 FOV로 설정
+    /// </summary>
     public void SetTargetFOV()
     {
         _targetFOV = _originalFOV;

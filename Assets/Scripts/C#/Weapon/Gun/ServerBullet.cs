@@ -10,7 +10,6 @@ public class ServerBullet : NetworkBehaviour
 {
     private float _speed;
     private float _lifeTime;
-    [SerializeField] private GameObject _bullethole;
     //[SerializeField] private LayerMask _hitLayer;
 
     private Vector3 _direction;
@@ -112,7 +111,7 @@ public class ServerBullet : NetworkBehaviour
     private void ShowHitEffect(Vector3 hitPoint, Vector3 hitNormal)
     {   
        
-        GameObject hitEffect = Instantiate(_bullethole, hitPoint, Quaternion.LookRotation(hitNormal), _effectparent);
+        GameObject hitEffect = Instantiate(GameManager.Resource.GetObject<GameObject>("Bullet/SoftBodyHole"), hitPoint, Quaternion.LookRotation(hitNormal), _effectparent);
         
     }
 

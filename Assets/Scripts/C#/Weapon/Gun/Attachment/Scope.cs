@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
-
-public class Scope : ScriptableAttachment
+[CreateAssetMenu(fileName = "Scope", menuName = "Weapon/Attachment/Scope")]
+public class Scope : Attachment
 {
     public float zoomrate;
-    public override void ApplyAttachmentEffect()
+    public override void ApplyAttachmentEffect(ref GunData gunData)
     {
-        throw new System.NotImplementedException();
+        originalValue = gunData.zoomRate;
+        gunData.zoomRate = zoomrate;
     }
 
-    public override void RemoveAttachmentEffect()
+    public override void RemoveAttachmentEffect(ref GunData gunData)
     {
-        throw new System.NotImplementedException();
+        gunData.zoomRate = originalValue;
     }
 
 }
