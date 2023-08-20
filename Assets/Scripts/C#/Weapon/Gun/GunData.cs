@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -16,7 +17,6 @@ public enum AMMO_TYPE
     AMMO_762,
     GAUGE_12
 }
-
 
 public struct GunData : INetworkSerializable
 {
@@ -202,16 +202,20 @@ public struct GunData : INetworkSerializable
 
         serializer.SerializeValue(ref isReloading);
 
+        if (serializer.IsReader)
+        {
+            availableAttachmentTypes = GlobalVariable.DummyAttachmentTypeList;
+            equippedAttachments = GlobalVariable.DummyAttachmentDict; 
+        }
         serializer.SerializeValue(ref availableAttachmentTypes);
         serializer.SerializeValue(ref equippedAttachments);
 
         serializer.SerializeValue(ref hashcode);
-
     }
 
     public void Init()
     {
-        if(gunName != ITEMNAME.NONE) InitAttachmentDict();
+        if (gunName != ITEMNAME.NONE) InitAttachmentDict();
     }
     /// <summary>
     /// AttachmentTypeList를 사용하여 Key값은 ATTACHMENT_TYPE, Value값은 ATTACHMENT_NAME.None으로 equippedAttachments 초기화. 
@@ -236,18 +240,6 @@ public struct GunData : INetworkSerializable
             return false;
         }
         else return true;
-    }
-
-    public async UniTask Reload(int amount)
-    {
-        Debug.Log("Reload Start");
-        isReloading = true;
-
-        await UniTask.Delay((int)(1000 * reloadTime));
-
-        currentAmmo += amount;
-        isReloading = false;
-        Debug.Log("Reload finish");
     }
 
 }
@@ -290,10 +282,9 @@ public class AttachmentDictionary : Dictionary<ATTACHMENT_TYPE, ATTACHMENT_NAME>
 public class AttachmentTypeList : List<ATTACHMENT_TYPE>, INetworkSerializable
 {
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
+    {   
         int count = Count;
         serializer.SerializeValue(ref count);
-
         if (serializer.IsReader) // IsReader: 역직렬화
         {
             Clear();
@@ -312,5 +303,31 @@ public class AttachmentTypeList : List<ATTACHMENT_TYPE>, INetworkSerializable
                 serializer.SerializeValue(ref type);
             }
         }
+
+        //int length = 0;
+        //ATTACHMENT_TYPE[] Array;
+        //if (!serializer.IsReader)
+        //{
+        //    Array = availableAttachmentTypes.ToArray();
+        //    length = Array.Length;
+        //    serializer.SerializeValue(ref length);
+        //}
+        //else
+        //{
+        //    availableAttachmentTypes = new AttachmentTypeList();
+        //    serializer.SerializeValue(ref length);
+        //    Array = new ATTACHMENT_TYPE[length];
+        //}
+
+        //for (int n = 0; n < length; ++n)
+        //{
+        //    serializer.SerializeValue(ref Array[n]);
+        //}
+
+        //if (serializer.IsReader)
+        //{
+        //    // 역직렬화 후 데이터 설정
+        //    availableAttachmentTypes.AddRange(Array);
+        //}
     }
 }

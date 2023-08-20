@@ -63,7 +63,7 @@ public class Gun : NetworkBehaviour
         _animator = GetComponent<Animator>();
         _effectparent = GameObject.Find("Effect").transform;
         _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
-        //_ammoleftText = GameObject.Find("Ammo left").GetComponent<TextMeshProUGUI>();
+        _ammoleftText = GameObject.Find("Ammo left")?.GetComponent<TextMeshProUGUI>();
         transform.LookAt(_cam.transform.position + (_cam.transform.forward * 30));
         _cam.SetZoomSpeed(_gunData.zoomSpeed);
 
@@ -78,85 +78,106 @@ public class Gun : NetworkBehaviour
 
 
     /// <summary>
-    /// 재장전 코루틴 시작
+    /// 클라이언트가 재장전 시작 시 ServerRPC 호출.
     /// </summary>
     public void StartReload(Inventory inventory)
     {
         // 서버에서 리로드 관리
-        ReloadServerRPC(ref _gunData, inventory.GetComponent<NetworkObject>());
-    }
-
-    [ServerRpc]
-    private void ReloadServerRPC(ref GunData gunData, NetworkObjectReference networkObjectReference, ServerRpcParams serverRpcParams = default)
-    {
-        Debug.Log(gunData.isReloading);
-        if (!gunData.isReloading)
-        {
-            NetworkObject networkObj = networkObjectReference;
-            var inventory = networkObj.GetComponent<Inventory>();
-
-            int requiredAmmo = gunData.magSize - gunData.currentAmmo;
-            int fillAmount = 0;
-
-            while (fillAmount < requiredAmmo)
-            {
-                if (inventory.HasItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), gunData.ammoType.ToString()), out InventoryItem item))
-                {
-                    if (fillAmount + item.currentCount < requiredAmmo)
-                    {
-                        // 총알 아이템의 현재 갯수를 모두 소모해도 탄약이 더 필요하다면 선택된 총알 아이템 제거
-                        fillAmount += item.currentCount;
-                        inventory.RemoveItem(item);
-                    }
-                    else
-                    {
-                        int removedCount = requiredAmmo - fillAmount;
-                        item.currentCount -= removedCount;
-                        fillAmount = requiredAmmo;
-                        inventory.items[inventory.FindIndex(item)] = item;
-                    }
-                }
-                else
-                {
-                    Debug.Log("You don't have any proper ammo");
-                    break;
-                }
-            }
-            //if (fillAmount > 0)
-                //UniTask.Void(async () =>
-                //{
-                //    await gunData.Reload(fillAmount);
-                //});
-        }
+        if (_gunData.isReloading) return;
+        _gunData.isReloading = true;
+        ReloadServerRPC(_gunData, inventory.GetComponent<NetworkObject>());
     }
 
     /// <summary>
-    /// 재장전
+    /// 서버에서 재장전 실행
     /// </summary>
-    //private async UniTaskVoid Reload(int amount, ulong targetId)
-    //{
-    //    Debug.Log("Reload Start");
-    //    gunData.isReloading = true;
+    [ServerRpc]
+    private void ReloadServerRPC(GunData gunData, NetworkObjectReference networkObjectReference, ServerRpcParams serverRpcParams = default)
+    {
+        Debug.Log(gunData.isReloading);
 
-    //    await UniTask.Delay((int)(1000 * gunData.reloadTime));
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams {TargetClientIds = new ulong[] { serverRpcParams.Receive.SenderClientId }}
+        };
+        NetworkObject networkObj = networkObjectReference;
+        var inventory = networkObj.GetComponent<Inventory>();
 
-    //    gunData.currentAmmo += amount;
-    //    ClientRpcParams clientRpcParams = new ClientRpcParams
-    //    {
-    //        Send = new ClientRpcSendParams
-    //        {
-    //            TargetClientIds = new ulong[] { targetId }
-    //        }
-    //    };
-    //    ReloadClientRPC(amount, clientRpcParams);
+        int reloadAmount = CalculateReloadAmount(gunData, inventory);
 
-    //    gunData.isReloading = false;
-    //    Debug.Log("Reload finish");
-    //}
+        if(reloadAmount > 0)
+        {
+            Reload(gunData, reloadAmount, clientRpcParams).Forget();
+        } else
+        {
+            gunData.isReloading = false;
+            ReloadClientRPC(gunData, clientRpcParams);
+        }        
+    }
+
+    /// <summary>
+    /// 플레이어 인벤토리를 확인하여 재장전할 양 계산.
+    /// </summary>
+    private int CalculateReloadAmount(GunData gunData, Inventory inventory)
+    {
+
+        int reloadAmount = 0;
+        int requiredAmmo = gunData.magSize - gunData.currentAmmo;
+
+        while (reloadAmount < requiredAmmo)
+        {
+            if (inventory.HasItem((ITEMNAME)Enum.Parse(typeof(ITEMNAME), gunData.ammoType.ToString()), out InventoryItem item))
+            {
+                if (reloadAmount + item.currentCount < requiredAmmo)
+                {
+                    // 총알 아이템의 현재 갯수를 모두 소모해도 탄약이 더 필요하다면 선택된 총알 아이템 제거
+                    reloadAmount += item.currentCount;
+                    inventory.RemoveItem(item);
+                }
+                else
+                {
+                    int removedCount = requiredAmmo - reloadAmount;
+                    item.currentCount -= removedCount;
+                    reloadAmount = requiredAmmo;
+                    inventory.items[inventory.FindIndex(item)] = item;
+                }
+            }
+            else
+            {
+                Debug.Log("No ammo");
+                break;
+            }
+        }
+
+        return reloadAmount;
+    }
+
+    /// <summary>
+    /// 재장전 (서버에서 실행)
+    /// </summary>
+    private async UniTask Reload(GunData gunData, int amount, ClientRpcParams clientRpcParams)
+    {
+        Debug.Log("Reload Start");
+        await UniTask.Delay((int)(1000 * gunData.reloadTime));
+        gunData.currentAmmo += amount;
+        gunData.isReloading = false;
+        Debug.Log("Reload finish");
+        ReloadClientRPC(gunData, clientRpcParams);
+
+    }
+
+    /// <summary>
+    /// 재장전 완료, 서버에서 계산된 gunData로 덮어씌움.
+    /// </summary>
+    [ClientRpc]
+    private void ReloadClientRPC(GunData gundata, ClientRpcParams clientRpcParams)
+    {
+        _gunData = gundata;
+    }
 
     //[ClientRpc]
     //private void ReloadClientRPC(int amount, ClientRpcParams clientRpcParams)
-    //{   
+    //{
     //    _gunData.currentAmmo += amount;
     //}
 
@@ -176,7 +197,7 @@ public class Gun : NetworkBehaviour
                 float spreadx = Random.Range(-_gunData.spreadRate, _gunData.spreadRate) / 10; // 탄퍼짐
                 float spready = Random.Range(-_gunData.spreadRate, _gunData.spreadRate) / 10;
                 Vector3 bulletDir;
-                Ray ray = new Ray(_cam.transform.position, _cam.transform.forward);
+                Ray ray = new(_cam.transform.position, _cam.transform.forward);
 
                 if (Physics.Raycast(ray, out RaycastHit hit, 1000))
                 {   
@@ -323,7 +344,7 @@ public class Gun : NetworkBehaviour
         if (IsOwner)
         {
             _timeSinceLastShot += Time.deltaTime;
-            //_ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize}";
+            if(_ammoleftText) _ammoleftText.text = $"Ammo left: {_gunData.currentAmmo} / {_gunData.magSize} \nAmmoType: {_gunData.ammoType}";
             Debug.DrawRay(_cam.transform.position, _cam.transform.forward * 5, Color.red);
         }    
     }
