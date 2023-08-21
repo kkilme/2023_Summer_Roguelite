@@ -45,6 +45,7 @@ public class ServerBullet : NetworkBehaviour
         _speed = bulletspeed;
         _lifeTime = bulletLifetime;
         _dmg = dmg;
+        transform.rotation = Quaternion.LookRotation(_direction);
     }
 
     private void FixedUpdate()
@@ -111,7 +112,7 @@ public class ServerBullet : NetworkBehaviour
     private void ShowHitEffect(Vector3 hitPoint, Vector3 hitNormal)
     {   
        
-        GameObject hitEffect = Instantiate(GameManager.Resource.GetObject<GameObject>("Bullet/SoftBodyHole"), hitPoint, Quaternion.LookRotation(hitNormal), _effectparent);
+        Instantiate(GameManager.Resource.GetObject<GameObject>("Bullet/SoftBodyHole"), hitPoint, Quaternion.LookRotation(hitNormal), _effectparent);
         
     }
 

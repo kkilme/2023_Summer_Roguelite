@@ -31,18 +31,20 @@ public class TestButton : MonoBehaviour
         {
             Debug.Log("Already-test");
             AttachmentSystem.UnequipAttachment(ref NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<Gun>().GunData, testatt1);
-        } else
+        }
+        else
         {
             AttachmentSystem.EquipAttachment(ref NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<Gun>().GunData, testatt1);
         }
-        
+
     }
     public void TestEquipAttachment2()
     {
         if (NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<Gun>().GunData.equippedAttachments[testatt2.attachmentType] == testatt2.attachmentName)
         {
             AttachmentSystem.UnequipAttachment(ref NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<Gun>().GunData, testatt2);
-        } else
+        }
+        else
         {
             AttachmentSystem.EquipAttachment(ref NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<Gun>().GunData, testatt2);
         }
@@ -52,7 +54,8 @@ public class TestButton : MonoBehaviour
         if (NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<Gun>().GunData.equippedAttachments[testatt3.attachmentType] == testatt3.attachmentName)
         {
             AttachmentSystem.UnequipAttachment(ref NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<Gun>().GunData, testatt3);
-        } else
+        }
+        else
         {
             AttachmentSystem.EquipAttachment(ref NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<Gun>().GunData, testatt3);
         }

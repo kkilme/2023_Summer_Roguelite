@@ -5,7 +5,9 @@ using UnityEngine;
 using System.Linq;
 
 public class AttachmentSystem
-{   
+{
+    /*재장전 도중 부착물 장착 시 버그 있는 지 테스트 필요*/
+
     // GunData의 부착물 관리
     public static Dictionary<int, List<Attachment>> attachmentDataDic = new Dictionary<int, List<Attachment>>();
 
@@ -19,7 +21,7 @@ public class AttachmentSystem
 
         // 이미 해당 부착물 타입 장착중일 시 먼저 해제 
         if (gunData.equippedAttachments[attachment.attachmentType] != ATTACHMENT_NAME.None)
-        {   
+        {
             Debug.Log("Already equipped");
             UnequipAttachment(ref gunData, GetAttachmentOfSpecificType(ref gunData, attachment));
         }
