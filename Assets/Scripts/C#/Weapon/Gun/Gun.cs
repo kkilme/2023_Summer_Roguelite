@@ -46,10 +46,11 @@ public class Gun : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        _cam = GameObject.Find("FollowPlayerCam").GetComponent<GunCamera>();
+        
 
         if (IsOwner)
         {
+            _cam = gameObject.transform.root.GetComponentInChildren<GunCamera>();
             Init();
         }
 

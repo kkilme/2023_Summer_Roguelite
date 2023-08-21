@@ -38,17 +38,22 @@ public class MonsterController : NetworkBehaviour, IAttackable
     private MonsterAttack _attack;
     private NetworkVariable<Stat> _stat = new NetworkVariable<Stat>();
 
-    public void Init(MonsterSpawner spawner)
+    public override void OnNetworkSpawn()
     {
         if (IsServer)
         {
             _stat.Value = new Stat(1, 1, 5, 1, 1, 5);
+            _board.Stat = _stat.Value;
         }
+        _tree.CheckSeq();
+    }
+
+    public void Init(MonsterSpawner spawner)
+    {
         _attack = gameObject.GetComponentInChildren<MonsterAttack>();
         _detect = gameObject.GetComponentInChildren<MonsterDetect>();
         MakeBehaviour(spawner);
         ChildInit();
-        _tree.CheckSeq();
     }
 
     private void ChildInit()
