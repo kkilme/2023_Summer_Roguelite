@@ -12,7 +12,7 @@ public static class GunDataFactory
                 return new GunData(
                     gunName: ITEMNAME.TESTASSAULTRIFLE,
                     damage: 10,
-                    bulletSpeed: 3,
+                    bulletSpeed: 50,
                     bulletsPerShoot: 1,
                     bulletLifetime: 5,
                     spreadRate: 0,
@@ -36,7 +36,7 @@ public static class GunDataFactory
                 return new GunData(
                     gunName: ITEMNAME.TESTMACHINEGUN,
                     damage: 1,
-                    bulletSpeed: 30,
+                    bulletSpeed: 50,
                     bulletsPerShoot: 1,
                     bulletLifetime: 5,
                     spreadRate: 0.7f,

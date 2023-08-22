@@ -60,6 +60,7 @@ public class Player : NetworkBehaviour, IAttackable
             }
             _rotationTransform = transform.GetChild(0).GetChild(0);
             if (_rotationTransform == null) _rotationTransform = transform; // SJPlayer용 테스트코드
+            transform.GetChild(1).gameObject.layer = 9;
         }
 
         else
@@ -67,7 +68,7 @@ public class Player : NetworkBehaviour, IAttackable
 
         if (IsServer)
         {
-            _playerStat.Value = new Stat(5, 5, 10, 5, 5, 5);
+            _playerStat.Value = new Stat(5, 5, 1, 5, 5, 5);
         }
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);

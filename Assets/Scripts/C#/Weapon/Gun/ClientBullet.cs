@@ -32,6 +32,7 @@ public class ClientBullet : MonoBehaviour
         _direction = dir.normalized;
         _speed = bulletspeed;
         _lifeTime = bulletLifetime;
+        transform.rotation = Quaternion.LookRotation(_direction);
     }
 
     private void FixedUpdate()
