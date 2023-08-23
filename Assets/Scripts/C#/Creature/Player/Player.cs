@@ -5,6 +5,7 @@ using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.HighDefinition;
 using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class Player : NetworkBehaviour, IAttackable
@@ -44,7 +45,7 @@ public class Player : NetworkBehaviour, IAttackable
         _interact.gameObject.SetActive(false);
         if (IsOwner) {
             //오버레이 카메라 추가
-            _mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Add(_armNWeaponCam);
+            //_mainCam.GetComponent<HDAdditionalCameraData>(). cameraStack.Add(_armNWeaponCam);
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);
@@ -55,7 +56,7 @@ public class Player : NetworkBehaviour, IAttackable
             for (int i = 0; i < _skinnedMeshRenderer?.materials.Length; ++i)
             {
                 if (i != 6 && i != 10 && (i < 12 || i > 15))
-                    _skinnedMeshRenderer.materials[i].SetFloat("_Render", 2);
+                    _skinnedMeshRenderer.materials[i].color = Color.clear;//.SetFloat("_DistortionDepthTest", 2);
             }
             _rotationTransform = transform.GetChild(0).GetChild(0);
             if (_rotationTransform == null) _rotationTransform = transform; // SJPlayer용 테스트코드
@@ -128,11 +129,11 @@ public class Player : NetworkBehaviour, IAttackable
         for (int i = 0; i < _skinnedMeshRenderer.materials.Length; ++i)
         {
             if (i != 6 && i != 10 && (i < 12 || i > 15))
-                _skinnedMeshRenderer.materials[i].SetFloat("_Render", 0);
+                _skinnedMeshRenderer.materials[i].color = Color.white;
         }
 
         _deadPlayerCam.transform.position = transform.position + Vector3.up * 5;
-        _mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Clear();
+        //_mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Clear();
         _mainCam.cullingMask = -1;
 
         _followPlayerCam.Priority = 0;
