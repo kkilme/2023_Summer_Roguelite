@@ -66,7 +66,7 @@ public class Player : NetworkBehaviour, IAttackable
         else
             Destroy(_mainCam.transform.parent.gameObject);
 
-        if (IsServer)
+        //if (IsServer)
         {
             _playerStat.Value = new Stat(5, 5, 1, 5, 5, 5);
         }
