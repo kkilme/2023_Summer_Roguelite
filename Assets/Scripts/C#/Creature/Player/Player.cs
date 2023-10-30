@@ -50,8 +50,6 @@ public class Player : NetworkBehaviour, IAttackable
         _interact.gameObject.SetActive(false);
         if (IsOwner)
         {
-            //오버레이 카메라 추가
-            //_mainCam.GetComponent<HDAdditionalCameraData>(). cameraStack.Add(_armNWeaponCam);
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);
@@ -86,12 +84,6 @@ public class Player : NetworkBehaviour, IAttackable
     {
         if (IsOwner)
             MoveCharacter(_playerController.MoveDir);
-
-        if (Input.GetKey(KeyCode.L))
-            Dead();
-
-        //if (Input.GetKey(KeyCode.R))
-        //    TestReturn();
 
         if (Input.GetKeyDown(KeyCode.G))
             TestThrowFlashBang();
