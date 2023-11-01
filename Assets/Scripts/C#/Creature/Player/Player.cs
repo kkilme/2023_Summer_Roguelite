@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering.HighDefinition;
 using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
-public class Player : NetworkBehaviour, IAttackable
+public partial class Player : NetworkBehaviour, IAttackable
 {
     public PlayerLock ServerLock { get => _playerController.ServerLock; }
     public Stat PlayerStat { get => _playerStat.Value; }
@@ -50,21 +50,14 @@ public class Player : NetworkBehaviour, IAttackable
         _interact.gameObject.SetActive(false);
         if (IsOwner)
         {
-            _followPlayerCam.Follow = _headTransform;
-            _interact.gameObject.SetActive(true);
-            _interact.Init(this, _followPlayerCam.transform);
-            _playerController = Util.GetOrAddComponent<PlayerController>(gameObject);
-            _playerController.Init(_followPlayerCam, _iaa, _interact);
-            _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-            //6, 10 12 - 15
-            //for (int i = 0; i < _skinnedMeshRenderer?.materials.Length; ++i)
-            //{
-            //    if (i != 6 && i != 10 && (i < 12 || i > 15))
-            //        _skinnedMeshRenderer.materials[i].color = Color.clear;//.SetFloat("_DistortionDepthTest", 2);
-            //}
-            _rotationTransform = transform.GetChild(0).GetChild(0);
-            if (_rotationTransform == null) _rotationTransform = transform; // SJPlayer용 테스트코드
-            transform.GetChild(1).gameObject.layer = 9;
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { OwnerClientId }
+                }
+            };
+            InitClientRpc(clientRpcParams);
         }
 
         else

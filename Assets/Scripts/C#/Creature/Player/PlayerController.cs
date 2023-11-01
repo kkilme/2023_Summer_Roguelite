@@ -44,7 +44,7 @@ public class PlayerController : NetworkBehaviour
         Pi = Util.GetOrAddComponent<PlayerInput>(gameObject);
         Pi.actions = null;
         Pi.actions = iaa;
-        Anim = Util.GetOrAddComponent<Animator>(gameObject);
+        Anim = Util.GetOrAddComponent<Animator>(transform.GetChild(0).gameObject);
         MouseInput = gameObject.GetComponentInChildren<MouseInput>();
         
         if (IsOwner)
