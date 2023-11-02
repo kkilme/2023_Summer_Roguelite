@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &4304793476731015967
 Transform:
@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
   m_LocalPosition: {x: -0, y: -1.0728726e-14, z: -0.00000006585245}
   m_LocalScale: {x: 1.0261046, y: 1.0261046, z: 1.0261046}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 397698220283037489}
   m_RootOrder: 2
@@ -51,6 +52,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -108,6 +110,7 @@ Transform:
   m_LocalRotation: {x: 0.000000057601245, y: -0.70710576, z: 0.00000005760109, w: 0.7071079}
   m_LocalPosition: {x: -18.081, y: -28.223, z: -4.414}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 76975154722895234}
   - {fileID: 1840983376496358209}
@@ -166,6 +169,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
   m_LocalPosition: {x: 0.00063544273, y: 0.00000007629395, z: 0.36099216}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 397698220283037489}
   m_RootOrder: 0
@@ -208,7 +212,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &1840983376496358209
 Transform:
@@ -220,6 +224,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
   m_LocalPosition: {x: -0, y: -1.0728726e-14, z: -0.00000006585245}
   m_LocalScale: {x: 1.0261046, y: 1.0261046, z: 1.0261046}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 397698220283037489}
   m_RootOrder: 1
@@ -243,6 +248,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
