@@ -41,23 +41,27 @@ public class Player : NetworkBehaviour, IAttackable
 
     public override void OnNetworkSpawn()
     {
+        Init();
+    }
+
+    private void Init()
+    {
         _interact = GetComponentInChildren<PlayerInteract>();
         _interact.gameObject.SetActive(false);
-        if (IsOwner) {
-            //오버레이 카메라 추가
-            //_mainCam.GetComponent<HDAdditionalCameraData>(). cameraStack.Add(_armNWeaponCam);
+        if (IsOwner)
+        {
             _followPlayerCam.Follow = _headTransform;
             _interact.gameObject.SetActive(true);
             _interact.Init(this, _followPlayerCam.transform);
-            _playerController = Util.GetOrAddComponent<PlayerController>(gameObject); 
+            _playerController = Util.GetOrAddComponent<PlayerController>(gameObject);
             _playerController.Init(_followPlayerCam, _iaa, _interact);
             _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
             //6, 10 12 - 15
-            for (int i = 0; i < _skinnedMeshRenderer?.materials.Length; ++i)
-            {
-                if (i != 6 && i != 10 && (i < 12 || i > 15))
-                    _skinnedMeshRenderer.materials[i].color = Color.clear;//.SetFloat("_DistortionDepthTest", 2);
-            }
+            //for (int i = 0; i < _skinnedMeshRenderer?.materials.Length; ++i)
+            //{
+            //    if (i != 6 && i != 10 && (i < 12 || i > 15))
+            //        _skinnedMeshRenderer.materials[i].color = Color.clear;//.SetFloat("_DistortionDepthTest", 2);
+            //}
             _rotationTransform = transform.GetChild(0).GetChild(0);
             if (_rotationTransform == null) _rotationTransform = transform; // SJPlayer용 테스트코드
             transform.GetChild(1).gameObject.layer = 9;
@@ -68,23 +72,18 @@ public class Player : NetworkBehaviour, IAttackable
 
         //if (IsServer)
         {
-            _playerStat.Value = new Stat(5, 5, 1, 5, 5, 5);
+            _playerStat.Value = new Stat(5, 5, 5, 5, 5, 5);
         }
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
         _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
     private void FixedUpdate()
     {
         if (IsOwner)
             MoveCharacter(_playerController.MoveDir);
-
-        if (Input.GetKey(KeyCode.L))
-            Dead();
-
-        //if (Input.GetKey(KeyCode.R))
-        //    TestReturn();
 
         if (Input.GetKeyDown(KeyCode.G))
             TestThrowFlashBang();
@@ -98,7 +97,8 @@ public class Player : NetworkBehaviour, IAttackable
 
     private void MoveCharacter(Vector3 dir)
     {
-        transform.position += Quaternion.AngleAxis(_rotationTransform.localEulerAngles.z, Vector3.up) * dir.normalized * PlayerStat.Speed * 0.1f;
+        //transform.position += Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed * 0.1f;
+        _rigidbody.velocity = Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed;
     }
 
     public void OnDamaged(int damage)
