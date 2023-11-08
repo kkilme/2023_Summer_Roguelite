@@ -17,13 +17,15 @@ namespace Kinemation.FPSFramework.Runtime.Layers
 
         private void OnDrawGizmos()
         {
+            if (!drawDebugInfo) return;
+            
             Gizmos.color = Color.green;
             Gizmos.DrawLine(start, end);
         }
 
         protected void Trace()
         {
-            var blockData = GetGunAsset() != null ? GetGunAsset().blockData : GetGunData().blockData;
+            var blockData = GetGunAsset().blockData;
             
             float traceLength = blockData.weaponLength;
             float startOffset = blockData.startOffset;
@@ -54,6 +56,8 @@ namespace Kinemation.FPSFramework.Runtime.Layers
         
         public override void OnAnimUpdate()
         {
+            if (GetGunAsset() == null) return;
+            
             Trace();
             smoothPose = CoreToolkitLib.Glerp(smoothPose, offsetPose, 10f);
             

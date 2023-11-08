@@ -5,6 +5,8 @@ using Kinemation.FPSFramework.Runtime.Core.Components;
 using Kinemation.FPSFramework.Runtime.Core.Types;
 using Kinemation.FPSFramework.Runtime.FPSAnimator;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
+using Vector3 = UnityEngine.Vector3;
 
 namespace Kinemation.FPSFramework.Runtime.Layers
 {
@@ -15,6 +17,7 @@ namespace Kinemation.FPSFramework.Runtime.Layers
         // Curve-based animation
         public VectorCurve rot;
         public VectorCurve loc;
+        public float scale;
         
         // How fast to blend to another motion
         public float blendSpeed;
@@ -44,7 +47,8 @@ namespace Kinemation.FPSFramework.Runtime.Layers
 
         private LocRot Evaluate()
         {
-            return new LocRot(loc.Evaluate(playBack), Quaternion.Euler(rot.Evaluate(playBack)));
+            var target = new LocRot(loc.Evaluate(playBack), Quaternion.Euler(rot.Evaluate(playBack)));
+            return CoreToolkitLib.Lerp(LocRot.identity, target, scale);
         }
 
         // Return currently playing motion
@@ -77,7 +81,7 @@ namespace Kinemation.FPSFramework.Runtime.Layers
             motion.Reset();
         }
 
-        public void Play(IKAnimation animationAsset)
+        public void Play(IKAnimation animationAsset, float scale = 1f)
         {
             var cache = motion;
             
@@ -86,6 +90,7 @@ namespace Kinemation.FPSFramework.Runtime.Layers
             newMotion.rot = animationAsset.rot;
             newMotion.blendSpeed = animationAsset.blendSpeed;
             newMotion.playRate = animationAsset.playRate;
+            newMotion.scale = scale;
 
             motion = newMotion;
             motion.Reset();

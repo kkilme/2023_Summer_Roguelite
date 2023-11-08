@@ -29,12 +29,19 @@ namespace Kinemation.FPSFramework.Runtime.Layers
 
         private void OnDrawGizmos()
         {
+            if (!drawDebugInfo) return;
+            
             var color = Gizmos.color;
             Gizmos.color = Color.red;
 
             Gizmos.DrawLine(rightLeftStart.Item1, rightLeftEnd.Item1);
             Gizmos.DrawLine(rightLeftStart.Item2, rightLeftEnd.Item2);
 
+            var start = GetRightFoot().position;
+            start += transform.forward * 1f * accum_RF;
+            
+            Gizmos.DrawWireSphere(start, 0.05f);
+            
             Gizmos.color = color;
         }
 
@@ -73,7 +80,10 @@ namespace Kinemation.FPSFramework.Runtime.Layers
             targetRfIK = TraceFoot(GetRightFoot());
             targetLfIK = TraceFoot(GetLeftFoot());
         }
-        
+
+        private float accum_RF;
+        private float prev_RF;
+
         public override void OnAnimUpdate()
         {
             if (Mathf.Approximately(smoothLayerAlpha, 0f))
@@ -81,6 +91,12 @@ namespace Kinemation.FPSFramework.Runtime.Layers
                 return;
             }
 
+            var pos_RF = GetRootBone().InverseTransformPoint(GetRightFoot().position).y;
+            accum_RF = CoreToolkitLib.Glerp(accum_RF, (pos_RF - prev_RF) * 400f, 8f);
+
+            accum_RF = Mathf.Max(0f, accum_RF);
+            prev_RF = pos_RF;
+            
             rightLeftStart.Item1 = GetRightFoot().position;
             rightLeftStart.Item1.y = GetPelvis().position.y - heightOffset;
             

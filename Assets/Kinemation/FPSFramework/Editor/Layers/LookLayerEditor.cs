@@ -1,6 +1,7 @@
 // Designed by KINEMATION, 2023
 
 using Kinemation.FPSFramework.Runtime.Layers;
+
 using UnityEditor;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace Kinemation.FPSFramework.Editor.Layers
         private int selectedTab;
         
         private SerializedProperty runInEditor;
+        private SerializedProperty drawDebugInfo;
         private SerializedProperty layerAlpha;
         private SerializedProperty lerpSpeed;
         private SerializedProperty handsAlpha;
@@ -28,6 +30,7 @@ namespace Kinemation.FPSFramework.Editor.Layers
         private SerializedProperty aimUp;
         private SerializedProperty aimRight;
         private SerializedProperty smoothAim;
+        private SerializedProperty clampAngleSmoothing;
         
         private SerializedProperty leanDirection;
         private SerializedProperty leanAmount;
@@ -38,7 +41,7 @@ namespace Kinemation.FPSFramework.Editor.Layers
         private SerializedProperty useRightOffset;
         
         private SerializedProperty curveName;
-
+        
         private void OnEnable()
         {
             if (target == null)
@@ -47,6 +50,7 @@ namespace Kinemation.FPSFramework.Editor.Layers
             }
             
             runInEditor = serializedObject.FindProperty("runInEditor");
+            drawDebugInfo = serializedObject.FindProperty("drawDebugInfo");
             layerAlpha = serializedObject.FindProperty("layerAlpha");
             lerpSpeed = serializedObject.FindProperty("lerpSpeed");
             handsAlpha = serializedObject.FindProperty("handsLayerAlpha");
@@ -62,6 +66,7 @@ namespace Kinemation.FPSFramework.Editor.Layers
             aimUp = serializedObject.FindProperty("aimUp");
             aimRight = serializedObject.FindProperty("aimRight");
             smoothAim = serializedObject.FindProperty("smoothAim");
+            clampAngleSmoothing = serializedObject.FindProperty("clampAngleSmoothing");
 
             leanDirection = serializedObject.FindProperty("leanDirection");
             leanAmount = serializedObject.FindProperty("leanAmount");
@@ -133,7 +138,8 @@ namespace Kinemation.FPSFramework.Editor.Layers
             EditorGUILayout.PropertyField(aimUp);
             EditorGUILayout.PropertyField(aimRight);
             EditorGUILayout.PropertyField(smoothAim);
-            
+            EditorGUILayout.PropertyField(clampAngleSmoothing);
+
             EditorGUILayout.EndVertical();
         }
         
@@ -143,7 +149,7 @@ namespace Kinemation.FPSFramework.Editor.Layers
             EditorGUILayout.PropertyField(leanAmount);
             EditorGUILayout.PropertyField(leanSpeed);
         }
-
+        
         private void DrawDefault()
         {
             EditorGUILayout.PropertyField(detectZeroFrames);
@@ -155,6 +161,7 @@ namespace Kinemation.FPSFramework.Editor.Layers
         {
             serializedObject.Update();
             EditorGUILayout.PropertyField(runInEditor);
+            EditorGUILayout.PropertyField(drawDebugInfo);
             GUILayout.BeginVertical();
             selectedTab = GUILayout.Toolbar(selectedTab, tabs);
             GUILayout.EndVertical();
@@ -167,7 +174,7 @@ namespace Kinemation.FPSFramework.Editor.Layers
                     DrawOffsetTab();
                     break;
                 case 2:
-                    DrawLeanTab();
+                    DrawLeanTab(); ;
                     break;
             }
 

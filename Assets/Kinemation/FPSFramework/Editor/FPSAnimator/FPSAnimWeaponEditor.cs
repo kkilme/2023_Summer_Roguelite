@@ -1,8 +1,6 @@
 // Designed by KINEMATION, 2023
 
-using System.IO;
 using System.Reflection;
-using Kinemation.FPSFramework.Runtime.Core.Types;
 using Kinemation.FPSFramework.Runtime.FPSAnimator;
 using UnityEditor;
 using UnityEngine;
@@ -28,45 +26,7 @@ namespace Kinemation.FPSFramework.Editor.FPSAnimator
             // Save the foldout state to EditorPrefs
             EditorPrefs.SetBool("MyAbstractClassEditor_showAbstractProperties", showAbstractProperties);
         }
-
-        // Updates the weapon data to the latest API
-        private void UpdateToTheLatestAPI()
-        {
-            var path = AssetDatabase.GetAssetPath(owner.gameObject);
-            path = Path.GetDirectoryName(path);
-            string fileName = "WAS_" + owner.gameObject.name;
-            string fullPath = Path.Combine(path, fileName + ".asset");
-
-            // Generate unique path
-            fullPath = AssetDatabase.GenerateUniqueAssetPath(fullPath);
-
-            var asset = ScriptableObject.CreateInstance<WeaponAnimAsset>();
-
-            owner.weaponTransformData.aimPoint = owner.weaponAnimData.gunAimData.aimPoint;
-            owner.weaponTransformData.pivotPoint = owner.weaponAnimData.gunAimData.pivotPoint;
-            
-            asset.rotationOffset = owner.weaponAnimData.rotationOffset;
-            
-            asset.adsData.target = owner.weaponAnimData.gunAimData.target;
-            asset.adsData.aimSpeed = owner.weaponAnimData.gunAimData.aimSpeed;
-            asset.adsData.changeSightSpeed = owner.weaponAnimData.gunAimData.changeSightSpeed;
-            asset.adsData.pointAimOffset = owner.weaponAnimData.gunAimData.pointAimOffset;
-            asset.adsData.pointAimSpeed = owner.weaponAnimData.gunAimData.pointAimSpeed;
-            
-            asset.viewOffset = owner.weaponAnimData.viewOffset;
-            asset.springData = owner.weaponAnimData.springData;
-            asset.moveSwayData = owner.weaponAnimData.moveSwayData;
-            asset.blockData = owner.weaponAnimData.blockData;
-            
-            AssetDatabase.CreateAsset(asset, fullPath);
-            owner.weaponAsset = asset;
-            
-            if (PrefabUtility.IsPartOfPrefabInstance(owner.gameObject))
-            {
-                PrefabUtility.ApplyPrefabInstance(owner.gameObject, InteractionMode.AutomatedAction);
-            }
-        }
-
+        
         public override void OnInspectorGUI()
         {
             // Draw the foldout header for the abstract class properties
@@ -116,11 +76,6 @@ namespace Kinemation.FPSFramework.Editor.FPSAnimator
                     {
                         PrefabUtility.ApplyPrefabInstance(owner.gameObject, InteractionMode.AutomatedAction);
                     }
-                }
-                
-                if (GUILayout.Button("Generate Anim Asset"))
-                {
-                    UpdateToTheLatestAPI();
                 }
                 
                 GUILayout.EndHorizontal();

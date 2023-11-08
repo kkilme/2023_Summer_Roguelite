@@ -1,5 +1,7 @@
 // Designed by KINEMATION, 2023
 
+using Kinemation.FPSFramework.Runtime.Camera;
+
 using System;
 using UnityEngine;
 
@@ -40,31 +42,13 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
             weaponLength = startOffset = threshold = 0f;
         }
     }
-
-    [Serializable]
-    public struct GunAimData
-    {
-        public TargetAimData target;
-        public Transform pivotPoint;
-        public Transform aimPoint;
-        public LocRot pointAimOffset;
-        public float aimSpeed;
-        public float changeSightSpeed;
-        public float pointAimSpeed;
-
-        public GunAimData(LocRot pointAimOffset)
-        {
-            target = null;
-            pivotPoint = aimPoint = null;
-            this.pointAimOffset = pointAimOffset;
-            aimSpeed = changeSightSpeed = pointAimSpeed = 1f;
-        }
-    }
-
+    
     [Serializable]
     public struct AdsData
     {
-        public TargetAimData target;
+        public CameraData cameraData;
+        public AdsBlend adsTranslationBlend;
+        public AdsBlend adsRotationBlend;
         public LocRot pointAimOffset;
         public float aimSpeed;
         public float changeSightSpeed;
@@ -72,47 +56,13 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
 
         public AdsData(float speed)
         {
-            target = null;
+            cameraData = null;
             pointAimOffset = LocRot.identity;
             aimSpeed = changeSightSpeed = pointAimSpeed = speed;
+            adsTranslationBlend = adsRotationBlend = new AdsBlend();
         }
     }
-
-    // Defines weapon-related properties, updated when weapon is equipped/unequipped
-    [Serializable]
-    public struct WeaponAnimData
-    {
-        [Header("LeftHandIK")]
-        public Transform leftHandTarget;
-
-        [Header("Weapon Transform")]
-        public Quaternion rotationOffset;
-        
-        [Header("AdsLayer")]
-        public GunAimData gunAimData;
-        public LocRot viewOffset;
-        
-        [Header("SwayLayer")]
-        public LocRotSpringData springData;
-        public FreeAimData freeAimData;
-        public MoveSwayData moveSwayData;
-        
-        [Header("WeaponCollision")] 
-        public GunBlockData blockData;
-
-        public WeaponAnimData(LocRot viewOffset)
-        {
-            leftHandTarget = null;
-            gunAimData = new GunAimData(LocRot.identity);
-            this.viewOffset = viewOffset;
-            springData = new LocRotSpringData();
-            freeAimData = new FreeAimData();
-            moveSwayData = new MoveSwayData();
-            blockData = new GunBlockData(LocRot.identity);
-            rotationOffset = Quaternion.identity;
-        }
-    }
-
+    
     [Serializable]
     public struct WeaponTransformData
     {
