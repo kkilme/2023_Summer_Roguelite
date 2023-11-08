@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using Kinemation.FPSFramework.Runtime.Core.Types;
 using Kinemation.FPSFramework.Runtime.FPSAnimator;
 using UnityEditor;
 using UnityEngine;

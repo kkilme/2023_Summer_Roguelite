@@ -1,5 +1,6 @@
 // Designed by KINEMATION, 2023
 
+using Kinemation.FPSFramework.Runtime.Recoil;
 using UnityEngine;
 
 namespace Kinemation.FPSFramework.Runtime.Core.Types
@@ -7,8 +8,12 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
     [System.Serializable, CreateAssetMenu(fileName = "NewWeaponAsset", menuName = "FPS Animator/WeaponAnimAsset")]
     public class WeaponAnimAsset : ScriptableObject
     {
-        [Header("Weapon Transform"), Tooltip("Adjusts weapon model rotation")]
+        [Header("General"), Tooltip("Adjusts weapon model rotation")]
         public Quaternion rotationOffset = Quaternion.identity;
+        public AimOffsetTable aimOffsetTable;
+        public RecoilAnimData recoilData;
+        public AnimSequence overlayPose;
+        public LocRot weaponBone = LocRot.identity;
         
         [Header("AdsLayer")]
         public AdsData adsData;
@@ -17,9 +22,7 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
         public LocRot viewOffset = LocRot.identity;
         
         [Header("SwayLayer")]
-        
-        [Tooltip("Aiming sway")]
-        public LocRotSpringData springData;
+        [Tooltip("Aiming sway")] public LocRotSpringData springData;
         public FreeAimData freeAimData;
         public MoveSwayData moveSwayData;
         

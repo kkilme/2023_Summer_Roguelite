@@ -1,6 +1,7 @@
 // Designed by KINEMATION, 2023
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
@@ -18,16 +19,6 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
         {
             this.boneIndex = boneIndex;
             this.angle = angle;
-        }
-    }
-    
-    [AttributeUsage(AttributeTargets.Field)]
-    public class AnimCurveName : PropertyAttribute
-    {
-        public bool isAnimator;
-        public AnimCurveName(bool isAnimator = false)
-        {
-            this.isAnimator = isAnimator;
         }
     }
 
@@ -175,7 +166,7 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
         public Vector2 deltaAimInput;
         public Vector2 totalAimInput;
         public Vector2 moveInput;
-        public int leanDirection;
+        public float leanDirection;
         public LocRot recoilAnim;
 
         public void AddDeltaInput(Vector2 aimInput)
@@ -197,12 +188,102 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
             totalAimInput.x = Mathf.Clamp(aimInput.x, -90f, 90f);
             totalAimInput.y = Mathf.Clamp(aimInput.y, -90f, 90f);
         }
+
+        public void SetLeanInput(float direction)
+        {
+            leanDirection = Mathf.Clamp(direction, -1f, 1f);
+        }
+        
+        public void AddLeanInput(float direction)
+        {
+            leanDirection += direction;
+            leanDirection = Mathf.Clamp(leanDirection, -1f ,1f);
+        }
     }
     
+    [Serializable]
+    public struct AdsBlend
+    {
+        [Range(0f, 1f)] public float x;
+        [Range(0f, 1f)] public float y;
+        [Range(0f, 1f)] public float z;
+    }
+
+    public struct BoneRef
+    {
+        public Transform bone;
+        public Quaternion rotation;
+        public Quaternion rotationCache;
+        public Quaternion deltaRotation;
+        public Quaternion deltaRotationCache;
+
+        public BoneRef(Transform boneRef)
+        {
+            bone = boneRef;
+            rotation = deltaRotation = rotationCache = deltaRotationCache = Quaternion.identity;
+        }
+
+        public Quaternion SlerpRotationCache(float alpha)
+        {
+            return Quaternion.Slerp(rotationCache, rotation, alpha);
+        }
+        
+        public Quaternion SlerpDeltaCache(float alpha)
+        {
+            return Quaternion.Slerp(deltaRotationCache, deltaRotation, alpha);
+        }
+
+        public void CopyBone(bool localSpace = true)
+        {
+            if (localSpace)
+            {
+                rotation = bone.localRotation;
+                return;
+            }
+
+            rotation = bone.rotation;
+        }
+
+        public void Apply(bool localSpace = true)
+        {
+            if (localSpace)
+            {
+                bone.localRotation = rotation;
+                return;
+            }
+
+            bone.rotation = rotation;
+        }
+
+        public void Slerp(float weight, bool localSpace = true)
+        {
+            if (localSpace)
+            {
+                bone.localRotation = Quaternion.Slerp(bone.localRotation, rotation, weight);
+                return;
+            }
+            
+            bone.rotation = Quaternion.Slerp(bone.rotation, rotation, weight);
+        }
+        
+        public static void InitBoneChain(ref List<BoneRef> chain, Transform parent, AvatarMask mask)
+        {
+            if (chain == null || mask == null || parent == null) return;
+            
+            chain.Clear();
+            for (int i = 1; i < mask.transformCount; i++)
+            {
+                if (mask.GetTransformActive(i))
+                {
+                    var t = parent.Find(mask.GetTransformPath(i));
+                    chain.Add(new BoneRef(t));
+                }
+            }
+        }
+    }
+
     public static class CoreToolkitLib
     {
-        public delegate void PostUpdateDelegate();
-        
         private const float FloatMin = 1e-10f;
         private const float SqrEpsilon = 1e-8f;
 
@@ -286,6 +367,12 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
             var rot = Quaternion.Slerp(a.rotation, b.rotation, alpha);
             return new LocRot(loc, rot);
         }
+
+        public static Quaternion RotateInBoneSpace(Quaternion parent, Quaternion boneRot, Quaternion rotation, float alpha)
+        {
+            Quaternion outRot = rotation * (Quaternion.Inverse(parent) * boneRot);
+            return Quaternion.Slerp(boneRot, parent * outRot, alpha);
+        }
         
         public static void RotateInBoneSpace(Quaternion parent, Transform bone, Quaternion rotation, float alpha)
         {
@@ -300,6 +387,33 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
             Vector3 finalOffset = root.TransformPoint(offset);
             finalOffset -= root.position;
             bone.position += finalOffset * alpha;
+        }
+        
+        public static void DrawBone(Vector3 start, Vector3 end, float size)
+        {
+            Vector3 midpoint = (start + end) / 2;
+                    
+            Vector3 direction = end - start;
+            float distance = direction.magnitude;
+                    
+            Matrix4x4 defaultMatrix = Gizmos.matrix;
+                    
+            Vector3 sizeVec = new Vector3(size, size, distance);
+                    
+            Gizmos.matrix = Matrix4x4.TRS(midpoint, Quaternion.LookRotation(direction), sizeVec);
+            Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+            Gizmos.matrix = defaultMatrix;
+        }
+
+        public static Vector3 ToEuler(Quaternion rotation)
+        {
+            Vector3 newVec = rotation.eulerAngles;
+
+            newVec.x = NormalizeAngle(newVec.x);
+            newVec.y = NormalizeAngle(newVec.y);
+            newVec.z = NormalizeAngle(newVec.z);
+
+            return newVec;
         }
 
         // Adapted from Two Bone IK constraint, Unity Animation Rigging package
@@ -392,6 +506,15 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
 
             tip.rotation = tRotation;
         }
+
+        private static float NormalizeAngle(float angle)
+        {
+            while (angle < -180f)
+                angle += 360f;
+            while (angle >= 180f)
+                angle -= 360f;
+            return angle;
+        }
         
         private static float TriangleAngle(float aLen, float aLen1, float aLen2)
         {
@@ -427,20 +550,6 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
             }
 
             return Quaternion.identity;
-        }
-    }
-    
-    public class BoneAttribute : PropertyAttribute
-    {
-    }
-    
-    public class FoldAttribute : PropertyAttribute
-    {
-        public bool useDefaultDisplay;
-
-        public FoldAttribute(bool useDefaultDisplay = true)
-        {
-            this.useDefaultDisplay = useDefaultDisplay;
         }
     }
 }

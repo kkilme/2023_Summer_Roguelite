@@ -1,5 +1,6 @@
 // Designed by KINEMATION, 2023
 
+using Kinemation.FPSFramework.Runtime.Attributes;
 using Kinemation.FPSFramework.Runtime.Core.Components;
 using Kinemation.FPSFramework.Runtime.Core.Types;
 using UnityEngine;
@@ -55,9 +56,9 @@ namespace Kinemation.FPSFramework.Runtime.Layers
         public override void OnPreAnimUpdate()
         {
             base.OnPreAnimUpdate();
-            smoothLayerAlpha *= 1f - core.animGraph.GetCurveValue("Overlay");
+            smoothLayerAlpha *= 1f - core.animGraph.GetCurveValue(CurveLib.Curve_Overlay);
             core.animGraph.SetGraphWeight(1f - smoothLayerAlpha);
-            core.ikRigData.weaponBoneWeight = GetCurveValue("WeaponBone");
+            core.ikRigData.weaponBoneWeight = GetCurveValue(CurveLib.Curve_WeaponBone);
         }
 
         public void UpdateCurveAnimation()
@@ -74,8 +75,9 @@ namespace Kinemation.FPSFramework.Runtime.Layers
             curveData.x = animator.GetFloat(LocX);
             curveData.y = animator.GetFloat(LocY);
             curveData.z = animator.GetFloat(LocZ);
-            curveData *= translationScale;
 
+            curveData *= translationScale;
+            
             curveAnimation.position = curveData;
         }
 

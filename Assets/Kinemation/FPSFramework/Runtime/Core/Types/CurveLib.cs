@@ -1,5 +1,7 @@
 ﻿// Designed by KINEMATION, 2023
 
+using Kinemation.FPSFramework.Runtime.Attributes;
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -81,21 +83,47 @@ namespace Kinemation.FPSFramework.Runtime.Core.Types
         public EEaseFunc easeFunc;
         public AnimationCurve curve;
 
-        public EaseMode(Keyframe[] frames)
+        public EaseMode(EEaseFunc func)
         {
-            easeFunc = EEaseFunc.Linear;
-            curve = new AnimationCurve(frames);
+            easeFunc = func;
+            curve = AnimationCurve.Linear(0f, 0f, 1f, 0f);
         }
     }
 
     public static class CurveLib
     {
+        public static string Curve_MaskLeftHand = "MaskLeftHand";
+        public static string Curve_MaskLookLayer = "MaskLookLayer";
+        public static string Curve_WeaponBone = "WeaponBone";
+        public static string Curve_Overlay = "Overlay";
+
+        public static string Curve_Camera_Pitch = "Camera_Pitch";
+        public static string Curve_Camera_Yaw = "Camera_Yaw";
+        public static string Curve_Camera_Roll = "Camera_Roll";
+        
+        public static string Curve_IK_X = "IK_X";
+        public static string Curve_IK_Y = "IK_Y";
+        public static string Curve_IK_Z = "IK_Z";
+        
+        public static string Curve_IK_LeftHand_X = "IK_LeftHand_X";
+        public static string Curve_IK_LeftHand_Y = "IK_LeftHand_Y";
+        public static string Curve_IK_LeftHand_Z = "IK_LeftHand_Z";
+
         public static readonly List<string> AnimCurveNames = new()
         {
-            "MaskLeftHand", 
-            "MaskLookLayer", 
-            "WeaponBone", 
-            "Overlay"
+            Curve_MaskLeftHand,
+            Curve_MaskLookLayer,
+            Curve_WeaponBone,
+            Curve_Overlay,
+            Curve_Camera_Pitch,
+            Curve_Camera_Yaw,
+            Curve_Camera_Roll,
+            Curve_IK_LeftHand_X,
+            Curve_IK_LeftHand_Y,
+            Curve_IK_LeftHand_Z,
+            Curve_IK_X,
+            Curve_IK_Y,
+            Curve_IK_Z,
         };
 
         public static float Ease(float a, float b, float alpha, EaseMode ease)

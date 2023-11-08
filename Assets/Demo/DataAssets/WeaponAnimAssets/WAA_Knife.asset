@@ -1,0 +1,137 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3399879f743e4df2b0f3e0021bea0961, type: 3}
+  m_Name: WAA_Knife
+  m_EditorClassIdentifier: 
+  rotationOffset: {x: 0, y: 0, z: 0, w: 1}
+  aimOffsetTable: {fileID: 11400000, guid: 7058601491d8f444287872b2f8c05086, type: 2}
+  recoilData: {fileID: 0}
+  overlayPose: {fileID: 11400000, guid: 169d40d6f822e1b4b8899edf4820cab8, type: 2}
+  weaponBone:
+    position: {x: 0.7623838, y: 1.3900914, z: -0.011475086}
+    rotation: {x: 0, y: 0, z: 0, w: 1}
+  adsData:
+    cameraData: {fileID: 0}
+    adsTranslationBlend:
+      x: 0.12
+      y: 0.114
+      z: 0.132
+    adsRotationBlend:
+      x: 0.094
+      y: 0.09
+      z: 0.148
+    pointAimOffset:
+      position: {x: -0.03, y: 0, z: 0}
+      rotation: {x: 0.0026619053, y: 0.016806621, z: 0.15641183, w: 0.9875454}
+    aimSpeed: 3.4
+    changeSightSpeed: 2
+    pointAimSpeed: 3
+  viewOffset:
+    position: {x: -0.05, y: 0.07, z: 0.03}
+    rotation: {x: 0, y: 0, z: 0.032195758, w: 0.99948156}
+  springData:
+    loc:
+      x:
+        stiffness: 0.6
+        criticalDamping: 0.4
+        speed: 8
+        mass: 1.3
+        maxValue: 1
+      y:
+        stiffness: 0.6
+        criticalDamping: 0.4
+        speed: 4
+        mass: 1.2
+        maxValue: 0.1
+      z:
+        stiffness: 0.6
+        criticalDamping: 0.4
+        speed: 5
+        mass: 1
+        maxValue: 0.1
+      scale: {x: 0.1, y: -0.15, z: 0}
+    rot:
+      x:
+        stiffness: 0.6
+        criticalDamping: 0.4
+        speed: 14
+        mass: 1
+        maxValue: 2
+      y:
+        stiffness: 0.6
+        criticalDamping: 0.4
+        speed: 15
+        mass: 1
+        maxValue: 3
+      z:
+        stiffness: 0.72
+        criticalDamping: 0.4
+        speed: 11
+        mass: 1
+        maxValue: 2
+      scale: {x: 20, y: 20, z: 35}
+  freeAimData:
+    scalar: 0
+    maxValue: 0
+    speed: 0
+  moveSwayData:
+    maxMoveLocSway: {x: 0.02, y: -0.01, z: 0.03}
+    maxMoveRotSway: {x: 1, y: 2, z: -15}
+    moveLocSway:
+      x:
+        stiffness: 0.8
+        criticalDamping: 0.3
+        speed: 7
+        mass: 1
+        maxValue: 15
+      y:
+        stiffness: 0.8
+        criticalDamping: 0.4
+        speed: 8
+        mass: 1
+        maxValue: 15
+      z:
+        stiffness: 0.8
+        criticalDamping: 0.27
+        speed: 9
+        mass: 1
+        maxValue: 8
+      scale: {x: 0.5, y: 1, z: 0.5}
+    moveRotSway:
+      x:
+        stiffness: 0.8
+        criticalDamping: 0.35
+        speed: 12
+        mass: 1
+        maxValue: 15
+      y:
+        stiffness: 0.8
+        criticalDamping: 0.4
+        speed: 10
+        mass: 1
+        maxValue: 15
+      z:
+        stiffness: 0.8
+        criticalDamping: 0.4
+        speed: 9
+        mass: 1
+        maxValue: 8
+      scale: {x: 1.5, y: 1, z: 0.3}
+    locSpeed: {x: 4, y: 4, z: 13}
+    rotSpeed: {x: 7, y: 10, z: 11}
+  blockData:
+    weaponLength: 0.93
+    startOffset: 0.37
+    threshold: 0.1
+    restPose:
+      position: {x: -0.05, y: -0.09, z: -0.03}
+      rotation: {x: -0.22627231, y: 0.18844119, z: -0.091121025, w: -0.9513084}

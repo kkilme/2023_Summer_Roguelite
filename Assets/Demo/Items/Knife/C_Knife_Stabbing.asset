@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb1fb12a7d6f45ad9de02232442a17ff, type: 3}
+  m_Name: C_Knife_Stabbing
+  m_EditorClassIdentifier: 
+  clip: {fileID: -203655887218126122, guid: 6126fe2cda6a802468f6f4c92795000d, type: 3}
+  mask: {fileID: 31900000, guid: c3d9e7613d3fc8e46bfab6cc553b1a65, type: 2}
+  spineRotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
+  overrideMask: {fileID: 0}
+  isAdditive: 0
+  overridePose: {fileID: -203655887218126122, guid: 779d0cb690781a4498eb0e30f3b61a5a, type: 3}
+  blendTime:
+    blendInTime: 0.25
+    blendOutTime: 0.3
+    rateScale: 1
+  curves:
+  - name: MaskLeftHand
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+  - name: Overlay
+    curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0

@@ -29,12 +29,14 @@ namespace Kinemation.FPSFramework.Editor.Core
         private UnityEditor.Editor animGraphEditor;
         
         private SerializedProperty rigData;
-        private SerializedProperty gunData;
         private SerializedProperty useIK;
         private SerializedProperty drawDebug;
         
         private SerializedProperty handIkWeight;
         private SerializedProperty legIkWeight;
+        
+        private SerializedProperty onPreUpdate;
+        private SerializedProperty onPostUpdate;
 
         private SerializedProperty previewClip;
         private SerializedProperty loopPreview;
@@ -54,7 +56,6 @@ namespace Kinemation.FPSFramework.Editor.Core
             layersReorderable.onAddCallback += OnAddCallback;
             
             rigData = serializedObject.FindProperty("ikRigData");
-            gunData = serializedObject.FindProperty("gunData");
             useIK = serializedObject.FindProperty("useIK");
             drawDebug = serializedObject.FindProperty("drawDebug");
             
@@ -62,10 +63,14 @@ namespace Kinemation.FPSFramework.Editor.Core
             animGraphEditor = CreateEditor(owner.animGraph);
             previewClip = animGraphEditor.serializedObject.FindProperty("previewClip");
             loopPreview = animGraphEditor.serializedObject.FindProperty("loopPreview");
+            
             upperBodyMask = animGraphEditor.serializedObject.FindProperty("upperBodyMask");
 
             handIkWeight = serializedObject.FindProperty("handIkWeight");
             legIkWeight = serializedObject.FindProperty("legIkWeight");
+            
+            onPreUpdate = serializedObject.FindProperty("onPreUpdate");
+            onPostUpdate = serializedObject.FindProperty("onPostUpdate");
             
             // Used to hide layers which reside in the Core component
             HideRegisteredLayers();
@@ -75,8 +80,10 @@ namespace Kinemation.FPSFramework.Editor.Core
 
         private void DrawRigTab()
         {
+            EditorGUILayout.PropertyField(onPreUpdate);
+            EditorGUILayout.PropertyField(onPostUpdate);
+            
             EditorGUILayout.PropertyField(rigData, new GUIContent("IK Rig Data"));
-            EditorGUILayout.PropertyField(gunData, new GUIContent("Weapon Data"));
             EditorGUILayout.PropertyField(useIK);
 
             EditorGUILayout.PropertyField(handIkWeight);
@@ -118,7 +125,7 @@ namespace Kinemation.FPSFramework.Editor.Core
         {
             animGraphEditor.serializedObject.Update();
             EditorGUILayout.PropertyField(upperBodyMask);
-            
+
             if (upperBodyMask.objectReferenceValue == null)
             {
                 EditorGUILayout.HelpBox("Avatar Mask is null!", MessageType.Warning);
@@ -139,7 +146,7 @@ namespace Kinemation.FPSFramework.Editor.Core
                     }
                 }
             }
-            
+
             animGraphEditor.serializedObject.ApplyModifiedProperties();
         }
 

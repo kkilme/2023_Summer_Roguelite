@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Kinemation.FPSFramework.Runtime.FPSAnimator;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,6 +52,7 @@ public class Gun : NetworkBehaviour
         if (IsOwner)
         {
             _cam = gameObject.transform.root.GetComponentInChildren<GunCamera>();
+            Debug.Log("Gun init");
             Init();
         }
 
@@ -328,7 +330,7 @@ public class Gun : NetworkBehaviour
     public void Aim()
     {
         _isaiming = true;
-        _animator.SetBool("Aiming", true);
+        //_animator.SetBool("Aiming", true);
         //Debug.Log(_gunData.zoomRate);
         _cam.SetTargetFOV(_gunData.zoomRate);
     }
@@ -336,7 +338,7 @@ public class Gun : NetworkBehaviour
     public void StopAim()
     {
         _isaiming = false;
-        _animator.SetBool("Aiming", false);
+        //_animator.SetBool("Aiming", false);
         _cam.SetTargetFOV();
     }
 
