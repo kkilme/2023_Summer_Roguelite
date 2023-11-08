@@ -1447,11 +1447,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3135444731322460756, guid: dff40486acb93544f99d76915e3c9063, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3954599002408760228, guid: dff40486acb93544f99d76915e3c9063, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3954599002781928610, guid: dff40486acb93544f99d76915e3c9063, type: 3}
       propertyPath: near clip plane
       value: 0.001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514242179765758612, guid: dff40486acb93544f99d76915e3c9063, type: 3}
+      propertyPath: m_WarningMessage
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8514242179765758615, guid: dff40486acb93544f99d76915e3c9063, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -2755,7 +2763,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1588242498
 PrefabInstance:
@@ -4363,7 +4371,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2810800079929380800, guid: bcc1fa706e27b014691a1745a86c0305, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2810800079929380800, guid: bcc1fa706e27b014691a1745a86c0305, type: 3}
       propertyPath: m_LocalPosition.x
