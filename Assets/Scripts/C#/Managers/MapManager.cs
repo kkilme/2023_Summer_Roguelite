@@ -17,7 +17,9 @@ public class MapManager : NetworkBehaviour
     private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // 해당 방 타입이 special 타입일 시 해당 방의 생성확률을 정의해줌 (0 ~ 1)
     private Dictionary<ROOMTYPE, RandomWeightPicker<ITEMNAME>> roomsItemDic = new Dictionary<ROOMTYPE, RandomWeightPicker<ITEMNAME>>(); // 방에 해당하는 아이템들이 매핑되어 있음.
     
-    [SerializeField] private RoomPosition[] roomPositions;
+    //밑의 RoomInfoMation으로 대체
+    //[SerializeField] private RoomPosition[] roomPositions;
+    [SerializeField] private List<RoomInformation> _roomInformations;
     [SerializeField] private Transform[] lifeShipPositions;
     [SerializeField] private GameObject lifeShipPrefab;
 
@@ -65,43 +67,43 @@ public class MapManager : NetworkBehaviour
 
                 // 추후에 데이터베이스에서 관리 생성하도록 설정
                 //방 개수
-                roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
+                //roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
                 roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
-                roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
-                roomCountDic.Add(ROOMTYPE.BED_ROOM, new int[] { 0, 99 });
+                //roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
+                //roomCountDic.Add(ROOMTYPE.BED_ROOM, new int[] { 0, 99 });
                 roomCountDic.Add(ROOMTYPE.LABORATORY, new int[] { 0, 3 });
                 roomCountDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new int[] { 0, 5 });
                 roomCountDic.Add(ROOMTYPE.MEDICAL_ROOM, new int[] { 0, 3 });
 
-                specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
+                //specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
 
                 // 방들 추가
-                roomsItemDic.Add(ROOMTYPE.ARMORY, new RandomWeightPicker<ITEMNAME>());
+                //roomsItemDic.Add(ROOMTYPE.ARMORY, new RandomWeightPicker<ITEMNAME>());
                 roomsItemDic.Add(ROOMTYPE.MACHINE_ROOM, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.APEX_LABORATORY, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.BED_ROOM, new RandomWeightPicker<ITEMNAME>());
+                //roomsItemDic.Add(ROOMTYPE.APEX_LABORATORY, new RandomWeightPicker<ITEMNAME>());
+                //roomsItemDic.Add(ROOMTYPE.BED_ROOM, new RandomWeightPicker<ITEMNAME>());
                 roomsItemDic.Add(ROOMTYPE.LABORATORY, new RandomWeightPicker<ITEMNAME>());
                 roomsItemDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new RandomWeightPicker<ITEMNAME>());
                 roomsItemDic.Add(ROOMTYPE.MEDICAL_ROOM, new RandomWeightPicker<ITEMNAME>());
 
                 // 방에 해당하는 아이템 및 가중치 추가
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_762, 10);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_9, 30);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_556, 10);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.GAUGE_12, 20);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTASSAULTRIFLE, 8);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTMACHINEGUN, 6);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTRAREHEAD, 5);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTHEAD, 5);
+                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_762, 10);
+                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_9, 30);
+                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_556, 10);
+                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.GAUGE_12, 20);
+                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTASSAULTRIFLE, 8);
+                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTMACHINEGUN, 6);
+                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTRAREHEAD, 5);
+                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTHEAD, 5);
 
                 roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.JERRY_CAN, 50);
 
-                roomsItemDic[ROOMTYPE.APEX_LABORATORY].Add(ITEMNAME.AMMO_556, 100);
+                //roomsItemDic[ROOMTYPE.APEX_LABORATORY].Add(ITEMNAME.AMMO_556, 100);
 
-                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.BANDAGE, 5);
-                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.AMMO_9, 10);
-                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.JERRY_CAN, 0.1f);
-                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
+                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.BANDAGE, 5);
+                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.AMMO_9, 10);
+                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.JERRY_CAN, 0.1f);
+                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
 
                 roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.BANDAGE, 10f);
                 roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.AMMO_762, 3f);
@@ -142,84 +144,84 @@ public class MapManager : NetworkBehaviour
     {
         if (IsHost || IsServer)
         {
-                if (roomPrefabsDic.ContainsKey(ROOMSIZE.SMALL))
-                {
-                    return;
-                }
+            if (roomPrefabsDic.ContainsKey(ROOMSIZE.SMALL))
+            {
+                return;
+            }
 
-                foreach (ROOMSIZE roomSize in Enum.GetValues(typeof(ROOMSIZE)))
-                    roomPrefabsDic.Add(roomSize, new List<Room>());
+            foreach (ROOMSIZE roomSize in Enum.GetValues(typeof(ROOMSIZE)))
+                roomPrefabsDic.Add(roomSize, new List<Room>());
 
-                // 추후에 데이터베이스에서 관리 생성하도록 설정
-                roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
-                roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
-                roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
-                roomCountDic.Add(ROOMTYPE.BED_ROOM, new int[] { 0, 99 });
-                roomCountDic.Add(ROOMTYPE.LABORATORY, new int[] { 0, 3 });
-                roomCountDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new int[] { 0, 5 });
-                roomCountDic.Add(ROOMTYPE.MEDICAL_ROOM, new int[] { 0, 3 });
+            // 추후에 데이터베이스에서 관리 생성하도록 설정, 방의 수
+            //roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
+            roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
+            //roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
+            //roomCountDic.Add(ROOMTYPE.BED_ROOM, new int[] { 0, 99 });
+            roomCountDic.Add(ROOMTYPE.LABORATORY, new int[] { 0, 3 });
+            roomCountDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new int[] { 0, 5 });
+            roomCountDic.Add(ROOMTYPE.MEDICAL_ROOM, new int[] { 0, 3 });
 
-                specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
+            //specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
 
-                // 방들 추가
-                roomsItemDic.Add(ROOMTYPE.ARMORY, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.MACHINE_ROOM, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.APEX_LABORATORY, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.BED_ROOM, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.LABORATORY, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.MEDICAL_ROOM, new RandomWeightPicker<ITEMNAME>());
+            // 방들 추가
+            //roomsItemDic.Add(ROOMTYPE.ARMORY, new RandomWeightPicker<ITEMNAME>());
+            roomsItemDic.Add(ROOMTYPE.MACHINE_ROOM, new RandomWeightPicker<ITEMNAME>());
+            //roomsItemDic.Add(ROOMTYPE.APEX_LABORATORY, new RandomWeightPicker<ITEMNAME>());
+            //roomsItemDic.Add(ROOMTYPE.BED_ROOM, new RandomWeightPicker<ITEMNAME>());
+            roomsItemDic.Add(ROOMTYPE.LABORATORY, new RandomWeightPicker<ITEMNAME>());
+            roomsItemDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new RandomWeightPicker<ITEMNAME>());
+            roomsItemDic.Add(ROOMTYPE.MEDICAL_ROOM, new RandomWeightPicker<ITEMNAME>());
 
-                // 방에 해당하는 아이템 및 가중치 추가
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_762, 10);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_9, 30);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_556, 10);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.GAUGE_12, 20);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTASSAULTRIFLE, 8);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTMACHINEGUN, 6);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTRAREHEAD, 5);
-                roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTHEAD, 5);
+            // 방에 해당하는 아이템 및 가중치 추가
+            //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_762, 10);
+            //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_9, 30);
+            //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_556, 10);
+            //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.GAUGE_12, 20);
+            //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTASSAULTRIFLE, 8);
+            //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTMACHINEGUN, 6);
+            //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTRAREHEAD, 5);
+            //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTHEAD, 5);
 
-                roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.JERRY_CAN, 50);
+            roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.JERRY_CAN, 50);
 
-                roomsItemDic[ROOMTYPE.APEX_LABORATORY].Add(ITEMNAME.AMMO_556, 100);
+            //roomsItemDic[ROOMTYPE.APEX_LABORATORY].Add(ITEMNAME.AMMO_556, 100);
 
-                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.BANDAGE, 5);
-                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.AMMO_9, 10);
-                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.JERRY_CAN, 0.1f);
-                roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
+            //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.BANDAGE, 5);
+            //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.AMMO_9, 10);
+            //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.JERRY_CAN, 0.1f);
+            //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
 
-                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.BANDAGE, 10f);
-                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.AMMO_762, 3f);
-                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.GAUGE_12, 2f);
-                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
+            roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.BANDAGE, 10f);
+            roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.AMMO_762, 3f);
+            roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.GAUGE_12, 2f);
+            roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
 
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.BANDAGE, 2f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.JERRY_CAN, 0.5f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_9, 10f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_556, 7.5f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.GAUGE_12, 8f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_762, 6f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
-
-
-                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.BANDAGE, 30f);
-                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_9, 10f);
-                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_762, 5f);
-                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
+            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.BANDAGE, 2f);
+            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.JERRY_CAN, 0.5f);
+            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_9, 10f);
+            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_556, 7.5f);
+            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.GAUGE_12, 8f);
+            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_762, 6f);
+            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
 
 
-                var roomPrefabs = Resources.LoadAll<Room>("Room");
+            roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.BANDAGE, 30f);
+            roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_9, 10f);
+            roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_762, 5f);
+            roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
 
-                //NetworkManager.AddNetworkPrefab(lifeShipPrefab);
 
-                for (int i = 0; i < roomPrefabs.Length; i++)
-                {
-                    //NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
-                    roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
-                }
+            var roomPrefabs = GameManager.Resource.GetAll<Room>("Room");
+            
+            //NetworkManager.AddNetworkPrefab(lifeShipPrefab);
 
-                //GenerateMapServerRPC();
+            for (int i = 0; i < roomPrefabs.Count; i++)
+            {
+                //NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
+                roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
+            }
+
+            //GenerateMapServerRPC();
         }
     }
 
@@ -238,6 +240,77 @@ public class MapManager : NetworkBehaviour
         }
     }
 
+    private void SetRoom(ROOMTYPE[] roomTypes, int num)
+    {
+        int idx = Random.Range(0, _roomInformations.Count);
+        var roomList = roomPrefabsDic[_roomInformations[idx].Size];
+
+        var obj = Instantiate(roomList.Find(x => x.roomType == roomTypes[num]), _roomInformations[idx].Position, Quaternion.Euler(0, _roomInformations[idx].Rotation, 0)).gameObject;
+        rooms.Add(obj);
+
+        var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
+        networkObj.Spawn();
+        networkObj.transform.parent = transform;
+        // 아이템 배치
+        var itemPlaces = obj.GetComponent<Room>().ItemPlaces;
+   
+        GameObject item;
+
+        for (int j = 0; j < itemPlaces.Length; j++)
+        {
+            item = Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomTypes[num]].GetRandomPick()), itemPlaces[j], Quaternion.identity);
+            item.GetComponent<NetworkObject>().Spawn();
+            item.transform.parent = networkObj.transform;
+        }
+
+        ++roomCountDic[roomTypes[num]][0];
+        _roomInformations.RemoveAt(idx);
+    }
+
+    private async UniTaskVoid MakeRoom(ROOMTYPE[] roomTypes, int start, int end)
+    {
+        for (int i = start; i < end; ++i)
+        {
+            SetRoom(roomTypes, i);
+            await UniTask.DelayFrame(5);
+        }
+    }
+
+    private async UniTaskVoid MakeNormalRoom()
+    {
+        GameObject item;
+        // 일반 방들 배치
+        for (int i = 0; i < _roomInformations.Count; i++)
+        {
+            var roomList = roomPrefabsDic[_roomInformations[i].Size];
+            while (true)
+            {
+                var room = roomList[Random.Range(0, roomList.Count)];
+                if (roomCountDic[room.roomType][0] >= roomCountDic[room.roomType][1])
+                    continue;
+
+                var obj = Instantiate(room, _roomInformations[i].Position, Quaternion.Euler(0, _roomInformations[i].Rotation, 0)).gameObject;
+                rooms.Add(obj);
+                var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
+                networkObj.Spawn();
+                networkObj.transform.parent = transform;
+                //아이템 배치
+                var itemPlaces = obj.GetComponent<Room>().ItemPlaces;
+
+                for (int j = 0; j < itemPlaces.Length; j++)
+                {
+                    item = Instantiate(GettableItem.GetItemPrefab(roomsItemDic[room.roomType].GetRandomPick()), itemPlaces[j], Quaternion.identity);
+                    item.GetComponent<NetworkObject>().Spawn();
+                    item.transform.parent = networkObj.transform;
+                }
+
+                ++roomCountDic[room.roomType][0];
+                break;
+            }
+            await UniTask.DelayFrame(5);
+        }
+    }
+
     // 맵 생성 함수
     [ServerRpc]
     public void GenerateMapServerRPC()
@@ -249,108 +322,27 @@ public class MapManager : NetworkBehaviour
         */
         Init();
 
-        var roomPositionList = roomPositions.ToList();
+        //var roomPositionList = roomPositions.ToList();
 
+        var roomTypes = Enum.GetValues(typeof(ROOMTYPE)) as ROOMTYPE[];
+        int start = Array.FindIndex(roomTypes, element => element == ROOMTYPE.NECESSARY_START) + 1,
+            end = Array.FindIndex(roomTypes, element => element == ROOMTYPE.NECESSARY_END);
         // 필수 방부터 배치
-        foreach (ROOMTYPE roomType in Enum.GetValues(typeof(ROOMTYPE)))
-        {
-            if (roomType.Equals(ROOMTYPE.NECESSARY_START))
-                continue;
+        MakeRoom(roomTypes, start, end).Forget();
 
-            if (roomType.Equals(ROOMTYPE.NECESSARY_END))
-                break;
+        //start = Array.FindIndex(roomTypes, element => element == ROOMTYPE.SPECIAL_START) + 1;
+        //end = Array.FindIndex(roomTypes, element => element == ROOMTYPE.SPECIAL_END);
+        //
+        //// 특별방 배치 (확률에 의존하므로 배치가 안될 수도 있음)
+        //for (int i = start; i < end; ++i)
+        //{
+        //    if (Random.Range(0f, 1f) <= specialRoomProbabilityDic[roomTypes[i]])
+        //    {
+        //        SetRoom(roomTypes, i);
+        //    }
+        //}
 
-            int idx = Random.Range(0, roomPositionList.Count);
-            var roomList = roomPrefabsDic[roomPositionList[idx].roomSize];
-
-            var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0)).gameObject;
-            rooms.Add(obj);
-
-            var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
-            networkObj.Spawn();
-
-            // 아이템 배치
-            var itemPlaces = obj.GetComponent<Room>().itemPlaces;
-            Array values = Enum.GetValues(typeof(ITEMNAME));
-            for (int j = 0; j < itemPlaces.Length; j++)
-            {
-                Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
-                    .GetComponent<NetworkObject>().Spawn();
-            }
-
-            //networkObj.TrySetParent(roomPositionList[idx].transform);
-
-            ++roomCountDic[roomType][0];
-            roomPositionList.RemoveAt(idx);
-        }
-
-        // 특별방 배치 (확률에 의존하므로 배치가 안될 수도 있음)
-        foreach (ROOMTYPE roomType in Enum.GetValues(typeof(ROOMTYPE)))
-        {
-            if (roomType <= ROOMTYPE.SPECIAL_START)
-                continue;
-
-            if (roomType.Equals(ROOMTYPE.SPECIAL_END))
-                break;
-
-            if (Random.Range(0f, 1f) <= specialRoomProbabilityDic[roomType])
-            {
-                int idx = Random.Range(0, roomPositionList.Count);
-                var roomList = roomPrefabsDic[roomPositionList[idx].roomSize];
-
-                var obj = Instantiate(roomList.Find(x => x.roomType.Equals(roomType)), roomPositionList[idx].transform.position, Quaternion.Euler(0, roomPositionList[idx].rotation, 0), roomPositionList[idx].transform).gameObject;
-                rooms.Add(obj);
-
-                var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
-                networkObj.Spawn();
-
-                //아이템 배치
-                var itemPlaces = obj.GetComponent<Room>().itemPlaces;
-                Array values = Enum.GetValues(typeof(ITEMNAME));
-                for (int j = 0; j < itemPlaces.Length; j++)
-                {
-                    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
-                        .GetComponent<NetworkObject>().Spawn();
-                }
-
-                //networkObj.TrySetParent(roomPositionList[idx].transform);
-
-                ++roomCountDic[roomType][0];
-                roomPositionList.RemoveAt(idx);
-            }
-        }
-
-        // 일반 방들 배치
-        for (int i = 0; i < roomPositionList.Count; i++)
-        {
-            var roomList = roomPrefabsDic[roomPositionList[i].roomSize];
-            while (true)
-            {
-                var room = roomList[Random.Range(0, roomList.Count)];
-
-                if (roomCountDic[room.roomType][0] >= roomCountDic[room.roomType][1])
-                    continue;
-
-                var obj = Instantiate(room, roomPositionList[i].transform.position, Quaternion.Euler(0, roomPositionList[i].rotation, 0), roomPositionList[i].transform).gameObject;
-                rooms.Add(obj);
-                var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
-                networkObj.Spawn();
-
-                //아이템 배치
-                var itemPlaces = obj.GetComponent<Room>().itemPlaces;
-                Array values = Enum.GetValues(typeof(ITEMNAME));
-                for (int j = 0; j < itemPlaces.Length; j++)
-                {
-                    Instantiate(GettableItem.GetItemPrefab(roomsItemDic[room.roomType].GetRandomPick()), itemPlaces[j].position, Quaternion.identity)
-                        .GetComponent<NetworkObject>().Spawn();
-                }
-
-                networkObj.TrySetParent(roomPositionList[i].transform);
-
-                ++roomCountDic[room.roomType][0];
-                break;
-            }
-        }
+        MakeNormalRoom().Forget();
 
         // 구명선 배치
         var lifeShipPositionList = lifeShipPositions.ToList(); 

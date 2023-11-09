@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -23,6 +24,21 @@ public class ResourceManager
 
         Debug.LogError($"Fail to Get {name}.prefab Asset!");
         return null;
+    }
+
+    public List<T> GetAll<T>(string name) where T : UnityEngine.Object
+    {
+        List<T> objs = new List<T>();
+        GameObject go;
+        foreach (var key in _resources.Keys)
+        {
+            if (key.Contains(name))
+            {
+                go = _resources[key] as GameObject;
+                objs.Add(go.GetComponent<T>());
+            }
+        }
+        return objs;
     }
 
     private void LoadAsync<T>(string name, Action<T> callback = null) where T : UnityEngine.Object

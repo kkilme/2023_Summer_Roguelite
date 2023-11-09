@@ -7,6 +7,7 @@ public class MonsterSpawner : NetworkBehaviour
 {
     [SerializeField] private ROOMSIZE _roomSize;
     [SerializeField] private List<Vector3> _spawnerPoses;
+    private int _monsterCount;
 
     public void Init()
     {
@@ -14,6 +15,18 @@ public class MonsterSpawner : NetworkBehaviour
 
         for (short i = 0; i < transform.childCount; ++i) 
             _spawnerPoses.Add(transform.GetChild(i).transform.position);
+        switch (_roomSize)
+        {
+            case ROOMSIZE.LARGE:
+                _monsterCount = 10;
+                break;
+            case ROOMSIZE.SMALL:
+                _monsterCount = 4;
+                break;
+            case ROOMSIZE.MEDIUM:
+                _monsterCount = 7;
+                break;
+        }
     }
 
     // 룸안의 랜덤한 좌표를 리턴하는 함수
@@ -54,13 +67,16 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void SpawnMonster()
     {
-        for (short i = 0; i < _spawnerPoses.Count; ++i)
+        int spawnPos;
+        for (short i = 0; i < _monsterCount; ++i)
         {
-            var monster = Instantiate(GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{Random.Range(1, 6)}"), transform);
+            spawnPos = Random.Range(0, _spawnerPoses.Count);
+            var monster = Instantiate(GameManager.Resource.GetObject<GameObject>($"Monster/Creature_{Random.Range(1, 6)}"), _spawnerPoses[spawnPos], Quaternion.identity);
             var monsterController = Util.GetOrAddComponent<MonsterController>(monster);
-            monsterController.transform.position = _spawnerPoses[i];
             monsterController.Init(this);
             Util.GetOrAddComponent<NetworkObject>(monster).Spawn();
+            //monster.transform.parent = transform;
+            _spawnerPoses.RemoveAt(spawnPos);
         }
     }
 }

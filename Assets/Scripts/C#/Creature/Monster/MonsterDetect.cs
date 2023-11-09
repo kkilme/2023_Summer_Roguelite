@@ -24,7 +24,7 @@ public class MonsterDetect : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (NetworkManager.Singleton.IsServer && other.CompareTag(GOTag.Player.ToString()))
+        if (other.CompareTag(GOTag.Player.ToString()))
         {
             RaycastHit hit;
 
