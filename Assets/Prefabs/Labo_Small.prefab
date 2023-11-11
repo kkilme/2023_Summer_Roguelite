@@ -198,6 +198,7 @@ GameObject:
   - component: {fileID: 3900344981587868498}
   - component: {fileID: -2319874132905119170}
   - component: {fileID: -7788785447772592983}
+  - component: {fileID: 1772847015363164570}
   m_Layer: 8
   m_Name: Labo_Small
   m_TagString: Untagged
@@ -237,7 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0ec149ae5560d4f9d32e1fe60984fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemPlaces: []
+  _itemSpawnPoint: {fileID: 0}
   roomSize: 0
   roomType: 9
   monsterSpawners: {fileID: 0}
@@ -257,6 +258,21 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &1772847015363164570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3900344981587868499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6090ef81e51c0ad4da5a1a37e6cf65cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableBaking: 1
+  ignoreWarnings: 0
+  errorMessage: 
 --- !u!1 &3900344981679249540
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &546450739938546174
 Transform:
@@ -165,6 +165,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 546450739938546174}
     m_Modifications:
+    - target: {fileID: 838922115496661743, guid: 385a30ea07235964d8c7b252d5bd2bed, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 1803734754191985926, guid: 385a30ea07235964d8c7b252d5bd2bed, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -209,9 +213,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3244794466734521456, guid: 385a30ea07235964d8c7b252d5bd2bed, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 3410208891222703893, guid: 385a30ea07235964d8c7b252d5bd2bed, type: 3}
       propertyPath: m_Name
       value: SFM_Truss_1b (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410208891222703893, guid: 385a30ea07235964d8c7b252d5bd2bed, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 3765461575805118030, guid: 385a30ea07235964d8c7b252d5bd2bed, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 6266123072469146036, guid: 385a30ea07235964d8c7b252d5bd2bed, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 385a30ea07235964d8c7b252d5bd2bed, type: 3}

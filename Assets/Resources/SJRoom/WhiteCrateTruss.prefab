@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1985827862275477654
 Transform:
@@ -40,9 +40,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1985827862275477654}
     m_Modifications:
+    - target: {fileID: 2471284216525312035, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 2814595621577874717, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
       propertyPath: m_Name
       value: SFM_Truss03_box_Grey
+      objectReference: {fileID: 0}
+    - target: {fileID: 2814595621577874717, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 3189854080209291175, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
       propertyPath: m_RootOrder
@@ -87,6 +95,22 @@ PrefabInstance:
     - target: {fileID: 3189854080209291175, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3342666478374830510, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4867729132806917557, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 8156744740265155057, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 8547594566376184880, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49ca7c0915370d048941b29cd8c243e7, type: 3}
