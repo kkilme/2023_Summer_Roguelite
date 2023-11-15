@@ -1,21 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8223334398756111792
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 12
-  hdPluginSubTargetMaterialVersions:
-    m_Keys: []
-    m_Values: 
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -23,14 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AlcoholBottle
+  m_Name: ARAmmo
   m_Shader: {fileID: 4800000, guid: 6e4ae4064600d784cac1e41a9e6f2e59, type: 3}
   m_ValidKeywords:
   - _DISABLE_SSR_TRANSPARENT
-  - _MATERIAL_FEATURE_SPECULAR_COLOR
+  - _MASKMAP
   - _NORMALMAP
   - _NORMALMAP_TANGENT_SPACE
-  - _SPECULARCOLORMAP
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -51,7 +34,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseColorMap:
-        m_Texture: {fileID: 2800000, guid: 92785496caeaded438089fd2eb2dd5cc, type: 3}
+        m_Texture: {fileID: 2800000, guid: dff9aa1aee350f74c84e956618cdd368, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BentNormalMap:
@@ -63,7 +46,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: f4634e1f34e44944198617ecacbf433b, type: 3}
+        m_Texture: {fileID: 2800000, guid: ccec63ff31d1dde4a8a83562cd7fd1af, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CoatMaskMap:
@@ -107,19 +90,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 92785496caeaded438089fd2eb2dd5cc, type: 3}
+        m_Texture: {fileID: 2800000, guid: dff9aa1aee350f74c84e956618cdd368, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: aa45a64bade279e48a716fa0ee9d0474, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 79c9926095b7fe34db729786400965c0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: f4634e1f34e44944198617ecacbf433b, type: 3}
+        m_Texture: {fileID: 2800000, guid: ccec63ff31d1dde4a8a83562cd7fd1af, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMapOS:
@@ -127,19 +110,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
-        m_Texture: {fileID: 2800000, guid: a8d3e0438cf018c4ba3f726e78f08a6d, type: 3}
+        m_Texture: {fileID: 2800000, guid: 035e1ff42c9579a4cad6e31c99427da6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SpecGlossMap:
-        m_Texture: {fileID: 2800000, guid: 8f10efc2f35176940aae373f106e19b9, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _SpecularColorMap:
-        m_Texture: {fileID: 2800000, guid: 8f10efc2f35176940aae373f106e19b9, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SubsurfaceMaskMap:
@@ -236,9 +215,9 @@ Material:
     - _IridescenceMask: 1
     - _IridescenceThickness: 1
     - _LinkDetailsWithBase: 0
-    - _MaterialID: 4
-    - _Metallic: 0
-    - _MetallicRemapMax: 0
+    - _MaterialID: 1
+    - _Metallic: 1
+    - _MetallicRemapMax: 1
     - _MetallicRemapMin: 0
     - _Mode: 0
     - _NormalMapSpace: 0
@@ -297,9 +276,9 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.135849, g: 0.8536106, b: 0, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.13584897, g: 0.8536106, b: 0, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
@@ -307,7 +286,6 @@ Material:
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
-    - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _TransmittanceColor: {r: 1, g: 1, b: 1, a: 1}
@@ -315,3 +293,19 @@ Material:
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+--- !u!114 &256970668525715205
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 12
+  hdPluginSubTargetMaterialVersions:
+    m_Keys: []
+    m_Values: 

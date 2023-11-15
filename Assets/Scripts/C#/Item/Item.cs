@@ -5,7 +5,7 @@ using UnityEngine;
 public enum ITEMNAME
 {
     NONE,
-    BANDAGE,
+    CANNEDFOOD,
     AMMO_9,
     AMMO_556,
     AMMO_762,
@@ -48,7 +48,7 @@ public abstract class Item
     {
         return item switch
         {
-            ITEMNAME.BANDAGE => new Item_Bandage(),
+            ITEMNAME.CANNEDFOOD => new Item_CannedFood(),
             > ITEMNAME.EQUIPSTART and <= ITEMNAME.WEAPONEND => new Item_Gun(item),
             > ITEMNAME.HEADSTART and < ITEMNAME.EQUIPEND => new ArmorItem(item),
             _ => null,

@@ -66,7 +66,7 @@ public class GettableItem : NetworkBehaviour, IInteraction
 
         switch (itemName)
         {
-            case ITEMNAME.BANDAGE:
+            case ITEMNAME.CANNEDFOOD:
                 path.Append("Bandage");
                 break;
             case ITEMNAME.AMMO_9:
