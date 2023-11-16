@@ -92,6 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 420878935279698245}
+  - component: {fileID: 3376154329283958220}
   m_Layer: 0
   m_Name: SFM_ceiling3_1x1m
   m_TagString: Untagged
@@ -116,6 +117,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!205 &3376154329283958220
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3714373417367794518}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.020276284
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 2961023090622012610}
+  m_Enabled: 1
 --- !u!1 &9150383502541660688
 GameObject:
   m_ObjectHideFlags: 0

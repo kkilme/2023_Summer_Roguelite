@@ -330,35 +330,23 @@ public class MapManager : NetworkBehaviour
         // 필수 방부터 배치
         MakeRoom(roomTypes, start, end).Forget();
 
-        //start = Array.FindIndex(roomTypes, element => element == ROOMTYPE.SPECIAL_START) + 1;
-        //end = Array.FindIndex(roomTypes, element => element == ROOMTYPE.SPECIAL_END);
-        //
-        //// 특별방 배치 (확률에 의존하므로 배치가 안될 수도 있음)
-        //for (int i = start; i < end; ++i)
-        //{
-        //    if (Random.Range(0f, 1f) <= specialRoomProbabilityDic[roomTypes[i]])
-        //    {
-        //        SetRoom(roomTypes, i);
-        //    }
-        //}
-
         MakeNormalRoom().Forget();
 
         // 구명선 배치
-        var lifeShipPositionList = lifeShipPositions.ToList(); 
-        for (int i = 0; i < lifeShipCount; i++)
-        {
-            int idx = Random.Range(0, lifeShipPositionList.Count);
-
-            var obj = Instantiate(lifeShipPrefab, lifeShipPositionList[idx].position, Quaternion.identity, lifeShipPositionList[i].transform);
-            lifeShips.Add(obj);
-            var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
-            networkObj.Spawn();
-
-            networkObj.TrySetParent(lifeShipPositionList[i].transform);
-
-            lifeShipPositionList.RemoveAt(idx);
-        }
+        //var lifeShipPositionList = lifeShipPositions.ToList(); 
+        //for (int i = 0; i < lifeShipCount; i++)
+        //{
+        //    int idx = Random.Range(0, lifeShipPositionList.Count);
+        //
+        //    var obj = Instantiate(lifeShipPrefab, lifeShipPositionList[idx].position, Quaternion.identity, lifeShipPositionList[i].transform);
+        //    lifeShips.Add(obj);
+        //    var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
+        //    networkObj.Spawn();
+        //
+        //    networkObj.TrySetParent(lifeShipPositionList[i].transform);
+        //
+        //    lifeShipPositionList.RemoveAt(idx);
+        //}
 
         _testMap.BuildNavMesh();
 

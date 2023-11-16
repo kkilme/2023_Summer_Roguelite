@@ -134,6 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1627966415181832405}
   - component: {fileID: 8655268766474128815}
+  - component: {fileID: 1815618761307661897}
   m_Layer: 0
   m_Name: SFM_cable_plug2_anim
   m_TagString: Untagged
@@ -195,6 +196,25 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!205 &1815618761307661897
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2363522343998526150}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.07461024
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 2232703516279229340}
+  m_Enabled: 1
 --- !u!1 &2429954459006575402
 GameObject:
   m_ObjectHideFlags: 0
