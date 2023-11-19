@@ -14,9 +14,9 @@ public partial class Player : NetworkBehaviour, IAttackable
         _interact.Init(this, _followPlayerCam.transform);
         _playerController = Util.GetOrAddComponent<PlayerController>(gameObject);
         _playerController.Init(_followPlayerCam, _iaa, _interact);
-        _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-        _skinnedMeshRenderer.materials[0].color = Color.clear;
-        _skinnedMeshRenderer.materials[2].color = Color.clear;
+        //_skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        //_skinnedMeshRenderer.materials[0].color = Color.clear;
+        //_skinnedMeshRenderer.materials[2].color = Color.clear;
         //6, 10 12 - 15
         //for (int i = 0; i < _skinnedMeshRenderer?.materials.Length; ++i)
         //{

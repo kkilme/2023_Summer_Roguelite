@@ -7,7 +7,7 @@ public class Item_CannedFood : Item
 
     public Item_CannedFood()
     {
-        ItemName = ITEMNAME.CANNEDFOOD;
+        ItemName = ITEMNAME.CANNED_FOOD;
         healAmount = 30;
     }
 

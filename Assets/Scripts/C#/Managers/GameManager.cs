@@ -48,7 +48,9 @@ public class GameManager : MonoBehaviour
         // 아이템 데이터 생성
         foreach (ITEMNAME itemName in Enum.GetValues(typeof(ITEMNAME)))
             if ((int)itemName % 100 != 0)
+            {
                 Item.itemDataDic.TryAdd(itemName, EconomyService.Instance.Configuration.GetInventoryItem(itemName.ToString()).CustomDataDeserializable.GetAs<Storage.StorageItemData>());
+            }
     }
 
     public async UniTaskVoid LoadSceneAsync(SceneName next)
