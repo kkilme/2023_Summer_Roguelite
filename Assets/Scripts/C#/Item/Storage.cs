@@ -96,14 +96,14 @@ public class Storage : MonoBehaviour
 
     private async void TestAdd()
     {
-        var data = EconomyService.Instance.Configuration.GetInventoryItem("BANDAGE").CustomDataDeserializable.GetAs<StorageItemData>();
+        var data = EconomyService.Instance.Configuration.GetInventoryItem("CANNED_FOOD").CustomDataDeserializable.GetAs<StorageItemData>();
 
         AddInventoryItemOptions options = new AddInventoryItemOptions
         {
             InstanceData = data
         };
 
-        var newItem = await EconomyService.Instance.PlayerInventory.AddInventoryItemAsync("BANDAGE", options);
+        var newItem = await EconomyService.Instance.PlayerInventory.AddInventoryItemAsync("CANNED_FOOD", options);
         storageItems.Add(newItem);
         OnStorageChanged?.Invoke(this, new StorageItemEventHandlerArgs(newItem, StorageItemEventHandlerArgs.ChangedType.Added));
     }
