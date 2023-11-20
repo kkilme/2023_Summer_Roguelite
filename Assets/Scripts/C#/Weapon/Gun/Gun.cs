@@ -27,7 +27,7 @@ public class Gun : NetworkBehaviour
 
     [SerializeField] public Attachment testatt1; // 테스트용 부착물
 
-    private Animator _animator;
+    //private Animator _animator;
 
     private CancellationTokenSource _cancellationTokenSource;
     private float _timeSinceLastShot;
@@ -61,7 +61,7 @@ public class Gun : NetworkBehaviour
     {
         SetGunData(GunDataFactory.GetGunData(ITEMNAME.TESTASSAULTRIFLE)); // test
 
-        _animator = GetComponent<Animator>();
+        //_animator = GetComponent<Animator>();
         _effectparent = GameObject.Find("Effect").transform;
         _recoil = GameObject.Find("recoil").GetComponent<Recoil>();
         _ammoleftText = GameObject.Find("Ammo left")?.GetComponent<TextMeshProUGUI>();
@@ -328,7 +328,7 @@ public class Gun : NetworkBehaviour
     public void Aim()
     {
         _isaiming = true;
-        _animator.SetBool("Aiming", true);
+        //_animator.SetBool("Aiming", true);
         //Debug.Log(_gunData.zoomRate);
         _cam.SetTargetFOV(_gunData.zoomRate);
     }
@@ -336,7 +336,7 @@ public class Gun : NetworkBehaviour
     public void StopAim()
     {
         _isaiming = false;
-        _animator.SetBool("Aiming", false);
+        //_animator.SetBool("Aiming", false);
         _cam.SetTargetFOV();
     }
 
