@@ -2432,7 +2432,7 @@ MonoBehaviour:
     FieldOfView: 90
     OrthographicSize: 5
     NearClipPlane: 0.1
-    FarClipPlane: 1000
+    FarClipPlane: 100
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
@@ -3069,6 +3069,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6096506995618826220}
   - component: {fileID: 6096506995618826211}
+  - component: {fileID: 1988926351772400795}
   - component: {fileID: 6096506995618826210}
   - component: {fileID: 6096506995618826215}
   - component: {fileID: 6096506995618826208}
@@ -3116,6 +3117,20 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!136 &1988926351772400795
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6096506995618826221}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.3167499
+  m_Height: 1.8583307
+  m_Direction: 1
+  m_Center: {x: -0.0023695827, y: 0.9068861, z: -0.06954637}
 --- !u!65 &6096506995618826210
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3125,7 +3140,7 @@ BoxCollider:
   m_GameObject: {fileID: 6096506995618826221}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 0.527945, y: 1.8913959, z: 0.42057854}
   m_Center: {x: -0.0023695529, y: 0.9360514, z: -0.03490758}
@@ -3482,7 +3497,7 @@ MonoBehaviour:
     FieldOfView: 90
     OrthographicSize: 5
     NearClipPlane: 0.1
-    FarClipPlane: 1000
+    FarClipPlane: 100
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
@@ -3832,7 +3847,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 1000
+  far clip plane: 100
   field of view: 90
   orthographic: 0
   orthographic size: 5

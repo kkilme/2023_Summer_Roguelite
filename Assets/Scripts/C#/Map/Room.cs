@@ -41,5 +41,6 @@ public class Room : MonoBehaviour
         ItemPlaces = new Vector3[_itemSpawnPoint.childCount];
         for (int i = 0; i < _itemSpawnPoint.childCount; ++i)
             ItemPlaces[i] = _itemSpawnPoint.GetChild(i).transform.position;
+        //StaticBatchingUtility.Combine(gameObject);
     }
 }
