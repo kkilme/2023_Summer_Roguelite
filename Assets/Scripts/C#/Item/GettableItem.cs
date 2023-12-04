@@ -66,8 +66,8 @@ public class GettableItem : NetworkBehaviour, IInteraction
 
         switch (itemName)
         {
-            case ITEMNAME.BANDAGE:
-                path.Append("Bandage");
+            case ITEMNAME.CANNED_FOOD:
+                path.Append("CannedFood");
                 break;
             case ITEMNAME.AMMO_9:
                 path.Append("9mm Ammo");

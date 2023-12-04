@@ -100,17 +100,17 @@ public class MapManager : NetworkBehaviour
 
                 //roomsItemDic[ROOMTYPE.APEX_LABORATORY].Add(ITEMNAME.AMMO_556, 100);
 
-                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.BANDAGE, 5);
+                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.CANNED_FOOD, 5);
                 //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.AMMO_9, 10);
                 //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.JERRY_CAN, 0.1f);
                 //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
 
-                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.BANDAGE, 10f);
+                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.CANNED_FOOD, 10f);
                 roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.AMMO_762, 3f);
                 roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.GAUGE_12, 2f);
                 roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
 
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.BANDAGE, 2f);
+                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.CANNED_FOOD, 2f);
                 roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.JERRY_CAN, 0.5f);
                 roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_9, 10f);
                 roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_556, 7.5f);
@@ -119,7 +119,7 @@ public class MapManager : NetworkBehaviour
                 roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
 
 
-                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.BANDAGE, 30f);
+                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.CANNED_FOOD, 30f);
                 roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_9, 10f);
                 roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_762, 5f);
                 roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
@@ -186,17 +186,17 @@ public class MapManager : NetworkBehaviour
 
             //roomsItemDic[ROOMTYPE.APEX_LABORATORY].Add(ITEMNAME.AMMO_556, 100);
 
-            //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.BANDAGE, 5);
+            //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.CANNED_FOOD, 5);
             //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.AMMO_9, 10);
             //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.JERRY_CAN, 0.1f);
             //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
 
-            roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.BANDAGE, 10f);
+            roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.CANNED_FOOD, 10f);
             roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.AMMO_762, 3f);
             roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.GAUGE_12, 2f);
             roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
 
-            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.BANDAGE, 2f);
+            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.CANNED_FOOD, 2f);
             roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.JERRY_CAN, 0.5f);
             roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_9, 10f);
             roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_556, 7.5f);
@@ -205,7 +205,7 @@ public class MapManager : NetworkBehaviour
             roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
 
 
-            roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.BANDAGE, 30f);
+            roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.CANNED_FOOD, 30f);
             roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_9, 10f);
             roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_762, 5f);
             roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
