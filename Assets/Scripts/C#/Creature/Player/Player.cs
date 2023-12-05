@@ -17,6 +17,7 @@ public partial class Player : NetworkBehaviour, IAttackable
     public Inventory Inventory { get; private set; }
     private PlayerController _playerController;
     private PlayerInteract _interact;
+    private Animator _anim;
     [SerializeField]
     private Transform _headTransform;
     [SerializeField]
@@ -33,6 +34,26 @@ public partial class Player : NetworkBehaviour, IAttackable
     private CinemachineVirtualCamera _deadPlayerCam;
     [SerializeField]
     private Camera _mainCam;
+
+    private Vector2 _screenMid;
+
+    [SerializeField]
+    private float _sensitive = 0.5f;
+
+    private int _maxX = 80;
+    private int _minX = -80;
+
+    private float _rotationX = 0;
+    private float _rotationY = 0;
+
+    [SerializeField]
+    private Transform _player;
+
+    private Transform _target;
+    private Transform _targetOriginAngle;
+    private Transform _rootTarget;
+
+    [SerializeField] private bool checkTruefortest = false;
 
     public void SetPlayerStat(Stat stat)
     {
@@ -73,25 +94,41 @@ public partial class Player : NetworkBehaviour, IAttackable
         _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
-    private void FixedUpdate()
-    {
-        if (IsOwner)
-            MoveCharacter(_playerController.MoveDir);
-
-        if (Input.GetKeyDown(KeyCode.G))
-            TestThrowFlashBang();
-    }
-
     private void TestThrowFlashBang()
     {
         var obj = Instantiate(GameManager.Resource.GetObject<GameObject>("Weapon/FlashBang"), _headTransform.position + _headTransform.forward, transform.rotation);
         obj.GetComponent<NetworkObject>().Spawn();
     }
 
-    private void MoveCharacter(Vector3 dir)
+    [ServerRpc]
+    private void MoveCharacterServerRpc(Vector3 dir)
     {
-        //transform.position += Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed * 0.1f;
         _rigidbody.velocity = Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed;
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        };
+        if (dir == Vector3.zero)
+            InputClientRpc(PlayerInputs.None, clientRpcParams);
+        else
+            InputClientRpc(dir, PlayerInputs.Move, clientRpcParams);
+    }
+
+    [ServerRpc]
+    private void InputServerRpc(PlayerInputs pi)
+    {
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { OwnerClientId }
+            }
+        };
+
+        InputClientRpc(pi, clientRpcParams);
     }
 
     public void OnDamaged(int damage)

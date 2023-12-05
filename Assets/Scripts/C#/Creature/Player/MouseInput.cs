@@ -81,12 +81,12 @@ public class MouseInput : NetworkBehaviour
             Cursor.lockState = CursorLockMode.Locked;
 
         Cursor.visible = bOpen;
-        this.enabled = !bOpen;
+        enabled = !bOpen;
     }
 
     public void Clear()
     {
-        this.enabled = false;
+        enabled = false;
         Cursor.visible = true;
     }
 }
