@@ -37,8 +37,6 @@ public partial class Player : NetworkBehaviour, IAttackable
 
     private Vector2 _screenMid;
 
-    [SerializeField]
-    private float _sensitive = 0.5f;
 
     private int _maxX = 80;
     private int _minX = -80;
@@ -46,13 +44,17 @@ public partial class Player : NetworkBehaviour, IAttackable
     private float _rotationX = 0;
     private float _rotationY = 0;
 
+    [Header("RotationIK")]
     [SerializeField]
-    private Transform _player;
-
+    private float _sensitive = 0.5f;
+    [SerializeField]
     private Transform _target;
+    [SerializeField]
     private Transform _targetOriginAngle;
+    [SerializeField]
     private Transform _rootTarget;
 
+    [Header("Test")]
     [SerializeField] private bool checkTruefortest = false;
 
     public void SetPlayerStat(Stat stat)
@@ -92,6 +94,7 @@ public partial class Player : NetworkBehaviour, IAttackable
         FindObjectOfType<Canvas>().gameObject.SetActive(true);
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        this.enabled = true;
     }
 
     private void TestThrowFlashBang()
@@ -103,7 +106,9 @@ public partial class Player : NetworkBehaviour, IAttackable
     [ServerRpc]
     private void MoveCharacterServerRpc(Vector3 dir)
     {
-        _rigidbody.velocity = Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed;
+        _rigidbody.AddForce(-98.1f * Vector3.up, ForceMode.Acceleration);
+        Vector3 move = (Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed);
+        _rigidbody.velocity = move;
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -114,7 +119,7 @@ public partial class Player : NetworkBehaviour, IAttackable
         if (dir == Vector3.zero)
             InputClientRpc(PlayerInputs.None, clientRpcParams);
         else
-            InputClientRpc(dir, PlayerInputs.Move, clientRpcParams);
+            InputClientRpc(move, PlayerInputs.Move, clientRpcParams);
     }
 
     [ServerRpc]

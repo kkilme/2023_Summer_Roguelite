@@ -20,11 +20,11 @@ public class MonsterSpawner : NetworkBehaviour
             case ROOMSIZE.LARGE:
                 _monsterCount = 10;
                 break;
-            case ROOMSIZE.SMALL:
-                _monsterCount = 4;
-                break;
             case ROOMSIZE.MEDIUM:
                 _monsterCount = 7;
+                break;
+            case ROOMSIZE.SMALL:
+                _monsterCount = 4;
                 break;
         }
     }
@@ -75,8 +75,12 @@ public class MonsterSpawner : NetworkBehaviour
             var monsterController = Util.GetOrAddComponent<MonsterController>(monster);
             monsterController.Init(this);
             Util.GetOrAddComponent<NetworkObject>(monster).Spawn();
-            //monster.transform.parent = transform;
             _spawnerPoses.RemoveAt(spawnPos);
         }
+    }
+
+    public Vector3 GetRandomSpawnPoint()
+    {
+        return _spawnerPoses[Random.Range(0, _spawnerPoses.Count)];
     }
 }

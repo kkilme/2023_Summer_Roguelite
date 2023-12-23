@@ -122,10 +122,6 @@ public partial class InventoryUI : MonoBehaviour
 
         for (int i = 0; i < e.InventoryItems.Count; i++)
         {
-            //if (e.InventoryItems[i].posX < 0 || e.InventoryItems[i].posY < 0)
-            //{
-            //    continue;
-            //}
 
             if (!inventoryDic.ContainsKey(e.InventoryItems[i]))
             {
@@ -133,14 +129,12 @@ public partial class InventoryUI : MonoBehaviour
             }
 
             inventoryDic[e.InventoryItems[i]].gameObject.SetActive(true);
-            //itemImages[i] = e.Items[i].ItemStat.image;
-            //itemImages[i].SetNativeSize();
 
-            if (e.InventoryItems[i].rotationType.Equals(ROTATION_TYPE.TOP))
+            if (e.InventoryItems[i].rotationType == ROTATION_TYPE.TOP)
                 inventoryDic[e.InventoryItems[i]].image.rectTransform.sizeDelta = new Vector2(e.InventoryItems[i].sizeY, e.InventoryItems[i].sizeX) * 64;
             else
                 inventoryDic[e.InventoryItems[i]].image.rectTransform.sizeDelta = new Vector2(e.InventoryItems[i].sizeX, e.InventoryItems[i].sizeY) * 64;
-
+            inventoryDic[e.InventoryItems[i]].image.sprite = GameManager.Resource.TryGetImage(e.InventoryItems[i].itemName);
             inventoryDic[e.InventoryItems[i]].text.text = e.InventoryItems[i].currentCount.ToString();
 
             if (selectedInventoryItem.itemName != ITEMNAME.NONE)
@@ -162,9 +156,11 @@ public partial class InventoryUI : MonoBehaviour
             {
                 nearDic.Add(e.GettableItem, nearItemUIStack.Pop());
             }
+            nearDic[e.GettableItem].image.sprite = GameManager.Resource.TryGetImage(e.GettableItem.ItemName);
 
             nearDic[e.GettableItem].gameObject.SetActive(true);
             var stat = Item.itemDataDic[e.GettableItem.ItemName];
+            
             nearDic[e.GettableItem].image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
             nearDic[e.GettableItem].text.text = e.GettableItem.ItemCount.ToString();
         }
@@ -199,7 +195,7 @@ public partial class InventoryUI : MonoBehaviour
             {
                 nearDic.Add(nearItems[i], nearItemUIStack.Pop());
             }
-
+            nearDic[nearItems[i]].image.sprite = GameManager.Resource.TryGetImage(nearItems[i].ItemName);
             nearDic[nearItems[i]].gameObject.SetActive(true);
             var stat = Item.itemDataDic[nearItems[i].ItemName];
             nearDic[nearItems[i]].image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
@@ -249,7 +245,7 @@ public partial class InventoryUI : MonoBehaviour
         var stat = Item.itemDataDic[selectedNearItem.ItemName];
         newUi.text.text = itemUI.text.text;
         newUi.image.rectTransform.sizeDelta = new Vector2(stat.sizeX, stat.sizeY) * 64;
-
+        newUi.image.sprite = GameManager.Resource.TryGetImage(selectedNearItem.ItemName);
         nearItemUIStack.Push(itemUI);
         itemUI.gameObject.SetActive(false);
     }
@@ -259,11 +255,21 @@ public partial class InventoryUI : MonoBehaviour
     {
         if (selectedNearItemUi != null)
         {
-            inventory.PutItemServerRPC(selectedNearItem.GetComponent<NetworkObject>(), pos.x, pos.y);
-            inventoryItemUIStack.Push(selectedNearItemUi);
-            selectedNearItemUi.gameObject.SetActive(false);
-            selectedNearItemUi = null;
-            selectedNearItem = null;
+            if (selectedNearItem != null)
+            {
+                inventory.PutItemServerRPC(selectedNearItem.GetComponent<NetworkObject>(), pos.x, pos.y);
+                inventoryItemUIStack.Push(selectedNearItemUi);
+                selectedNearItemUi.gameObject.SetActive(false);
+                selectedNearItemUi = null;
+                selectedNearItem = null;
+            }
+
+            else
+            {
+                inventoryItemUIStack.Push(selectedNearItemUi);
+                selectedNearItemUi.gameObject.SetActive(false);
+                selectedNearItemUi = null;
+            }
         }
     }
 

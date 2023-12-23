@@ -17,17 +17,14 @@ public class MapManager : NetworkBehaviour
     private Dictionary<ROOMTYPE, float> specialRoomProbabilityDic = new Dictionary<ROOMTYPE, float>(); // 해당 방 타입이 special 타입일 시 해당 방의 생성확률을 정의해줌 (0 ~ 1)
     private Dictionary<ROOMTYPE, RandomWeightPicker<ITEMNAME>> roomsItemDic = new Dictionary<ROOMTYPE, RandomWeightPicker<ITEMNAME>>(); // 방에 해당하는 아이템들이 매핑되어 있음.
     
-    //밑의 RoomInfoMation으로 대체
-    //[SerializeField] private RoomPosition[] roomPositions;
-    [SerializeField] private List<RoomInformation> _roomInformations;
     [SerializeField] private Transform[] lifeShipPositions;
     [SerializeField] private GameObject lifeShipPrefab;
 
-    [SerializeField] private List<GameObject> rooms = new List<GameObject>(); // 현재 배치된 방들 리스트
     [SerializeField] private List<GameObject> lifeShips = new List<GameObject>(); // 현재 배치된 구명선들 리스트
     [SerializeField] private NavMeshSurface _testMap;
     [SerializeField] private GameObject _playerObject;
-    [SerializeField] private Transform[] spawnPoints;
+
+    [SerializeField] private GameObject[] _rooms;
 
     [Header("Stat")]
     [SerializeField] private int lifeShipCount;
@@ -225,97 +222,75 @@ public class MapManager : NetworkBehaviour
         }
     }
 
-    private async UniTaskVoid MonsterGeneration()
+    private async UniTask MonsterGeneration(Room room)
     {
-        for (int i = 0; i < rooms.Count; ++i)
+        int rand = Random.Range(0, 100);
+        if (rand >= 34)
         {
-            int rand = Random.Range(0, 100);
-            if (rand >= 66)
-            {
-                var spawner = rooms[i].GetComponent<Room>().monsterSpawners;
-                spawner.Init();
-                spawner.SpawnMonster();
-                await UniTask.Delay(TimeSpan.FromMilliseconds(10));
-            }
+            var spawner = room.monsterSpawners;
+            spawner.Init();
+            spawner.SpawnMonster();
+            await UniTask.Delay(TimeSpan.FromMilliseconds(10));
         }
     }
 
-    private void SetRoom(ROOMTYPE[] roomTypes, int num)
+    private void SetRoom(Room room)
     {
-        int idx = Random.Range(0, _roomInformations.Count);
-        var roomList = roomPrefabsDic[_roomInformations[idx].Size];
-
-        var obj = Instantiate(roomList.Find(x => x.roomType == roomTypes[num]), _roomInformations[idx].Position, Quaternion.Euler(0, _roomInformations[idx].Rotation, 0)).gameObject;
-        rooms.Add(obj);
-
-        var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
-        networkObj.Spawn();
-        networkObj.transform.parent = transform;
-        // 아이템 배치
-        var itemPlaces = obj.GetComponent<Room>().ItemPlaces;
-   
         GameObject item;
-
-        for (int j = 0; j < itemPlaces.Length; j++)
+        for (int i = 0; i < room.ItemPlaces.Length; i++)
         {
-            item = Instantiate(GettableItem.GetItemPrefab(roomsItemDic[roomTypes[num]].GetRandomPick()), itemPlaces[j], Quaternion.identity);
+            item = Instantiate(GettableItem.GetItemPrefab(roomsItemDic[room.roomType].GetRandomPick()), room.ItemPlaces[i], Quaternion.identity);
             item.GetComponent<NetworkObject>().Spawn();
-            item.transform.parent = networkObj.transform;
-        }
-
-        ++roomCountDic[roomTypes[num]][0];
-        _roomInformations.RemoveAt(idx);
-    }
-
-    private async UniTaskVoid MakeRoom(ROOMTYPE[] roomTypes, int start, int end)
-    {
-        for (int i = start; i < end; ++i)
-        {
-            SetRoom(roomTypes, i);
-            await UniTask.DelayFrame(5);
+            item.transform.parent = room.transform;
         }
     }
 
-    private async UniTaskVoid MakeNormalRoom()
+    private async UniTaskVoid MakeRoom()
     {
-        GameObject item;
-        // 일반 방들 배치
-        for (int i = 0; i < _roomInformations.Count; i++)
+        Room room;
+        List<int> ints = new List<int>(_rooms.Length);
+        List<int> playerRoom = new List<int>(NetworkManager.Singleton.ConnectedClientsList.Count);
+        int remove;
+
+        for (int i = 0; i < ints.Capacity; ++i)
         {
-            var roomList = roomPrefabsDic[_roomInformations[i].Size];
-            while (true)
+            ints.Add(i);
+        }
+
+        for (int i = 0; i < playerRoom.Count; ++i)
+        {
+            remove = Random.Range(0, ints.Count);
+            playerRoom[i] = ints[remove];
+            ints.RemoveAt(remove);
+        }
+
+        int count = 0;
+        for (int i = 0; i < _rooms.Length; ++i)
+        {
+            room = _rooms[i].GetComponent<Room>();
+            SetRoom(room);
+            if (ints.Count > count && ints[count] == i)
             {
-                var room = roomList[Random.Range(0, roomList.Count)];
-                if (roomCountDic[room.roomType][0] >= roomCountDic[room.roomType][1])
-                    continue;
-
-                var obj = Instantiate(room, _roomInformations[i].Position, Quaternion.Euler(0, _roomInformations[i].Rotation, 0)).gameObject;
-                rooms.Add(obj);
-                var networkObj = Util.GetOrAddComponent<NetworkObject>(obj);
-                networkObj.Spawn();
-                networkObj.transform.parent = transform;
-                //아이템 배치
-                var itemPlaces = obj.GetComponent<Room>().ItemPlaces;
-
-                for (int j = 0; j < itemPlaces.Length; j++)
-                {
-                    item = Instantiate(GettableItem.GetItemPrefab(roomsItemDic[room.roomType].GetRandomPick()), itemPlaces[j], Quaternion.identity);
-                    item.GetComponent<NetworkObject>().Spawn();
-                    item.transform.parent = networkObj.transform;
-                }
-
-                ++roomCountDic[room.roomType][0];
-                break;
+                ++count;
+                await MonsterGeneration(room);
             }
+
             await UniTask.DelayFrame(5);
         }
+
+        //for (int i = 0; i < playerRoom.Count; ++i)
+        //{
+        //    room = _rooms[playerRoom[i]].GetComponent<Room>();
+        //    var networkObj = Instantiate(_playerObject, room.monsterSpawners.GetRandomRoomPos(), quaternion.identity).GetComponent<NetworkObject>();
+        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+        //}
     }
 
-    // 맵 생성 함수
+// 맵 생성 함수
     [ServerRpc]
     public void GenerateMapServerRPC()
     {
-        ClearMap();
+        //ClearMap();
         /*
         1. 각각의 위치에 방 종류를 랜덤으로 배정
         2. 해당 위치의 크기에 해당하는 방을 배치
@@ -327,10 +302,11 @@ public class MapManager : NetworkBehaviour
         var roomTypes = Enum.GetValues(typeof(ROOMTYPE)) as ROOMTYPE[];
         int start = Array.FindIndex(roomTypes, element => element == ROOMTYPE.NECESSARY_START) + 1,
             end = Array.FindIndex(roomTypes, element => element == ROOMTYPE.NECESSARY_END);
-        // 필수 방부터 배치
-        MakeRoom(roomTypes, start, end).Forget();
 
-        MakeNormalRoom().Forget();
+        _testMap.BuildNavMesh();
+
+        MakeRoom().Forget();
+
 
         // 구명선 배치
         //var lifeShipPositionList = lifeShipPositions.ToList(); 
@@ -347,16 +323,6 @@ public class MapManager : NetworkBehaviour
         //
         //    lifeShipPositionList.RemoveAt(idx);
         //}
-
-        _testMap.BuildNavMesh();
-
-        MonsterGeneration().Forget();
-
-        //for (int i = 0; i < NetworkManager.Singleton.ConnectedClientsList.Count; i++)
-        //{
-        //    var networkObj = Instantiate(_playerObject, spawnPoints[i].position, quaternion.identity).GetComponent<NetworkObject>();
-        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
-        //}
     }
 
     [ServerRpc]
@@ -368,8 +334,8 @@ public class MapManager : NetworkBehaviour
     // 기존 맵 초기화 함수
     private void ClearMap()
     {
-        for (int i = 0; i < rooms.Count; i++)
-            rooms[i].GetComponent<NetworkObject>().Despawn();
+        for (int i = 0; i < _rooms.Length; i++)
+            _rooms[i].GetComponent<NetworkObject>().Despawn();
 
         for (int i = 0; i < lifeShips.Count; i++)
             lifeShips[i].GetComponent<NetworkObject>().Despawn();
@@ -378,7 +344,7 @@ public class MapManager : NetworkBehaviour
             if (roomCountDic.ContainsKey(roomType))
                 roomCountDic[roomType][0] = 0;
 
-        rooms.Clear();
+        _rooms.Initialize();
         lifeShips.Clear();
     }
 }

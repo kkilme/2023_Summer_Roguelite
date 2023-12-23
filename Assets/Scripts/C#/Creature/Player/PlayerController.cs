@@ -45,13 +45,12 @@ public class PlayerController : NetworkBehaviour
         Pi.actions = null;
         Pi.actions = iaa;
         Anim = Util.GetOrAddComponent<Animator>(transform.GetChild(0).gameObject);
-        MouseInput = gameObject.GetComponentInChildren<MouseInput>();
         
         if (IsOwner)
         {
             MouseInput = gameObject.GetComponentInChildren<MouseInput>();
-            InitInputSystem();
             MouseInput.Init(cam.transform);
+            InitInputSystem();
             _interact = interact;
         }
     }

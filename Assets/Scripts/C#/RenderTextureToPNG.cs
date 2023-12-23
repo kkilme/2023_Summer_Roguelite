@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class RenderTextureToPNG : MonoBehaviour
 {
     [SerializeField]
@@ -28,6 +29,12 @@ public class RenderTextureToPNG : MonoBehaviour
             StartCoroutine(Save());
     }
 
+    public void SetRenderTextureSize(int width, int height)
+    {
+        texture.width *= width;
+        texture.height *= height;
+    }
+
     IEnumerator Save()
     {
         yield return _wof;
@@ -43,23 +50,35 @@ public class RenderTextureToPNG : MonoBehaviour
 
     void TextureBilinear(Texture2D tex)
     {
-        Texture2D modifyTex = new Texture2D((tex.width >> 1) * _width, tex.height * _height, TextureFormat.BGRA32, false);
+        Texture2D modifyTex = new Texture2D(256, 256, TextureFormat.BGRA32, false);
         modifyTex.alphaIsTransparency = true;
-        Color col;
 
-        for (int i = 0; i < tex.width; i += 2)
+        for (int i = 0; i < tex.width; ++i)
         {
-            for (int j = 0; j < tex.height; ++j)
+            //for (int j = 0; j <  tex.height; ++j)
+            //{
+            //    modifyTex.SetPixel(i, j, tex.GetPixel(i, j));
+            //}
+            for (int j = 0; j < 64; ++j)
             {
-                col = tex.GetPixel(i, j) / 2 + tex.GetPixel(i + 1, j) / 2;
-                modifyTex.SetPixel(i >> 1, j, col);
+                modifyTex.SetPixel(i, j, Color.clear);
+            }
+            
+            for (int j = 64; j < 192; ++j)
+            {
+                modifyTex.SetPixel(i, j, tex.GetPixel(i, j - 64));
+            }
+            
+            for (int j = 192; j < 256; ++j)
+            {
+                modifyTex.SetPixel(i, j, Color.clear);
             }
         }
         modifyTex.Apply();
-        Debug.Log($"{modifyTex.width} {modifyTex.height}");
-        Sprite s = Sprite.Create(modifyTex, new Rect(0, 0, 128, 128), new Vector2(0.5f, 0.5f));
+        Debug.Log($"{tex.width} {tex.height}");
+        Sprite s = Sprite.Create(modifyTex, new Rect(0, 0, modifyTex.width, modifyTex.height), new Vector2(0.5f, 0.5f));
         _s.sprite = s;
-
-        System.IO.File.WriteAllBytes(Application.dataPath + $"/Image/{_fileName}.PNG", tex.EncodeToPNG());
+        
+        System.IO.File.WriteAllBytes(Application.dataPath + $"/Image/{_fileName}.PNG", modifyTex.EncodeToPNG());
     }
 }

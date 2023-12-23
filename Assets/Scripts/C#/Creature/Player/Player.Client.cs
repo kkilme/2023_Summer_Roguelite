@@ -33,10 +33,6 @@ public partial class Player : NetworkBehaviour, IAttackable
 
         _screenMid.x = Screen.width >> 1;
         _screenMid.y = Screen.height >> 1;
-        _target = transform.GetChild(0);
-        _targetOriginAngle = transform.GetChild(1);
-        _rootTarget = transform.GetChild(2);
-        _player = transform.parent.parent;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -52,7 +48,7 @@ public partial class Player : NetworkBehaviour, IAttackable
         _rotationY = Mathf.Clamp(_rotationY + mouseY, _minX, _maxX);
 
         _followPlayerCam.transform.eulerAngles = new Vector3(-_rotationY, _followPlayerCam.transform.eulerAngles.y, 0);
-        _player.eulerAngles = new Vector3(0, _rotationX, 0);
+        transform.eulerAngles = new Vector3(0, _rotationX, 0);
 
         Vector3 cross = Vector3.Cross(_targetOriginAngle.position - transform.position, Vector3.up);
 
@@ -82,7 +78,10 @@ public partial class Player : NetworkBehaviour, IAttackable
     private void FixedUpdate()
     {
         if (IsOwner)
+        {
             MoveCharacterServerRpc(_playerController.MoveDir);
+            //RotateMouse();
+        }
     }
 
     [ClientRpc]
@@ -97,7 +96,8 @@ public partial class Player : NetworkBehaviour, IAttackable
     [ClientRpc]
     private void InputClientRpc(Vector3 dir, PlayerInputs pi = PlayerInputs.None, ClientRpcParams clientRpcParams = default)
     {
-        _rigidbody.velocity = Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed;
+        //_rigidbody.velocity = dir;
+        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.Acceleration);
         if (pi != PlayerInputs.None)
         {
             //_anim.SetBool(pi.ToString(), true);
