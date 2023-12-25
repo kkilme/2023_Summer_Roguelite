@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering.HighDefinition;
 using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
@@ -26,6 +27,8 @@ public partial class Player : NetworkBehaviour, IAttackable
     private Rigidbody _rigidbody;
     private SkinnedMeshRenderer _skinnedMeshRenderer;
     private Transform _rotationTransform;
+
+    private Transform _gunTransform;
 
     [SerializeField]
     private CinemachineVirtualCamera _followPlayerCam;
@@ -190,8 +193,16 @@ public partial class Player : NetworkBehaviour, IAttackable
 
     public bool Equip(GunData gunData)
     {
-        Debug.Log(gunData.gunName);
-        gameObject.GetComponentInChildren<Gun>().SetGunData(gunData);
+        Gun gun = _gunTransform.GetComponent<Gun>();
+        if (gun.GunData.gunNameStr != null) { gun.transform.Find(gun.GunData.gunNameStr).gameObject.SetActive(false); }
+        Transform ikParent = gameObject.transform.Find("aimIK");
+        Transform newgun = gun.transform.Find(gunData.gunNameStr);
+        ikParent.Find("RightHandGrip").GetComponent<TwoBoneIKConstraint>().data.target = newgun.Find("RightHandGrip_Target");
+        ikParent.Find("LeftHandGrip").GetComponent<TwoBoneIKConstraint>().data.target = newgun.Find("LeftHandGrip_Target");
+        ikParent.Find("LeftThumb").GetComponent<TwoBoneIKConstraint>().data.target = newgun.Find("LeftThumb_Target");
+        gun.SetMuzzleTransform(newgun.Find("Muzzle"));
+        newgun.gameObject.SetActive(true);
+        gun.SetGunData(gunData);
         return true;
     }
 

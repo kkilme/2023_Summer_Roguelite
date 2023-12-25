@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 8900357783936233879}
   - component: {fileID: 8900357783934906809}
   - component: {fileID: 8900357783933940601}
-  - component: {fileID: 1433906910350527707}
   - component: {fileID: -2164293878819176530}
   - component: {fileID: -1352237895652536432}
+  - component: {fileID: 5386196568037970094}
   m_Layer: 8
   m_Name: 5.56mm Ammo
-  m_TagString: Item
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,20 +87,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1433906910350527707
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8900357783935872439}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 6124d40bf0aced94e8fb981e264be92d, type: 3}
 --- !u!114 &-2164293878819176530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,6 +119,19 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!65 &5386196568037970094
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8900357783935872439}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.1745293, y: 0.08536419, z: 2.1191888}
+  m_Center: {x: 0, y: 0.042682096, z: 0}
 --- !u!1001 &1286240463651032676
 PrefabInstance:
   m_ObjectHideFlags: 0
