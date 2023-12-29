@@ -21,7 +21,7 @@ public class LifeShip : NetworkBehaviour, IInteraction
     public void Interact(Player player)
     {
         // 인벤토리에 기름통 있는지 체크
-        InteractServerRPC();
+        //InteractServerRPC();
     }
 
     public void Interactable(bool bCan)
@@ -34,39 +34,39 @@ public class LifeShip : NetworkBehaviour, IInteraction
         FillUpPauseServerRPC(bSuccess);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void InteractServerRPC(ServerRpcParams serverRpcParams = default)
-    {
-        var player = NetworkManager.Singleton.ConnectedClients[serverRpcParams.Receive.SenderClientId].PlayerObject.GetComponent<Player>();
-
-        if (player.Inventory.HasItem(ITEMNAME.JERRY_CAN, out _item) && !_bInteract && !_bFull && player.ServerLock == PlayerLock.Yes)
-        {
-            // 아이템 존재
-            Debug.Log("기름통 있음");
-            _bInteract = true;
-            _fillUpSeq = DOTween.Sequence()
-            .Append(DOTween.To(() => _fillTime, x => _fillTime = x, _fillMaxTime, 5f).SetEase(Ease.Linear))
-            .AppendCallback(() =>
-            {
-                if (_fillTime == _fillMaxTime)
-                {
-                    Debug.Log("사용 완료");
-                    _bFull = true;
-                    //플레이어에게 다 찼다고 알리기
-                    player.Inventory.RemoveItem(_item);
-                    _item = new InventoryItem();
-                    player.CancelInteraction();
-                }
-            });
-            //플레이어에게 슬라이더 ui 띄우도록 전달
-        }
-
-        else
-        {
-            //errorUI
-            Debug.Log("기름통 없음");
-        }
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //private void InteractServerRPC(ServerRpcParams serverRpcParams = default)
+    //{
+    //    var player = NetworkManager.Singleton.ConnectedClients[serverRpcParams.Receive.SenderClientId].PlayerObject.GetComponent<Player>();
+    //
+    //    if (player.Inventory.HasItem(ITEMNAME.JERRY_CAN, out _item) && !_bInteract && !_bFull && player.ServerLock == PlayerLock.Yes)
+    //    {
+    //        // 아이템 존재
+    //        Debug.Log("기름통 있음");
+    //        _bInteract = true;
+    //        _fillUpSeq = DOTween.Sequence()
+    //        .Append(DOTween.To(() => _fillTime, x => _fillTime = x, _fillMaxTime, 5f).SetEase(Ease.Linear))
+    //        .AppendCallback(() =>
+    //        {
+    //            if (_fillTime == _fillMaxTime)
+    //            {
+    //                Debug.Log("사용 완료");
+    //                _bFull = true;
+    //                //플레이어에게 다 찼다고 알리기
+    //                player.Inventory.RemoveItem(_item);
+    //                _item = new InventoryItem();
+    //                player.CancelInteraction();
+    //            }
+    //        });
+    //        //플레이어에게 슬라이더 ui 띄우도록 전달
+    //    }
+    //
+    //    else
+    //    {
+    //        //errorUI
+    //        Debug.Log("기름통 없음");
+    //    }
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     private void FillUpPauseServerRPC(bool bSuccess, ServerRpcParams serverRpcParams = default)

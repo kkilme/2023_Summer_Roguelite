@@ -54,6 +54,7 @@ public class RandomWeightPicker<T>
 
     public T GetRandomPick(float randomValue)
     {
+        //float이라 맞지 않을 수 있는 값 보정
         if (randomValue < 0.0f) randomValue = 0.0f;
         if (randomValue > SumOfWeights) randomValue = SumOfWeights - 0.00000001f;
 
@@ -62,7 +63,7 @@ public class RandomWeightPicker<T>
         {
             current += pair.Value;
 
-            if (randomValue < current)
+            if (randomValue <= current)
             {
                 return pair.Key;
             }

@@ -10,7 +10,7 @@ public enum ITEMNAME
     AMMO_556,
     AMMO_762,
     GAUGE_12,
-    JERRY_CAN,
+    //JERRY_CAN,
     EQUIPSTART = 1000,
     //WEAPONSTART = 1000,
     TESTASSAULTRIFLE,
