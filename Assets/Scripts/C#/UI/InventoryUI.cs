@@ -34,9 +34,9 @@ public partial class InventoryUI : MonoBehaviour
     private Dictionary<InventoryItem, ItemUI> inventoryDic = new Dictionary<InventoryItem, ItemUI>();
     private Dictionary<GettableItem, ItemUI> nearDic = new Dictionary<GettableItem, ItemUI>();
 
-    private void Awake()
+    public void Init(Inventory inven)
     {
-        inventory = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponent<Inventory>();
+        inventory = inven;
         rectTransform = transform.GetChild(1).GetComponent<RectTransform>();
         equipRectTransform = transform.GetChild(0).GetComponent<RectTransform>();
 

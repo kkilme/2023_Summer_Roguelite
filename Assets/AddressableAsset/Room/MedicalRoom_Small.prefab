@@ -163,7 +163,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5981142798250420190}
-  m_RootOrder: 1
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &521663623541052828
 GameObject:
@@ -237,7 +237,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2834245870944257315}
   m_Layer: 0
-  m_Name: PlayerSpawn (3)
+  m_Name: MonsterSpawnerPos
   m_TagString: Untagged
   m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -255,7 +255,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1404703175412812044}
+  m_Father: {fileID: 5981142798250420190}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &729057505434598646
@@ -287,6 +287,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 344207242149472084}
+  - {fileID: 2834245870944257315}
+  - {fileID: 5378149338615511870}
+  - {fileID: 9122321589217398721}
   - {fileID: 6616293124990236953}
   - {fileID: 5019447118622137784}
   - {fileID: 7006794823408208390}
@@ -1075,41 +1079,6 @@ Transform:
   m_Father: {fileID: 6654789245855251405}
   m_RootOrder: 31
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2609098495556108889
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1404703175412812044}
-  m_Layer: 0
-  m_Name: PlayerSpawn
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!4 &1404703175412812044
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2609098495556108889}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 344207242149472084}
-  - {fileID: 2834245870944257315}
-  - {fileID: 5378149338615511870}
-  - {fileID: 9122321589217398721}
-  m_Father: {fileID: 6654789244645374231}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2694695734860946121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1632,7 +1601,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5981142798250420190}
-  m_RootOrder: 3
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4195674086249991670
 GameObject:
@@ -1756,7 +1725,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5981142798250420190}
-  m_RootOrder: 2
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4504008200165758171
 GameObject:
@@ -2171,7 +2140,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9122321589217398721}
   m_Layer: 0
-  m_Name: PlayerSpawn (5)
+  m_Name: MonsterSpawnerPos
   m_TagString: Untagged
   m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -2189,7 +2158,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1404703175412812044}
+  m_Father: {fileID: 5981142798250420190}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6259407823556520651
@@ -2460,7 +2429,6 @@ Transform:
   - {fileID: 2947238362843392000}
   - {fileID: 8936569313424806163}
   - {fileID: 8126439464267103308}
-  - {fileID: 1404703175412812044}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3516,7 +3484,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5378149338615511870}
   m_Layer: 0
-  m_Name: PlayerSpawn (4)
+  m_Name: MonsterSpawnerPos
   m_TagString: Untagged
   m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -3534,7 +3502,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1404703175412812044}
+  m_Father: {fileID: 5981142798250420190}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8473269012969710845
@@ -3566,7 +3534,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5981142798250420190}
-  m_RootOrder: 0
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8532148746464525962
 GameObject:
@@ -3578,7 +3546,7 @@ GameObject:
   m_Component:
   - component: {fileID: 344207242149472084}
   m_Layer: 0
-  m_Name: PlayerSpawn (2)
+  m_Name: MonsterSpawnerPos
   m_TagString: Untagged
   m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -3596,7 +3564,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1404703175412812044}
+  m_Father: {fileID: 5981142798250420190}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8533829151765262256

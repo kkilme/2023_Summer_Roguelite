@@ -19,6 +19,7 @@ public class MonsterAttack : MonoBehaviour
         {
             IAttackable attackable;
             other.TryGetComponent(out attackable);
+            Debug.Log(attackable != null);
             if (attackable != null)
                 attackable.OnDamaged(_stat.Damage);
         }

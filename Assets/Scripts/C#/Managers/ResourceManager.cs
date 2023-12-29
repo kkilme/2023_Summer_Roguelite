@@ -96,7 +96,7 @@ public class ResourceManager
             {
                 LoadAsync<T>(op.Result[i].PrimaryKey, (obj) =>
                 {
-                    Debug.Log($"prefabs: {_prefabs.Count}, _images: {_images.Count}");
+                    //Debug.Log($"prefabs: {_prefabs.Count}, _images: {_images.Count}");
                 });
             }
 

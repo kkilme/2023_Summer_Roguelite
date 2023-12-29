@@ -195,6 +195,7 @@ public class PlayerController : NetworkBehaviour
     private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
     {
         bool invopen = _player.Inventory.SwitchInventoryPanel();
+        Debug.Log(invopen);
         if (invopen)
         {
             _actions[1].started -= Attack;

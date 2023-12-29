@@ -38,103 +38,7 @@ public class MapManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        SceneEvent a = new SceneEvent();
-        a.SceneEventType = SceneEventType.LoadEventCompleted;
-        NetworkManager.Singleton.SceneManager.OnSceneEvent += Init;
-    }
-
-    public override void OnNetworkDespawn()
-    {
-        NetworkManager.Singleton.SceneManager.OnSceneEvent -= Init;
-    }
-
-    private void Init(SceneEvent sceneEvent)
-    {
-        if (IsHost || IsServer)
-        {
-            if (sceneEvent.SceneEventType == SceneEventType.LoadEventCompleted)
-            {
-                if (roomPrefabsDic.ContainsKey(ROOMSIZE.SMALL))
-                {
-                    return;
-                }
-
-                foreach (ROOMSIZE roomSize in Enum.GetValues(typeof(ROOMSIZE)))
-                    roomPrefabsDic.Add(roomSize, new List<Room>());
-
-                // 추후에 데이터베이스에서 관리 생성하도록 설정
-                //방 개수
-                //roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
-                roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
-                //roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
-                //roomCountDic.Add(ROOMTYPE.BED_ROOM, new int[] { 0, 99 });
-                roomCountDic.Add(ROOMTYPE.LABORATORY, new int[] { 0, 3 });
-                roomCountDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new int[] { 0, 5 });
-                roomCountDic.Add(ROOMTYPE.MEDICAL_ROOM, new int[] { 0, 3 });
-
-                //specialRoomProbabilityDic.Add(ROOMTYPE.APEX_LABORATORY, 0.05f);
-
-                // 방들 추가
-                //roomsItemDic.Add(ROOMTYPE.ARMORY, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.MACHINE_ROOM, new RandomWeightPicker<ITEMNAME>());
-                //roomsItemDic.Add(ROOMTYPE.APEX_LABORATORY, new RandomWeightPicker<ITEMNAME>());
-                //roomsItemDic.Add(ROOMTYPE.BED_ROOM, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.LABORATORY, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.MANAGEMENT_ROOM, new RandomWeightPicker<ITEMNAME>());
-                roomsItemDic.Add(ROOMTYPE.MEDICAL_ROOM, new RandomWeightPicker<ITEMNAME>());
-
-                // 방에 해당하는 아이템 및 가중치 추가
-                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_762, 10);
-                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_9, 30);
-                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.AMMO_556, 10);
-                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.GAUGE_12, 20);
-                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTASSAULTRIFLE, 8);
-                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTMACHINEGUN, 6);
-                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTRAREHEAD, 5);
-                //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTHEAD, 5);
-
-                roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.JERRY_CAN, 50);
-
-                //roomsItemDic[ROOMTYPE.APEX_LABORATORY].Add(ITEMNAME.AMMO_556, 100);
-
-                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.CANNED_FOOD, 5);
-                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.AMMO_9, 10);
-                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.JERRY_CAN, 0.1f);
-                //roomsItemDic[ROOMTYPE.BED_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
-
-                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.CANNED_FOOD, 10f);
-                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.AMMO_762, 3f);
-                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.GAUGE_12, 2f);
-                roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
-
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.CANNED_FOOD, 2f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.JERRY_CAN, 0.5f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_9, 10f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_556, 7.5f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.GAUGE_12, 8f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_762, 6f);
-                roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.2f);
-
-
-                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.CANNED_FOOD, 30f);
-                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_9, 10f);
-                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_762, 5f);
-                roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
-
-
-                var roomPrefabs = Resources.LoadAll<Room>("Room");
-
-                //NetworkManager.AddNetworkPrefab(lifeShipPrefab);
-
-                for (int i = 0; i < roomPrefabs.Length; i++)
-                {
-                    //NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
-                    roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
-                }
-
-                //GenerateMapServerRPC();
-            }
-        }
+        Init();
     }
 
     private void Init()
@@ -149,7 +53,8 @@ public class MapManager : NetworkBehaviour
             foreach (ROOMSIZE roomSize in Enum.GetValues(typeof(ROOMSIZE)))
                 roomPrefabsDic.Add(roomSize, new List<Room>());
 
-            // 추후에 데이터베이스에서 관리 생성하도록 설정, 방의 수
+            // 추후에 데이터베이스에서 관리 생성하도록 설정
+            //방 개수
             //roomCountDic.Add(ROOMTYPE.ARMORY, new int[] { 0, 4 });
             roomCountDic.Add(ROOMTYPE.MACHINE_ROOM, new int[] { 0, 2 });
             //roomCountDic.Add(ROOMTYPE.APEX_LABORATORY, new int[] { 0, 1 });
@@ -208,17 +113,16 @@ public class MapManager : NetworkBehaviour
             roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
 
 
-            var roomPrefabs = GameManager.Resource.GetAll<Room>("Room");
-            
+            var roomPrefabs = Resources.LoadAll<Room>("Room");
+
             //NetworkManager.AddNetworkPrefab(lifeShipPrefab);
 
-            for (int i = 0; i < roomPrefabs.Count; i++)
+            for (int i = 0; i < roomPrefabs.Length; i++)
             {
                 //NetworkManager.AddNetworkPrefab(roomPrefabs[i].gameObject);
                 roomPrefabsDic[roomPrefabs[i].roomSize].Add(roomPrefabs[i]);
             }
-
-            //GenerateMapServerRPC();
+            GenerateMapServerRPC();
         }
     }
 
@@ -257,10 +161,10 @@ public class MapManager : NetworkBehaviour
             ints.Add(i);
         }
 
-        for (int i = 0; i < playerRoom.Count; ++i)
+        for (int i = 0; i < playerRoom.Capacity; ++i)
         {
             remove = Random.Range(0, ints.Count);
-            playerRoom[i] = ints[remove];
+            playerRoom.Add(ints[remove]);
             ints.RemoveAt(remove);
         }
 
@@ -278,12 +182,12 @@ public class MapManager : NetworkBehaviour
             await UniTask.DelayFrame(5);
         }
 
-        //for (int i = 0; i < playerRoom.Count; ++i)
-        //{
-        //    room = _rooms[playerRoom[i]].GetComponent<Room>();
-        //    var networkObj = Instantiate(_playerObject, room.monsterSpawners.GetRandomRoomPos(), quaternion.identity).GetComponent<NetworkObject>();
-        //    networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
-        //}
+        for (int i = 0; i < playerRoom.Count; ++i)
+        {
+            room = _rooms[playerRoom[i]].GetComponent<Room>();
+            var networkObj = Instantiate(_playerObject, room.monsterSpawners.GetRandomRoomPos(), quaternion.identity).GetComponent<NetworkObject>();
+            networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
+        }
     }
 
 // 맵 생성 함수
@@ -295,7 +199,6 @@ public class MapManager : NetworkBehaviour
         1. 각각의 위치에 방 종류를 랜덤으로 배정
         2. 해당 위치의 크기에 해당하는 방을 배치
         */
-        Init();
 
         //var roomPositionList = roomPositions.ToList();
 

@@ -13,7 +13,8 @@ public enum PlayerInputs
     StopAttack,
     Reload,
     Aim,
-    StopAim
+    StopAim,
+    Back
 }
 
 public partial class Player : NetworkBehaviour, IAttackable
@@ -30,7 +31,7 @@ public partial class Player : NetworkBehaviour, IAttackable
         _rotationTransform = transform.GetChild(0).GetChild(0).GetChild(0);
         if (_rotationTransform == null) _rotationTransform = transform; // SJPlayer용 테스트코드
         transform.GetChild(0).GetChild(1).gameObject.layer = 9;
-
+        _anim = GetComponentInChildren<Animator>();
         _screenMid.x = Screen.width >> 1;
         _screenMid.y = Screen.height >> 1;
 
@@ -89,6 +90,8 @@ public partial class Player : NetworkBehaviour, IAttackable
     {
         if (pi != PlayerInputs.None)
         {
+            _anim.SetBool(PlayerInputs.Move.ToString(), false);
+            _anim.SetBool(PlayerInputs.Back.ToString(), false);
             //_anim.SetBool(pi.ToString(), true);
         }
     }
@@ -96,11 +99,19 @@ public partial class Player : NetworkBehaviour, IAttackable
     [ClientRpc]
     private void InputClientRpc(Vector3 dir, PlayerInputs pi = PlayerInputs.None, ClientRpcParams clientRpcParams = default)
     {
-        //_rigidbody.velocity = dir;
-        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.Acceleration);
-        if (pi != PlayerInputs.None)
+        _rigidbody.velocity = dir;
+        _rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.Acceleration);
+        if (dir == Vector3.zero)
         {
-            //_anim.SetBool(pi.ToString(), true);
+            _anim.SetBool(PlayerInputs.Move.ToString(), false);
+        }
+        else
+        {
+            _anim.SetBool(PlayerInputs.Move.ToString(), true);
+            if (Vector3.Dot(transform.forward, dir) >= 0)
+                _anim.SetBool(PlayerInputs.Back.ToString(), false);
+            else
+                _anim.SetBool(PlayerInputs.Back.ToString(), true);
         }
     }
 }

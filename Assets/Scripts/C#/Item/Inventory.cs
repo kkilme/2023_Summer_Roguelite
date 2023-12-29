@@ -82,7 +82,7 @@ public partial class Inventory : NetworkBehaviour
         if (changeEvent.PreviousValue.Equals(inventoryUI.selectedInventoryItem) && inventoryUI.selectedInventoryItem.itemName != ITEMNAME.NONE)
             inventoryUI.selectedInventoryItem = changeEvent.Value;
     }
-
+    [SerializeField]
     private InventoryUI inventoryUI;
     private Player curPlayer;
 
@@ -90,15 +90,6 @@ public partial class Inventory : NetworkBehaviour
     {
         items = new NetworkList<InventoryItem>();
         EquipInit();
-    }
-
-    private void Update()
-    {   
-        // 인벤토리 저장 테스트 코드
-        if (Input.GetKeyDown(KeyCode.M) && IsOwner)
-        {
-            SaveInventoryServerRPC(AuthenticationService.Instance.PlayerId);
-        }
     }
 
     public override void OnNetworkSpawn()
@@ -113,10 +104,15 @@ public partial class Inventory : NetworkBehaviour
         {
             InitServerRPC(AuthenticationService.Instance.PlayerId);
             inventoryEventHandlerArgs = new InventoryEventHandlerArgs(items);
-            inventoryUI = FindObjectOfType<InventoryUI>(true);
             items.OnListChanged += OnItemChanged;
             curPlayer = GetComponent<Player>();
         }
+    }
+
+    public void InitInventoryUI(GameObject ui)
+    {
+        inventoryUI = ui.GetComponentInChildren(typeof(InventoryUI), true) as InventoryUI;
+        inventoryUI.Init(this);
     }
 
     [ServerRpc]

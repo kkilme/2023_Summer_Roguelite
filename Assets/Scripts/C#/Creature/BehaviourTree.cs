@@ -119,8 +119,11 @@ public class BehaviourSequence
     {
         for (int i = 0; i < _nodeList.Count; ++i)
         {
-            _nodeList[i].Clear();
-            _nodeList[i] = null;
+            if (_nodeList[i] != null)
+            {
+                _nodeList[i].Clear();
+                _nodeList[i] = null;
+            }
         }
     }
 }
