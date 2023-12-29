@@ -59,7 +59,7 @@ public class Gun : NetworkBehaviour
 
     private void Init()
     {
-        SetGunData(GunDataFactory.GetGunData(ITEMNAME.TESTASSAULTRIFLE)); // test
+        //SetGunData(GunDataFactory.GetGunData(ITEMNAME.TESTASSAULTRIFLE)); // test
 
         //_animator = GetComponent<Animator>();
         _effectparent = GameObject.Find("Effect").transform;
@@ -195,22 +195,28 @@ public class Gun : NetworkBehaviour
         {   
             for(int i = 0; i < _gunData.bulletsPerShoot; i++)
             {
-                float spreadx = Random.Range(-_gunData.spreadRate, _gunData.spreadRate) / 10; // 탄퍼짐
-                float spready = Random.Range(-_gunData.spreadRate, _gunData.spreadRate) / 10;
+                Random.InitState(i + DateTime.Now.Millisecond);
+                float spreadx = Random.Range(-_gunData.spreadRate, _gunData.spreadRate) / 5; // 탄퍼짐
+                float spready = Random.Range(-_gunData.spreadRate, _gunData.spreadRate) / 5;
+                float spreadz = Random.Range(-_gunData.spreadRate, _gunData.spreadRate) / 5;
+                float distance = 0;
                 Vector3 bulletDir;
                 Ray ray = new(_cam.transform.position, _cam.transform.forward);
 
                 if (Physics.Raycast(ray, out RaycastHit hit, 1000))
                 {   
                     bulletDir = hit.point - _muzzleTransform.position;
+                    distance = Vector3.Distance(hit.point, _muzzleTransform.position);
                 }
                 else
                 {
                     bulletDir = ray.GetPoint(1000) - _muzzleTransform.position;
+                    distance = Vector3.Distance(ray.GetPoint(1000), _muzzleTransform.position);
                 }
+                distance = Mathf.Max(1, distance);
 
-                bulletDir += new Vector3(spreadx, spready, 0);
-        
+                bulletDir += new Vector3(distance * spreadx, distance * spready, distance * spreadz);
+
                 if (IsServer)
                 {
                     SpawnBulletServerRPC(bulletDir);
@@ -339,6 +345,12 @@ public class Gun : NetworkBehaviour
         //_animator.SetBool("Aiming", false);
         _cam.SetTargetFOV();
     }
+
+    public void SetMuzzleTransform(Transform muzzle)
+    {
+        _muzzleTransform = muzzle;
+    }
+
 
     private void Update()
     {

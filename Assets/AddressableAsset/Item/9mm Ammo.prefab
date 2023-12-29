@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 5761019338732915769}
   - component: {fileID: 8139110485796890011}
   - component: {fileID: -6128209859622392907}
-  - component: {fileID: 2719282152879454430}
+  - component: {fileID: 740423787941871998}
   m_Layer: 8
   m_Name: 9mm Ammo
-  m_TagString: Item
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!65 &2719282152879454430
+--- !u!65 &740423787941871998
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,7 +131,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.5, y: 1.25, z: 3.75}
+  m_Size: {x: 2.1093953, y: 0.031199738, z: 2.0709133}
   m_Center: {x: 0, y: 0.015599869, z: 0}
 --- !u!1001 &6876459656264842796
 PrefabInstance:

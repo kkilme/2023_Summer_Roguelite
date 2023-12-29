@@ -21,6 +21,7 @@ public enum AMMO_TYPE
 public struct GunData : INetworkSerializable
 {
     public ITEMNAME gunName;
+    public string gunNameStr;
 
     public float damage;
     //public float maxDistance; // 총알을 사용하기 때문에 일단 사용 안함
@@ -56,11 +57,19 @@ public struct GunData : INetworkSerializable
 
     public bool isReloading;
 
+    public float basePosX;
+    public float basePosY;
+    public float basePosZ;
+    public float baseRotX;
+    public float baseRotY;
+    public float baseRotZ;
+
     public int hashcode; // 유니크하게 수정할 필요가 잇을 듯?
 
-    public GunData(ITEMNAME gunName, float damage, float bulletSpeed, int bulletsPerShoot, float bulletLifetime, float spreadRate, float zoomSpeed, float zoomRate, float fireRate, bool isAutofire, AttachmentTypeList availableAttachmentTypes, float recoilX, float recoilY, float recoilZ, float aimRecoilX, float aimRecoilY, float aimRecoilZ, AMMO_TYPE ammoType, int currentAmmo, int magSize, float reloadTime) : this()
+    public GunData(ITEMNAME gunName, string gunNameStr, float damage, float bulletSpeed, int bulletsPerShoot, float bulletLifetime, float spreadRate, float zoomSpeed, float zoomRate, float fireRate, bool isAutofire, AttachmentTypeList availableAttachmentTypes, float recoilX, float recoilY, float recoilZ, float aimRecoilX, float aimRecoilY, float aimRecoilZ, AMMO_TYPE ammoType, int currentAmmo, int magSize, float reloadTime, float basePosX, float basePosY, float basePosZ, float baseRotX, float baseRotY, float baseRotZ) : this()
     {
         this.gunName = gunName;
+        this.gunNameStr = gunNameStr;
         this.damage = damage;
         this.bulletSpeed = bulletSpeed;
         this.bulletsPerShoot = bulletsPerShoot;
@@ -83,14 +92,21 @@ public struct GunData : INetworkSerializable
         this.magSize = magSize;
         this.reloadTime = reloadTime;
         this.isReloading = false;
+        this.basePosX = basePosX;
+        this.basePosY = basePosY;
+        this.basePosZ = basePosZ;
+        this.baseRotX = basePosX;
+        this.baseRotY = basePosY;
+        this.baseRotZ = basePosZ;
         this.hashcode = 1111;
         this.hashcode = GetHashCode();
     }
 
 
-    public GunData(ITEMNAME gunName, float damage, float zoomSpeed, float zoomRate, float fireRate, bool isAutofire, AttachmentTypeList availableAttachmentTypes, float recoilX, float recoilY, float recoilZ, float aimRecoilX, float aimRecoilY, float aimRecoilZ, AMMO_TYPE ammoType, int magSize, float reloadTime) : this()
+    public GunData(ITEMNAME gunName, string gunNameStr, float damage, float zoomSpeed, float zoomRate, float fireRate, bool isAutofire, AttachmentTypeList availableAttachmentTypes, float recoilX, float recoilY, float recoilZ, float aimRecoilX, float aimRecoilY, float aimRecoilZ, AMMO_TYPE ammoType, int magSize, float reloadTime, float basePosX, float basePosY, float basePosZ, float baseRotX, float baseRotY, float baseRotZ) : this()
     {
         this.gunName = gunName;
+        this.gunNameStr = gunNameStr;
         this.damage = damage;
         this.bulletSpeed = 30;
         this.bulletsPerShoot = 1;
@@ -113,6 +129,12 @@ public struct GunData : INetworkSerializable
         this.magSize = magSize;
         this.reloadTime = reloadTime;
         this.isReloading = false;
+        this.basePosX = basePosX;
+        this.basePosY = basePosY;
+        this.basePosZ = basePosZ;
+        this.baseRotX = basePosX;
+        this.baseRotY = basePosY;
+        this.baseRotZ = basePosZ;
         this.hashcode = 1111;
         this.hashcode = GetHashCode();
     }
@@ -150,6 +172,7 @@ public struct GunData : INetworkSerializable
     public GunData(ITEMNAME gunName = ITEMNAME.NONE)
     {
         this.gunName = gunName;
+        this.gunNameStr = "None";
         this.damage = 0;
         this.bulletSpeed = 0;
         this.bulletsPerShoot = 0;
@@ -173,6 +196,12 @@ public struct GunData : INetworkSerializable
         this.reloadTime = 999;
         this.isReloading = true;
         this.hashcode = 1111;
+        this.basePosX = 0;
+        this.basePosY = 0;
+        this.basePosZ = 0;
+        this.baseRotX = 0;
+        this.baseRotY = 0;
+        this.baseRotZ = 0;
         this.hashcode = GetHashCode();
     }
     public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
