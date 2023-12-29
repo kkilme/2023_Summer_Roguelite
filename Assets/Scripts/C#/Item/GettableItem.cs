@@ -96,6 +96,15 @@ public class GettableItem : NetworkBehaviour, IInteraction
             case ITEMNAME.TESTMACHINEGUN:
                 path.Append("TestMachinegun");
                 break;
+            case ITEMNAME.ASSAULTRIFLE:
+                path.Append("AssaultRifle");
+                break;
+            case ITEMNAME.SNIPERRIFLE:
+                path.Append("SniperRifle");
+                break;
+            case ITEMNAME.SHOTGUN:
+                path.Append("Shotgun");
+                break;
             default:
                 path.Append("");
                 break;

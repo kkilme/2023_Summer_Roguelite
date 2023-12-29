@@ -31,6 +31,9 @@ public partial class Player : NetworkBehaviour, IAttackable
         _rotationTransform = transform.GetChild(0).GetChild(0).GetChild(0);
         if (_rotationTransform == null) _rotationTransform = transform; // SJPlayer용 테스트코드
         transform.GetChild(0).GetChild(1).gameObject.layer = 9;
+        _gunTransform = GetComponentInChildren<Gun>().gameObject.transform;
+        Equip(GunDataFactory.GetGunData(ITEMNAME.ASSAULTRIFLE));
+
         _anim = GetComponentInChildren<Animator>();
         _screenMid.x = Screen.width >> 1;
         _screenMid.y = Screen.height >> 1;

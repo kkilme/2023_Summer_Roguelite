@@ -42,6 +42,7 @@ public class MouseInput : NetworkBehaviour
         _targetOriginAngle = transform.GetChild(1);
         _rootTarget = transform.GetChild(2);
         _player = transform.parent.parent;
+        if (_player == null) _player = transform.parent;
         _cam = camera;
 
         Cursor.lockState = CursorLockMode.Locked;

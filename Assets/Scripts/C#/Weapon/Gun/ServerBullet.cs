@@ -110,8 +110,7 @@ public class ServerBullet : NetworkBehaviour
     }
 
     private void ShowHitEffect(Vector3 hitPoint, Vector3 hitNormal)
-    {   
-       
+    {
         Instantiate(GameManager.Resource.GetObject<GameObject>("Bullet/SoftBodyHole"), hitPoint, Quaternion.LookRotation(hitNormal), _effectparent);
         
     }
