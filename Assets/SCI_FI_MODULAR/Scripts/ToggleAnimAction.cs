@@ -1,20 +1,37 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class ToggleAnimAction :  ActionBase
+public class ToggleAnimAction : MonoBehaviour
 {
-    public string variableName;
     Animator anim;
+    private int _animHash;
+    private int _count;
+
     void Start()
     {
         anim = GetComponent<Animator>();
+        _animHash = Animator.StringToHash("Open");
+        _count = 0;
     }
 
-    public override void SubAction()
+    private void OnTriggerEnter(Collider other)
     {
-        bool status = anim.GetBool(variableName);
-        anim.SetBool(variableName, !status);
+        if (other.tag.CompareTo("Player") == 0 && !anim.GetBool(_animHash))
+        {
+            anim.SetBool(_animHash, true);
+            ++_count;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag.CompareTo("Player") == 0)
+        {
+            --_count;
+            if (_count == 0)
+                anim.SetBool(_animHash, false);
+        }
     }
 }

@@ -25,6 +25,8 @@ public class MouseInput : NetworkBehaviour
     private Transform _cam;
     [SerializeField]
     private Transform _player;
+    [SerializeField]
+    private Transform _head;
 
     private Transform _target;
     private Transform _targetOriginAngle;
@@ -62,7 +64,6 @@ public class MouseInput : NetworkBehaviour
         _rotationX += mouseX;
         _rotationY = Mathf.Clamp(_rotationY + mouseY, _minX, _maxX);
 
-        _cam.eulerAngles = new Vector3(-_rotationY, _cam.eulerAngles.y, 0);
         _player.eulerAngles = new Vector3(0, _rotationX, 0);
 
         Vector3 cross = Vector3.Cross(_targetOriginAngle.position - transform.position, Vector3.up);
@@ -72,6 +73,8 @@ public class MouseInput : NetworkBehaviour
         _target.localEulerAngles = new Vector3(-_rotationY, 0, 0);
         value = Quaternion.AngleAxis(_rotationX, Vector3.up) * (_targetOriginAngle.position - transform.position) + transform.position;
         _rootTarget.position = value;
+        //_cam.position = _head.position;
+        //_cam.eulerAngles = new Vector3(_head.eulerAngles.x, _head.eulerAngles.y - 90, 0);
     }
 
     public void OnOffSettingUI(bool bOpen)
@@ -82,12 +85,12 @@ public class MouseInput : NetworkBehaviour
             Cursor.lockState = CursorLockMode.Locked;
 
         Cursor.visible = bOpen;
-        this.enabled = !bOpen;
+        enabled = !bOpen;
     }
 
     public void Clear()
     {
-        this.enabled = false;
+        enabled = false;
         Cursor.visible = true;
     }
 }

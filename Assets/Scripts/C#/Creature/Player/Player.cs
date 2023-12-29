@@ -16,8 +16,10 @@ public partial class Player : NetworkBehaviour, IAttackable
     [SerializeField]
     private NetworkVariable<Stat> _playerStat = new NetworkVariable<Stat>();
     public Inventory Inventory { get; private set; }
+    private PlayerStatusUI _statusUI;
     private PlayerController _playerController;
     private PlayerInteract _interact;
+    private Animator _anim;
     [SerializeField]
     private Transform _headTransform;
     [SerializeField]
@@ -37,6 +39,28 @@ public partial class Player : NetworkBehaviour, IAttackable
     [SerializeField]
     private Camera _mainCam;
 
+    private Vector2 _screenMid;
+
+
+    private int _maxX = 80;
+    private int _minX = -80;
+
+    private float _rotationX = 0;
+    private float _rotationY = 0;
+
+    [Header("RotationIK")]
+    [SerializeField]
+    private float _sensitive = 0.5f;
+    [SerializeField]
+    private Transform _target;
+    [SerializeField]
+    private Transform _targetOriginAngle;
+    [SerializeField]
+    private Transform _rootTarget;
+
+    [Header("Test")]
+    [SerializeField] private bool checkTruefortest = false;
+
     public void SetPlayerStat(Stat stat)
     {
         _playerStat.Value = stat;
@@ -51,6 +75,10 @@ public partial class Player : NetworkBehaviour, IAttackable
     {
         _interact = GetComponentInChildren<PlayerInteract>();
         _interact.gameObject.SetActive(false);
+        //if (IsServer)
+        {
+            _playerStat.Value = new Stat(5, 5, 5, 5, 5, 5);
+        }
         if (IsOwner)
         {
             ClientRpcParams clientRpcParams = new ClientRpcParams
@@ -61,28 +89,29 @@ public partial class Player : NetworkBehaviour, IAttackable
                 }
             };
             InitClientRpc(clientRpcParams);
+            InventoryInit();
         }
 
         else
             Destroy(_mainCam.transform.parent.gameObject);
 
-        //if (IsServer)
-        {
-            _playerStat.Value = new Stat(5, 5, 5, 5, 5, 5);
-        }
-        Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
-        FindObjectOfType<Canvas>().gameObject.SetActive(true);
+
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        enabled = true;
     }
 
-    private void FixedUpdate()
+    private void InventoryInit()
     {
-        if (IsOwner)
-            MoveCharacter(_playerController.MoveDir);
-
-        if (Input.GetKeyDown(KeyCode.G))
-            TestThrowFlashBang();
+        var ui = GameManager.Resource.GetObject<GameObject>("UI/PlayerUI");
+        Instantiate(ui);
+        Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
+        Inventory.InitInventoryUI(ui);
+        _statusUI = ui.GetComponent<PlayerStatusUI>();
+        _statusUI.Init(_playerStat.Value.Hp, _playerStat.Value.MaxHp, 0, 0);
+        Canvas can = ui.GetComponent<Canvas>();
+        can.gameObject.SetActive(true);
+        can.worldCamera = _mainCam;
     }
 
     private void TestThrowFlashBang()
@@ -91,10 +120,23 @@ public partial class Player : NetworkBehaviour, IAttackable
         obj.GetComponent<NetworkObject>().Spawn();
     }
 
-    private void MoveCharacter(Vector3 dir)
+    [ServerRpc]
+    private void MoveCharacterServerRpc(Vector3 dir)
     {
-        //transform.position += Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed * 0.1f;
-        _rigidbody.velocity = Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed;
+        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.Acceleration);
+        Vector3 move = (Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed);
+        _rigidbody.velocity = move;
+
+        if (dir == Vector3.zero)
+            InputClientRpc(PlayerInputs.Idle);
+        else
+            InputClientRpc(move, PlayerInputs.Move);
+    }
+
+    [ServerRpc]
+    private void InputServerRpc(PlayerInputs pi)
+    {
+        InputClientRpc(pi);
     }
 
     public void OnDamaged(int damage)
@@ -108,6 +150,7 @@ public partial class Player : NetworkBehaviour, IAttackable
         Debug.Log($"damaged {damage}");
         var stat = _playerStat.Value;
         stat.Hp -= damage;
+        _statusUI.SetPlayerHP(stat.Hp);
         _playerStat.Value = stat;
         CancelInteraction();
         //사운드

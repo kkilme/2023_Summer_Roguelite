@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         Resource = new ResourceManager();
         Resource.Init();
+        Application.targetFrameRate = 60;
         await UnityServices.InitializeAsync();
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
         await EconomyService.Instance.Configuration.SyncConfigurationAsync();

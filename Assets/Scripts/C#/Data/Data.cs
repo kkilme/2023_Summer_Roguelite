@@ -81,21 +81,3 @@ public struct Stat : INetworkSerializable
         return a;
     }
 }
-
-[Serializable]
-public struct RoomInformation
-{
-    [field: SerializeField]
-    public Vector3 Position { get; private set; }
-    [field: SerializeField]
-    public int Rotation { get; private set; }
-    [field: SerializeField]
-    public ROOMSIZE Size { get; private set; }
-
-    public RoomInformation(Vector3 pos, int Rot, ROOMSIZE size)
-    {
-        Position = pos;
-        Rotation = Rot;
-        Size = size;
-    }
-}

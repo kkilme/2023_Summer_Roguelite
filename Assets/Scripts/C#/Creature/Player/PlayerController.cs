@@ -45,13 +45,12 @@ public class PlayerController : NetworkBehaviour
         Pi.actions = null;
         Pi.actions = iaa;
         Anim = Util.GetOrAddComponent<Animator>(transform.GetChild(0).gameObject);
-        MouseInput = gameObject.GetComponentInChildren<MouseInput>();
         
         if (IsOwner)
         {
             MouseInput = gameObject.GetComponentInChildren<MouseInput>();
-            InitInputSystem();
             MouseInput.Init(cam.transform);
+            InitInputSystem();
             _interact = interact;
         }
     }
@@ -196,6 +195,7 @@ public class PlayerController : NetworkBehaviour
     private void SwitchInventoryPannel(InputAction.CallbackContext ctx)
     {
         bool invopen = _player.Inventory.SwitchInventoryPanel();
+        Debug.Log(invopen);
         if (invopen)
         {
             _actions[1].started -= Attack;

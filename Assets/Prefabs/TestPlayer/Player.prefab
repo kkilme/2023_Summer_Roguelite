@@ -348,7 +348,7 @@ Transform:
   m_Children:
   - {fileID: 329715209194895220}
   m_Father: {fileID: 4768047376405316295}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &983704600858886285
 GameObject:
@@ -1105,7 +1105,7 @@ Transform:
   m_Children:
   - {fileID: 6162038064732251036}
   m_Father: {fileID: 4768047376405316295}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2503990641123716459
 GameObject:
@@ -1264,7 +1264,7 @@ Transform:
   m_Children:
   - {fileID: 7855066921890770422}
   m_Father: {fileID: 4768047376405316295}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3012393709104646602
 GameObject:
@@ -2124,6 +2124,7 @@ Transform:
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6096506995067874830}
   - {fileID: 6833843907000964837}
   - {fileID: 3799959455562262375}
   - {fileID: 3627735312615834720}
@@ -2332,7 +2333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c430f382484144e925c097c2d33cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 0.2
+  m_Weight: 1
   m_Data:
     m_ConstrainedObject: {fileID: 4768047376405316295}
     m_SourceObjects:
@@ -2399,7 +2400,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6096506994474649538}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0, z: 1.652}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2432,7 +2433,7 @@ MonoBehaviour:
     FieldOfView: 90
     OrthographicSize: 5
     NearClipPlane: 0.1
-    FarClipPlane: 1000
+    FarClipPlane: 100
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
@@ -2605,15 +2606,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6096506995067874831}
-  m_LocalRotation: {x: 0.00000008940697, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 1.386935, y: 0.19613875, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6096506995693533409}
-  m_Father: {fileID: 6218350813667624282}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 4768047376405316295}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: -90, z: 0}
 --- !u!1 &6096506995093507927
 GameObject:
   m_ObjectHideFlags: 0
@@ -2922,7 +2923,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6096506995495668869}
   - component: {fileID: 6096506995495668602}
-  - component: {fileID: 6096506995495668603}
+  - component: {fileID: 6572152485473462272}
   m_Layer: 0
   m_Name: aimIK
   m_TagString: Untagged
@@ -2985,21 +2986,22 @@ MonoBehaviour:
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0}
     m_Visible: 1
---- !u!114 &6096506995495668603
+--- !u!114 &6572152485473462272
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6096506995495668870}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45684ba94ed95904c84ed5a44328990a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _sensitive: 0.5
   _cam: {fileID: 0}
-  _player: {fileID: 6096506995618826220}
+  _player: {fileID: 0}
+  _head: {fileID: 329715209194895220}
   checkTruefortest: 0
 --- !u!1 &6096506995542240813
 GameObject:
@@ -3069,7 +3071,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6096506995618826220}
   - component: {fileID: 6096506995618826211}
-  - component: {fileID: 6096506995618826210}
+  - component: {fileID: 1988926351772400795}
   - component: {fileID: 6096506995618826215}
   - component: {fileID: 6096506995618826208}
   - component: {fileID: 6096506995618826209}
@@ -3116,8 +3118,8 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!65 &6096506995618826210
-BoxCollider:
+--- !u!136 &1988926351772400795
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3126,9 +3128,10 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.527945, y: 1.8913959, z: 0.42057854}
-  m_Center: {x: -0.0023695529, y: 0.9360514, z: -0.03490758}
+  m_Radius: 0.3167499
+  m_Height: 1.8583307
+  m_Direction: 1
+  m_Center: {x: -0.0023695827, y: 0.9068861, z: -0.06954637}
 --- !u!114 &6096506995618826215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3177,6 +3180,11 @@ MonoBehaviour:
   _followPlayerCam: {fileID: 6096506994474649543}
   _deadPlayerCam: {fileID: 6096506995890234079}
   _mainCam: {fileID: 6096506996344217559}
+  _sensitive: 0.5
+  _target: {fileID: 6096506994967354961}
+  _targetOriginAngle: {fileID: 6096506995387544623}
+  _rootTarget: {fileID: 6096506996108947681}
+  checkTruefortest: 0
 --- !u!114 &6096506995618826209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3482,7 +3490,7 @@ MonoBehaviour:
     FieldOfView: 90
     OrthographicSize: 5
     NearClipPlane: 0.1
-    FarClipPlane: 1000
+    FarClipPlane: 100
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
@@ -3547,7 +3555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c430f382484144e925c097c2d33cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 0.2
+  m_Weight: 1
   m_Data:
     m_ConstrainedObject: {fileID: 6346967693483998886}
     m_SourceObjects:
@@ -3664,7 +3672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c430f382484144e925c097c2d33cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 0.2
+  m_Weight: 1
   m_Data:
     m_ConstrainedObject: {fileID: 3627735312615834720}
     m_SourceObjects:
@@ -3792,7 +3800,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6096506996344217555
 Transform:
   m_ObjectHideFlags: 0
@@ -3832,7 +3840,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 1000
+  far clip plane: 100
   field of view: 90
   orthographic: 0
   orthographic size: 5
@@ -4355,7 +4363,6 @@ Transform:
   - {fileID: 9072104699429675028}
   - {fileID: 1749901408921043571}
   - {fileID: 1622705557176387957}
-  - {fileID: 6096506995067874830}
   m_Father: {fileID: 2158299544557928501}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
