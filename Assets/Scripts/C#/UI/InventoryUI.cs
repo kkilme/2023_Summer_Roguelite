@@ -16,8 +16,11 @@ public partial class InventoryUI : MonoBehaviour
     private RectTransform equipRectTransform;
     private const int tileSizeWidth = 64;
     private const int tileSizeHeight = 64;
+    [SerializeField]
     private float width;
+    [SerializeField]
     private float height;
+    [SerializeField]
     private Inventory inventory;
 
     private ScrollRect scrollRect;
@@ -34,12 +37,8 @@ public partial class InventoryUI : MonoBehaviour
     private Dictionary<InventoryItem, ItemUI> inventoryDic = new Dictionary<InventoryItem, ItemUI>();
     private Dictionary<GettableItem, ItemUI> nearDic = new Dictionary<GettableItem, ItemUI>();
 
-    public void Init(Inventory inven)
+    private void Awake()
     {
-        inventory = inven;
-        rectTransform = transform.GetChild(1).GetComponent<RectTransform>();
-        equipRectTransform = transform.GetChild(0).GetComponent<RectTransform>();
-
         inventoryItemUIStack = new Stack<ItemUI>(transform.GetChild(1).GetComponentsInChildren<ItemUI>(true));
         nearItemUIStack = new Stack<ItemUI>(transform.GetChild(2).GetComponentsInChildren<ItemUI>(true));
         nearItemUIStack.ToList().ForEach(x => x.action += SelectNearItem);
@@ -48,6 +47,14 @@ public partial class InventoryUI : MonoBehaviour
 
         width = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.x;
         height = tileSizeWidth * transform.parent.GetComponent<RectTransform>().localScale.y;
+    }
+
+    public void Init(Inventory inven)
+    {
+        inventory = inven;
+        rectTransform = transform.GetChild(1).GetComponent<RectTransform>();
+        equipRectTransform = transform.GetChild(0).GetComponent<RectTransform>();
+
         EquipInit();
     }
 

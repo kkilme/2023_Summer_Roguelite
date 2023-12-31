@@ -84,7 +84,7 @@ public class MapManager : NetworkBehaviour
             //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTRAREHEAD, 5);
             //roomsItemDic[ROOMTYPE.ARMORY].Add(ITEMNAME.TESTHEAD, 5);
 
-            roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.JERRY_CAN, 50);
+            //roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.JERRY_CAN, 50);
 
             //roomsItemDic[ROOMTYPE.APEX_LABORATORY].Add(ITEMNAME.AMMO_556, 100);
 
@@ -99,7 +99,7 @@ public class MapManager : NetworkBehaviour
             roomsItemDic[ROOMTYPE.LABORATORY].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
 
             roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.CANNED_FOOD, 2f);
-            roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.JERRY_CAN, 0.5f);
+            //roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.JERRY_CAN, 0.5f);
             roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_9, 10f);
             roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.AMMO_556, 7.5f);
             roomsItemDic[ROOMTYPE.MANAGEMENT_ROOM].Add(ITEMNAME.GAUGE_12, 8f);
@@ -111,6 +111,11 @@ public class MapManager : NetworkBehaviour
             roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_9, 10f);
             roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.AMMO_762, 5f);
             roomsItemDic[ROOMTYPE.MEDICAL_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 0.1f);
+
+            roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.CANNED_FOOD, 30f);
+            roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.AMMO_9, 10f);
+            roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.AMMO_762, 5f);
+            roomsItemDic[ROOMTYPE.MACHINE_ROOM].Add(ITEMNAME.TESTASSAULTRIFLE, 1f);
 
 
             var roomPrefabs = Resources.LoadAll<Room>("Room");
@@ -185,7 +190,7 @@ public class MapManager : NetworkBehaviour
         for (int i = 0; i < playerRoom.Count; ++i)
         {
             room = _rooms[playerRoom[i]].GetComponent<Room>();
-            var networkObj = Instantiate(_playerObject, room.monsterSpawners.GetRandomRoomPos(), quaternion.identity).GetComponent<NetworkObject>();
+            var networkObj = Instantiate(_playerObject, room.monsterSpawners.GetRandomSpawnPos(), quaternion.identity).GetComponent<NetworkObject>();
             networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
         }
     }

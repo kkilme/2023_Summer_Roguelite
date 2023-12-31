@@ -102,7 +102,8 @@ public partial class Player : NetworkBehaviour, IAttackable
     private void InputClientRpc(Vector3 dir, PlayerInputs pi = PlayerInputs.None, ClientRpcParams clientRpcParams = default)
     {
         _rigidbody.velocity = dir;
-        _rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.Acceleration);
+        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.VelocityChange);
+
         if (dir == Vector3.zero)
         {
             _anim.SetBool(PlayerInputs.Move.ToString(), false);

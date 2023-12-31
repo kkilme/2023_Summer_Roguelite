@@ -81,9 +81,9 @@ public class GettableItem : NetworkBehaviour, IInteraction
             case ITEMNAME.GAUGE_12:
                 path.Append("12Gauge Ammo");
                 break;
-            case ITEMNAME.JERRY_CAN:
-                path.Append("Jerry Can");
-                break;
+            //case ITEMNAME.JERRY_CAN:
+            //    path.Append("Jerry Can");
+            //    break;
             case ITEMNAME.TESTHEAD:
                 path.Append("Test Head");
                 break;

@@ -151,6 +151,7 @@ public class MonsterController : NetworkBehaviour, IAttackable
     public void OnDamaged(int damage)
     {
         _board.Stat.Hp -= damage;
+        Debug.Log($"Monster Damage: {damage}\n Monster HP: {_board.Stat.Hp}");
         _tree.CheckSeq();
     }
 

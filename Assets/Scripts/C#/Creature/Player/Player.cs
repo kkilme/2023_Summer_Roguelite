@@ -101,14 +101,19 @@ public partial class Player : NetworkBehaviour, IAttackable
     private void InventoryInit()
     {
         var ui = GameManager.Resource.GetObject<GameObject>("UI/PlayerUI");
-        Instantiate(ui);
+        var t = ui.GetComponentInChildren<InventoryUI>();
+        t.gameObject.SetActive(false);
+
+        ui = Instantiate(ui);
+
+        var invenUi = ui.GetComponentInChildren<InventoryUI>(true);
         Inventory = Util.GetOrAddComponent<Inventory>(gameObject);
-        Inventory.InitInventoryUI(ui);
+        invenUi.Init(Inventory);
+        Inventory.InitInventoryUI(invenUi);
         _statusUI = ui.GetComponent<PlayerStatusUI>();
         _statusUI.Init(_playerStat.Value.Hp, _playerStat.Value.MaxHp, 0, 0);
-        Canvas can = ui.GetComponent<Canvas>();
-        can.gameObject.SetActive(true);
-        can.worldCamera = _mainCam;
+
+        t.gameObject.SetActive(true);
     }
 
     private void TestThrowFlashBang()
@@ -120,9 +125,9 @@ public partial class Player : NetworkBehaviour, IAttackable
     [ServerRpc]
     private void MoveCharacterServerRpc(Vector3 dir)
     {
-        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.Acceleration);
         Vector3 move = (Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed);
         _rigidbody.velocity = move;
+        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.VelocityChange);
 
         if (dir == Vector3.zero)
             InputClientRpc(PlayerInputs.Idle);
