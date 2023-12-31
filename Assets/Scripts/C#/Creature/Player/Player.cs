@@ -58,9 +58,6 @@ public partial class Player : NetworkBehaviour, IAttackable
     [SerializeField]
     private Transform _rootTarget;
 
-    [Header("Test")]
-    [SerializeField] private bool checkTruefortest = false;
-
     public void SetPlayerStat(Stat stat)
     {
         _playerStat.Value = stat;
@@ -181,6 +178,8 @@ public partial class Player : NetworkBehaviour, IAttackable
         //_followPlayerCam.gameObject.SetActive(false);
         //_playerController.Clear();
         //_interact.Clear();
+
+        IngameManager.Instance.OnPlayerDeath(OwnerClientId);
     }
 
     //테스트용 함수
