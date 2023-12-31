@@ -52,6 +52,7 @@ public class PlayerController : NetworkBehaviour
             MouseInput.Init(cam.transform);
             InitInputSystem();
             _interact = interact;
+            MouseInput.enabled = true;
         }
     }
 
