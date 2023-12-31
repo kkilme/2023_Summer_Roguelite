@@ -130,7 +130,7 @@ public partial class Player : NetworkBehaviour, IAttackable
     {
         Vector3 move = (Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed);
         _rigidbody.velocity = move;
-        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.VelocityChange);
+        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.Acceleration);
 
         if (dir == Vector3.zero)
             InputClientRpc(PlayerInputs.Idle);
