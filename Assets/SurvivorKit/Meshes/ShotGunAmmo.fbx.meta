@@ -1,46 +1,116 @@
 fileFormatVersion: 2
 guid: 6124d40bf0aced94e8fb981e264be92d
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: polySurface84
-    100002: polySurface91
-    100004: polySurface92
-    100006: polySurface93
-    100008: polySurface98
-    100010: //RootNode
-    100012: ShotGunAmmo
-    100014: ShotGunAmmoCover
-    100016: transform10
-    100018: transform2
-    100020: transform7
-    100022: transform8
-    100024: transform9
-    400000: polySurface84
-    400002: polySurface91
-    400004: polySurface92
-    400006: polySurface93
-    400008: polySurface98
-    400010: //RootNode
-    400012: ShotGunAmmo
-    400014: ShotGunAmmoCover
-    400016: transform10
-    400018: transform2
-    400020: transform7
-    400022: transform8
-    400024: transform9
-    2100000: lambert1
-    2300000: ShotGunAmmo
-    2300002: ShotGunAmmoCover
-    2300004: //RootNode
-    3300000: ShotGunAmmo
-    3300002: ShotGunAmmoCover
-    3300004: //RootNode
-    4300000: ShotGunAmmo
-    4300002: ShotGunAmmoCover
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: polySurface84
+  - first:
+      1: 100002
+    second: polySurface91
+  - first:
+      1: 100004
+    second: polySurface92
+  - first:
+      1: 100006
+    second: polySurface93
+  - first:
+      1: 100008
+    second: polySurface98
+  - first:
+      1: 100010
+    second: //RootNode
+  - first:
+      1: 100012
+    second: ShotGunAmmo
+  - first:
+      1: 100014
+    second: ShotGunAmmoCover
+  - first:
+      1: 100016
+    second: transform10
+  - first:
+      1: 100018
+    second: transform2
+  - first:
+      1: 100020
+    second: transform7
+  - first:
+      1: 100022
+    second: transform8
+  - first:
+      1: 100024
+    second: transform9
+  - first:
+      4: 400000
+    second: polySurface84
+  - first:
+      4: 400002
+    second: polySurface91
+  - first:
+      4: 400004
+    second: polySurface92
+  - first:
+      4: 400006
+    second: polySurface93
+  - first:
+      4: 400008
+    second: polySurface98
+  - first:
+      4: 400010
+    second: //RootNode
+  - first:
+      4: 400012
+    second: ShotGunAmmo
+  - first:
+      4: 400014
+    second: ShotGunAmmoCover
+  - first:
+      4: 400016
+    second: transform10
+  - first:
+      4: 400018
+    second: transform2
+  - first:
+      4: 400020
+    second: transform7
+  - first:
+      4: 400022
+    second: transform8
+  - first:
+      4: 400024
+    second: transform9
+  - first:
+      21: 2100000
+    second: lambert1
+  - first:
+      23: 2300000
+    second: ShotGunAmmo
+  - first:
+      23: 2300002
+    second: ShotGunAmmoCover
+  - first:
+      23: 2300004
+    second: //RootNode
+  - first:
+      33: 3300000
+    second: ShotGunAmmo
+  - first:
+      33: 3300002
+    second: ShotGunAmmoCover
+  - first:
+      33: 3300004
+    second: //RootNode
+  - first:
+      43: 4300000
+    second: ShotGunAmmo
+  - first:
+      43: 4300002
+    second: ShotGunAmmoCover
   externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -49,6 +119,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -70,28 +141,37 @@ ModelImporter:
   meshes:
     lODScreenPercentages: []
     globalScale: 100
-    meshCompression: 0
+    meshCompression: 3
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 45
     normalImportMode: 1
@@ -100,10 +180,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 0
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -113,13 +193,18 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 100
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

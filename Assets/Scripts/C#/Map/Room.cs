@@ -39,6 +39,7 @@ public class Room : MonoBehaviour
     private void Awake()
     {
         ItemPlaces = new Vector3[_itemSpawnPoint.childCount];
+        monsterSpawners.Init();
         for (int i = 0; i < _itemSpawnPoint.childCount; ++i)
             ItemPlaces[i] = _itemSpawnPoint.GetChild(i).transform.position;
         //StaticBatchingUtility.Combine(gameObject);

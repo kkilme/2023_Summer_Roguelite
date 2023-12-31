@@ -1,53 +1,137 @@
 fileFormatVersion: 2
 guid: cc4b7d639744ddd4788a9c2266aaaef8
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: polySurface84
-    100002: polySurface86
-    100004: polySurface87
-    100006: polySurface88
-    100008: polySurface88 1
-    100010: polySurface89
-    100012: polySurface90
-    100014: polySurface99
-    100016: //RootNode
-    100018: ShotGunBullet
-    100020: transform11
-    100022: transform12
-    100024: transform13
-    100026: transform14
-    100028: transform15
-    100030: transform16
-    100032: transform17
-    100034: transform2
-    400000: polySurface84
-    400002: polySurface86
-    400004: polySurface87
-    400006: polySurface88
-    400008: polySurface88 1
-    400010: polySurface89
-    400012: polySurface90
-    400014: polySurface99
-    400016: ShotGunBullet
-    400018: //RootNode
-    400020: transform11
-    400022: transform12
-    400024: transform13
-    400026: transform14
-    400028: transform15
-    400030: transform16
-    400032: transform17
-    400034: transform2
-    2100000: lambert1
-    2300000: ShotGunBullet
-    2300002: //RootNode
-    3300000: ShotGunBullet
-    3300002: //RootNode
-    4300000: ShotGunBullet
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: polySurface84
+  - first:
+      1: 100002
+    second: polySurface86
+  - first:
+      1: 100004
+    second: polySurface87
+  - first:
+      1: 100006
+    second: polySurface88
+  - first:
+      1: 100008
+    second: polySurface88 1
+  - first:
+      1: 100010
+    second: polySurface89
+  - first:
+      1: 100012
+    second: polySurface90
+  - first:
+      1: 100014
+    second: polySurface99
+  - first:
+      1: 100016
+    second: //RootNode
+  - first:
+      1: 100018
+    second: ShotGunBullet
+  - first:
+      1: 100020
+    second: transform11
+  - first:
+      1: 100022
+    second: transform12
+  - first:
+      1: 100024
+    second: transform13
+  - first:
+      1: 100026
+    second: transform14
+  - first:
+      1: 100028
+    second: transform15
+  - first:
+      1: 100030
+    second: transform16
+  - first:
+      1: 100032
+    second: transform17
+  - first:
+      1: 100034
+    second: transform2
+  - first:
+      4: 400000
+    second: polySurface84
+  - first:
+      4: 400002
+    second: polySurface86
+  - first:
+      4: 400004
+    second: polySurface87
+  - first:
+      4: 400006
+    second: polySurface88
+  - first:
+      4: 400008
+    second: polySurface88 1
+  - first:
+      4: 400010
+    second: polySurface89
+  - first:
+      4: 400012
+    second: polySurface90
+  - first:
+      4: 400014
+    second: polySurface99
+  - first:
+      4: 400016
+    second: ShotGunBullet
+  - first:
+      4: 400018
+    second: //RootNode
+  - first:
+      4: 400020
+    second: transform11
+  - first:
+      4: 400022
+    second: transform12
+  - first:
+      4: 400024
+    second: transform13
+  - first:
+      4: 400026
+    second: transform14
+  - first:
+      4: 400028
+    second: transform15
+  - first:
+      4: 400030
+    second: transform16
+  - first:
+      4: 400032
+    second: transform17
+  - first:
+      4: 400034
+    second: transform2
+  - first:
+      21: 2100000
+    second: lambert1
+  - first:
+      23: 2300000
+    second: ShotGunBullet
+  - first:
+      23: 2300002
+    second: //RootNode
+  - first:
+      33: 3300000
+    second: ShotGunBullet
+  - first:
+      33: 3300002
+    second: //RootNode
+  - first:
+      43: 4300000
+    second: ShotGunBullet
   externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -56,6 +140,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -77,28 +162,37 @@ ModelImporter:
   meshes:
     lODScreenPercentages: []
     globalScale: 100
-    meshCompression: 0
+    meshCompression: 3
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 45
     normalImportMode: 1
@@ -107,10 +201,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 0
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -120,13 +214,18 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 100
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

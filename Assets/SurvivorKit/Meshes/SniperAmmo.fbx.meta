@@ -1,162 +1,464 @@
 fileFormatVersion: 2
 guid: f51af4da14ae7a04b9646db9a1d60894
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: polySurface62
-    100002: polySurface63
-    100004: polySurface64
-    100006: polySurface65
-    100008: polySurface66
-    100010: polySurface67
-    100012: polySurface68
-    100014: polySurface69
-    100016: polySurface69 1
-    100018: polySurface70
-    100020: polySurface71
-    100022: polySurface71 1
-    100024: polySurface72
-    100026: polySurface73
-    100028: polySurface74
-    100030: polySurface75
-    100032: polySurface76
-    100034: polySurface77
-    100036: polySurface78
-    100038: polySurface79
-    100040: polySurface80
-    100042: polySurface81
-    100044: polySurface82
-    100046: polySurface83
-    100048: polySurface84
-    100050: polySurface85
-    100052: polySurface86
-    100054: polySurface87
-    100056: polySurface88
-    100058: polySurface89
-    100060: polySurface90
-    100062: polySurface91
-    100064: polySurface92
-    100066: polySurface93
-    100068: //RootNode
-    100070: SniperAmmoBox
-    100072: SniperAmmoBoxCover
-    100074: transform24
-    100076: transform25
-    100078: transform26
-    100080: transform27
-    100082: transform28
-    100084: transform29
-    100086: transform30
-    100088: transform31
-    100090: transform32
-    100092: transform33
-    100094: transform34
-    100096: transform35
-    100098: transform36
-    100100: transform37
-    100102: transform38
-    100104: transform39
-    100106: transform40
-    100108: transform41
-    100110: transform42
-    100112: transform43
-    100114: transform44
-    100116: transform45
-    100118: transform46
-    100120: transform47
-    100122: transform48
-    100124: transform49
-    100126: transform50
-    100128: transform51
-    100130: transform52
-    100132: transform53
-    100134: transform54
-    100136: transform55
-    100138: transform56
-    100140: transform57
-    400000: polySurface62
-    400002: polySurface63
-    400004: polySurface64
-    400006: polySurface65
-    400008: polySurface66
-    400010: polySurface67
-    400012: polySurface68
-    400014: polySurface69
-    400016: polySurface69 1
-    400018: polySurface70
-    400020: polySurface71
-    400022: polySurface71 1
-    400024: polySurface72
-    400026: polySurface73
-    400028: polySurface74
-    400030: polySurface75
-    400032: polySurface76
-    400034: polySurface77
-    400036: polySurface78
-    400038: polySurface79
-    400040: polySurface80
-    400042: polySurface81
-    400044: polySurface82
-    400046: polySurface83
-    400048: polySurface84
-    400050: polySurface85
-    400052: polySurface86
-    400054: polySurface87
-    400056: polySurface88
-    400058: polySurface89
-    400060: polySurface90
-    400062: polySurface91
-    400064: polySurface92
-    400066: polySurface93
-    400068: //RootNode
-    400070: SniperAmmoBox
-    400072: SniperAmmoBoxCover
-    400074: transform24
-    400076: transform25
-    400078: transform26
-    400080: transform27
-    400082: transform28
-    400084: transform29
-    400086: transform30
-    400088: transform31
-    400090: transform32
-    400092: transform33
-    400094: transform34
-    400096: transform35
-    400098: transform36
-    400100: transform37
-    400102: transform38
-    400104: transform39
-    400106: transform40
-    400108: transform41
-    400110: transform42
-    400112: transform43
-    400114: transform44
-    400116: transform45
-    400118: transform46
-    400120: transform47
-    400122: transform48
-    400124: transform49
-    400126: transform50
-    400128: transform51
-    400130: transform52
-    400132: transform53
-    400134: transform54
-    400136: transform55
-    400138: transform56
-    400140: transform57
-    2100000: phong1
-    2300000: SniperAmmoBox
-    2300002: SniperAmmoBoxCover
-    2300004: //RootNode
-    3300000: SniperAmmoBox
-    3300002: SniperAmmoBoxCover
-    3300004: //RootNode
-    4300000: SniperAmmoBox
-    4300002: SniperAmmoBoxCover
+  serializedVersion: 21300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: polySurface62
+  - first:
+      1: 100002
+    second: polySurface63
+  - first:
+      1: 100004
+    second: polySurface64
+  - first:
+      1: 100006
+    second: polySurface65
+  - first:
+      1: 100008
+    second: polySurface66
+  - first:
+      1: 100010
+    second: polySurface67
+  - first:
+      1: 100012
+    second: polySurface68
+  - first:
+      1: 100014
+    second: polySurface69
+  - first:
+      1: 100016
+    second: polySurface69 1
+  - first:
+      1: 100018
+    second: polySurface70
+  - first:
+      1: 100020
+    second: polySurface71
+  - first:
+      1: 100022
+    second: polySurface71 1
+  - first:
+      1: 100024
+    second: polySurface72
+  - first:
+      1: 100026
+    second: polySurface73
+  - first:
+      1: 100028
+    second: polySurface74
+  - first:
+      1: 100030
+    second: polySurface75
+  - first:
+      1: 100032
+    second: polySurface76
+  - first:
+      1: 100034
+    second: polySurface77
+  - first:
+      1: 100036
+    second: polySurface78
+  - first:
+      1: 100038
+    second: polySurface79
+  - first:
+      1: 100040
+    second: polySurface80
+  - first:
+      1: 100042
+    second: polySurface81
+  - first:
+      1: 100044
+    second: polySurface82
+  - first:
+      1: 100046
+    second: polySurface83
+  - first:
+      1: 100048
+    second: polySurface84
+  - first:
+      1: 100050
+    second: polySurface85
+  - first:
+      1: 100052
+    second: polySurface86
+  - first:
+      1: 100054
+    second: polySurface87
+  - first:
+      1: 100056
+    second: polySurface88
+  - first:
+      1: 100058
+    second: polySurface89
+  - first:
+      1: 100060
+    second: polySurface90
+  - first:
+      1: 100062
+    second: polySurface91
+  - first:
+      1: 100064
+    second: polySurface92
+  - first:
+      1: 100066
+    second: polySurface93
+  - first:
+      1: 100068
+    second: //RootNode
+  - first:
+      1: 100070
+    second: SniperAmmoBox
+  - first:
+      1: 100072
+    second: SniperAmmoBoxCover
+  - first:
+      1: 100074
+    second: transform24
+  - first:
+      1: 100076
+    second: transform25
+  - first:
+      1: 100078
+    second: transform26
+  - first:
+      1: 100080
+    second: transform27
+  - first:
+      1: 100082
+    second: transform28
+  - first:
+      1: 100084
+    second: transform29
+  - first:
+      1: 100086
+    second: transform30
+  - first:
+      1: 100088
+    second: transform31
+  - first:
+      1: 100090
+    second: transform32
+  - first:
+      1: 100092
+    second: transform33
+  - first:
+      1: 100094
+    second: transform34
+  - first:
+      1: 100096
+    second: transform35
+  - first:
+      1: 100098
+    second: transform36
+  - first:
+      1: 100100
+    second: transform37
+  - first:
+      1: 100102
+    second: transform38
+  - first:
+      1: 100104
+    second: transform39
+  - first:
+      1: 100106
+    second: transform40
+  - first:
+      1: 100108
+    second: transform41
+  - first:
+      1: 100110
+    second: transform42
+  - first:
+      1: 100112
+    second: transform43
+  - first:
+      1: 100114
+    second: transform44
+  - first:
+      1: 100116
+    second: transform45
+  - first:
+      1: 100118
+    second: transform46
+  - first:
+      1: 100120
+    second: transform47
+  - first:
+      1: 100122
+    second: transform48
+  - first:
+      1: 100124
+    second: transform49
+  - first:
+      1: 100126
+    second: transform50
+  - first:
+      1: 100128
+    second: transform51
+  - first:
+      1: 100130
+    second: transform52
+  - first:
+      1: 100132
+    second: transform53
+  - first:
+      1: 100134
+    second: transform54
+  - first:
+      1: 100136
+    second: transform55
+  - first:
+      1: 100138
+    second: transform56
+  - first:
+      1: 100140
+    second: transform57
+  - first:
+      4: 400000
+    second: polySurface62
+  - first:
+      4: 400002
+    second: polySurface63
+  - first:
+      4: 400004
+    second: polySurface64
+  - first:
+      4: 400006
+    second: polySurface65
+  - first:
+      4: 400008
+    second: polySurface66
+  - first:
+      4: 400010
+    second: polySurface67
+  - first:
+      4: 400012
+    second: polySurface68
+  - first:
+      4: 400014
+    second: polySurface69
+  - first:
+      4: 400016
+    second: polySurface69 1
+  - first:
+      4: 400018
+    second: polySurface70
+  - first:
+      4: 400020
+    second: polySurface71
+  - first:
+      4: 400022
+    second: polySurface71 1
+  - first:
+      4: 400024
+    second: polySurface72
+  - first:
+      4: 400026
+    second: polySurface73
+  - first:
+      4: 400028
+    second: polySurface74
+  - first:
+      4: 400030
+    second: polySurface75
+  - first:
+      4: 400032
+    second: polySurface76
+  - first:
+      4: 400034
+    second: polySurface77
+  - first:
+      4: 400036
+    second: polySurface78
+  - first:
+      4: 400038
+    second: polySurface79
+  - first:
+      4: 400040
+    second: polySurface80
+  - first:
+      4: 400042
+    second: polySurface81
+  - first:
+      4: 400044
+    second: polySurface82
+  - first:
+      4: 400046
+    second: polySurface83
+  - first:
+      4: 400048
+    second: polySurface84
+  - first:
+      4: 400050
+    second: polySurface85
+  - first:
+      4: 400052
+    second: polySurface86
+  - first:
+      4: 400054
+    second: polySurface87
+  - first:
+      4: 400056
+    second: polySurface88
+  - first:
+      4: 400058
+    second: polySurface89
+  - first:
+      4: 400060
+    second: polySurface90
+  - first:
+      4: 400062
+    second: polySurface91
+  - first:
+      4: 400064
+    second: polySurface92
+  - first:
+      4: 400066
+    second: polySurface93
+  - first:
+      4: 400068
+    second: //RootNode
+  - first:
+      4: 400070
+    second: SniperAmmoBox
+  - first:
+      4: 400072
+    second: SniperAmmoBoxCover
+  - first:
+      4: 400074
+    second: transform24
+  - first:
+      4: 400076
+    second: transform25
+  - first:
+      4: 400078
+    second: transform26
+  - first:
+      4: 400080
+    second: transform27
+  - first:
+      4: 400082
+    second: transform28
+  - first:
+      4: 400084
+    second: transform29
+  - first:
+      4: 400086
+    second: transform30
+  - first:
+      4: 400088
+    second: transform31
+  - first:
+      4: 400090
+    second: transform32
+  - first:
+      4: 400092
+    second: transform33
+  - first:
+      4: 400094
+    second: transform34
+  - first:
+      4: 400096
+    second: transform35
+  - first:
+      4: 400098
+    second: transform36
+  - first:
+      4: 400100
+    second: transform37
+  - first:
+      4: 400102
+    second: transform38
+  - first:
+      4: 400104
+    second: transform39
+  - first:
+      4: 400106
+    second: transform40
+  - first:
+      4: 400108
+    second: transform41
+  - first:
+      4: 400110
+    second: transform42
+  - first:
+      4: 400112
+    second: transform43
+  - first:
+      4: 400114
+    second: transform44
+  - first:
+      4: 400116
+    second: transform45
+  - first:
+      4: 400118
+    second: transform46
+  - first:
+      4: 400120
+    second: transform47
+  - first:
+      4: 400122
+    second: transform48
+  - first:
+      4: 400124
+    second: transform49
+  - first:
+      4: 400126
+    second: transform50
+  - first:
+      4: 400128
+    second: transform51
+  - first:
+      4: 400130
+    second: transform52
+  - first:
+      4: 400132
+    second: transform53
+  - first:
+      4: 400134
+    second: transform54
+  - first:
+      4: 400136
+    second: transform55
+  - first:
+      4: 400138
+    second: transform56
+  - first:
+      4: 400140
+    second: transform57
+  - first:
+      21: 2100000
+    second: phong1
+  - first:
+      23: 2300000
+    second: SniperAmmoBox
+  - first:
+      23: 2300002
+    second: SniperAmmoBoxCover
+  - first:
+      23: 2300004
+    second: //RootNode
+  - first:
+      33: 3300000
+    second: SniperAmmoBox
+  - first:
+      33: 3300002
+    second: SniperAmmoBoxCover
+  - first:
+      33: 3300004
+    second: //RootNode
+  - first:
+      43: 4300000
+    second: SniperAmmoBox
+  - first:
+      43: 4300002
+    second: SniperAmmoBoxCover
   externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -165,6 +467,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -186,28 +489,37 @@ ModelImporter:
   meshes:
     lODScreenPercentages: []
     globalScale: 100
-    meshCompression: 0
+    meshCompression: 3
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 45
     normalImportMode: 1
@@ -216,10 +528,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 0
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -229,13 +541,18 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 100
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

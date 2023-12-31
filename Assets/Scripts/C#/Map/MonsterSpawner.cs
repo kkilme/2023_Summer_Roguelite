@@ -11,7 +11,7 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void Init()
     {
-        _spawnerPoses = new List<Vector3>();
+        _spawnerPoses = new List<Vector3>(transform.childCount);
 
         for (short i = 0; i < transform.childCount; ++i) 
             _spawnerPoses.Add(transform.GetChild(i).transform.position);
@@ -27,6 +27,11 @@ public class MonsterSpawner : NetworkBehaviour
                 _monsterCount = 4;
                 break;
         }
+    }
+
+    public Vector3 GetRandomSpawnPos()
+    {
+        return _spawnerPoses[Random.Range(0, _spawnerPoses.Count)];
     }
 
     // 룸안의 랜덤한 좌표를 리턴하는 함수

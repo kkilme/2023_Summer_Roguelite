@@ -109,10 +109,9 @@ public partial class Inventory : NetworkBehaviour
         }
     }
 
-    public void InitInventoryUI(GameObject ui)
+    public void InitInventoryUI(InventoryUI ui)
     {
-        inventoryUI = ui.GetComponentInChildren(typeof(InventoryUI), true) as InventoryUI;
-        inventoryUI.Init(this);
+        inventoryUI = ui;
     }
 
     [ServerRpc]

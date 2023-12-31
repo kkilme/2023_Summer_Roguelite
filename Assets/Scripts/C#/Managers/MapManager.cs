@@ -190,7 +190,7 @@ public class MapManager : NetworkBehaviour
         for (int i = 0; i < playerRoom.Count; ++i)
         {
             room = _rooms[playerRoom[i]].GetComponent<Room>();
-            var networkObj = Instantiate(_playerObject, room.monsterSpawners.GetRandomRoomPos(), quaternion.identity).GetComponent<NetworkObject>();
+            var networkObj = Instantiate(_playerObject, room.monsterSpawners.GetRandomSpawnPos(), quaternion.identity).GetComponent<NetworkObject>();
             networkObj.SpawnAsPlayerObject(NetworkManager.Singleton.ConnectedClientsList[i].ClientId);
         }
     }
