@@ -63,17 +63,14 @@ public class ServerBullet : NetworkBehaviour
 
         if (Physics.Raycast(transform.position, _direction, out hit, distanceThisFrame)) // Raycast로 충돌 검사
         {
+            Debug.Log(hit.transform.gameObject.name);
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Furniture")) // 충돌 대상에 따른 이펙트 종류가 많아지만 추후 코드 개선할 수 있을 듯.
             {
                 HitTargetClientRPC(hit.point, hit.normal, HitType.Object);
             } else
-            {   
-                if(!IsOwner)
-                {
-                    Debug.Log("coll");
-                    hit.transform.gameObject.GetComponent<IAttackable>()?.OnDamaged((int)_dmg);
-                }
-                
+            {
+                if (hit.transform.gameObject.TryGetComponent(out IAttackable attackable))
+                    attackable.OnDamaged((int)_dmg);
             }
             
             GetComponent<NetworkObject>().Despawn();

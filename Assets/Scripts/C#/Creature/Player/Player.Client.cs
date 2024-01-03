@@ -23,7 +23,7 @@ public partial class Player : NetworkBehaviour, IAttackable
     private void InitClientRpc(ClientRpcParams clientRpcParams = default)
     {
         _mainCam.gameObject.SetActive(true);
-        _followPlayerCam.Follow = _headTransform;
+        //_followPlayerCam.Follow = _headTransform;
         _interact.gameObject.SetActive(true);
         _interact.Init(this, _followPlayerCam.transform);
         _playerController = Util.GetOrAddComponent<PlayerController>(gameObject);

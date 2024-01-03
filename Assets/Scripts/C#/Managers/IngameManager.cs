@@ -42,7 +42,7 @@ public class IngameManager : NetworkBehaviour
         AddPlayerStatus();
 
         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
-        CheckWinner();
+        //CheckWinner();
     }
 
     private void AddPlayerStatus()

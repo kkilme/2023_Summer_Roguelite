@@ -16,8 +16,8 @@ public class WatingScene : MonoBehaviour
 
     public void StartGame()
     {
-        //NetworkManager.Singleton.SceneManager.LoadScene("KS", LoadSceneMode.Single);
-        NetworkManager.Singleton.SceneManager.LoadScene("SJ", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("KS", LoadSceneMode.Single);
+        //NetworkManager.Singleton.SceneManager.LoadScene("SJ", LoadSceneMode.Single);
     }
 
     public void TurnOnStorage()
