@@ -211,7 +211,7 @@ public class MapManager : NetworkBehaviour
         int start = Array.FindIndex(roomTypes, element => element == ROOMTYPE.NECESSARY_START) + 1,
             end = Array.FindIndex(roomTypes, element => element == ROOMTYPE.NECESSARY_END);
 
-        _testMap.BuildNavMesh();
+        //_testMap.BuildNavMesh();
 
         MakeRoom().Forget();
 

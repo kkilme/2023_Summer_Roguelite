@@ -4,36 +4,11 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    void Update()
+    LODGroup _lodGroup;
+
+    private void Awake()
     {
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.position += transform.forward * Time.deltaTime * 5;
-        }
-
-        if (Input.GetKey(KeyCode.S))
-        {
-            transform.position -= transform.forward * Time.deltaTime * 5;
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.position -= transform.right * Time.deltaTime * 5;
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.position += transform.right * Time.deltaTime * 5;
-        }
-
-        if (Input.GetKey(KeyCode.J))
-        {
-            transform.eulerAngles += Vector3.up * 5;
-        }
-
-        if (Input.GetKey(KeyCode.L))
-        {
-            transform.eulerAngles -= Vector3.up * 5;
-        }
+        _lodGroup = transform.parent.GetComponent<LODGroup>();
+        Debug.Log(gameObject.layer);
     }
 }

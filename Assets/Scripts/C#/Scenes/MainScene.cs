@@ -27,6 +27,7 @@ public class MainScene : MonoBehaviour
 
     public void Connect()
     {
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData("116.33.9.179", (ushort)7777);
         NetworkManager.Singleton.StartClient();
     }
 

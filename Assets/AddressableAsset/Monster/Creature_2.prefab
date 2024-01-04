@@ -133,7 +133,8 @@ GameObject:
   - component: {fileID: -3132828152319514621}
   - component: {fileID: 4619233776793452820}
   - component: {fileID: 3979128916327566285}
-  m_Layer: 2
+  - component: {fileID: 3515618490826651217}
+  m_Layer: 12
   m_Name: Creature_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,6 +223,12 @@ MonoBehaviour:
       Gold: 0
       Damage: 0
       Range: 0
+      HeadEquip:
+        Durability: 0
+        Armor: 0
+      ClothEquip:
+        Durability: 0
+        Armor: 0
     Target: {fileID: 0}
     <Spawner>k__BackingField: {fileID: 0}
     HitDir: {x: 0, y: 0, z: 0}
@@ -316,6 +323,19 @@ MonoBehaviour:
   useLocalTransformOnly: 0
   ownerChangeIndicator: 1
   receivedStatesCounter: 0
+--- !u!65 &3515618490826651217
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078603814506092}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.5, y: 2, z: 0.5}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &1085891543481910
 GameObject:
   m_ObjectHideFlags: 0
@@ -2427,13 +2447,13 @@ GameObject:
   m_Component:
   - component: {fileID: 6094711275095700660}
   - component: {fileID: 395210779654204291}
-  m_Layer: 2
+  m_Layer: 9
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6094711275095700660
 Transform:
   m_ObjectHideFlags: 0

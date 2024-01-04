@@ -23,7 +23,7 @@ public partial class Player : NetworkBehaviour, IAttackable
     private void InitClientRpc(ClientRpcParams clientRpcParams = default)
     {
         _mainCam.gameObject.SetActive(true);
-        _followPlayerCam.Follow = _headTransform;
+        //_followPlayerCam.Follow = _headTransform;
         _interact.gameObject.SetActive(true);
         _interact.Init(this, _followPlayerCam.transform);
         _playerController = Util.GetOrAddComponent<PlayerController>(gameObject);
@@ -102,7 +102,7 @@ public partial class Player : NetworkBehaviour, IAttackable
     private void InputClientRpc(Vector3 dir, PlayerInputs pi = PlayerInputs.None, ClientRpcParams clientRpcParams = default)
     {
         _rigidbody.velocity = dir;
-        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.VelocityChange);
+        //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.Acceleration);
 
         if (dir == Vector3.zero)
         {
