@@ -126,7 +126,28 @@ public partial class Player : NetworkBehaviour, IAttackable
     private void MoveCharacterServerRpc(Vector3 dir)
     {
         Vector3 move = (Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * dir.normalized * PlayerStat.Speed);
-        _rigidbody.velocity = move;
+        //move.y -= 9.8f * Time.deltaTime;
+        //Debug.Log($"{move.x} {move.y} {move.z}");
+        //Debug.Log($"{transform.position}, {!Physics.Raycast(transform.position, Vector3.down, 0.3f)}");
+        float dist = 1000f;
+        if (Physics.Raycast(new Ray(transform.position, Vector3.down), out RaycastHit hit, 1000))
+        {
+            dist = Vector3.Distance(hit.point, transform.position);
+            //Debug.Log(dist);
+        }
+        if (dist < 0.3f)
+        {
+            _rigidbody.AddForce(move, ForceMode.Force);
+            //_rigidbody.velocity.Set(move.x, _rigidbody.velocity.y, move.z);
+        }
+        else
+        {
+            _rigidbody.AddForce(new Vector3(move.x, 0, move.z), ForceMode.Force);
+            _rigidbody.AddForce(9.8f * Vector3.down, ForceMode.Impulse);
+            //_rigidbody.AddForce(9.81f * Vector3.down, ForceMode.Force);
+        }
+        //_rigidbody.AddForce(move, ForceMode.Force);
+        //_rigidbody.velocity = move;
         //_rigidbody.AddForce(-9.81f * Vector3.up, ForceMode.VelocityChange);
 
         if (dir == Vector3.zero)
