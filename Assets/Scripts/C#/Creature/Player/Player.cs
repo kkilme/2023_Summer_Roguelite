@@ -167,12 +167,6 @@ public partial class Player : NetworkBehaviour, IAttackable
 
     private void Dead()
     {
-        for (int i = 0; i < _skinnedMeshRenderer.materials.Length; ++i)
-        {
-            if (i != 6 && i != 10 && (i < 12 || i > 15))
-                _skinnedMeshRenderer.materials[i].color = Color.white;
-        }
-
         _deadPlayerCam.transform.position = transform.position + Vector3.up * 5;
         //_mainCam.GetComponent<UniversalAdditionalCameraData>().cameraStack.Clear();
         _mainCam.cullingMask = -1;

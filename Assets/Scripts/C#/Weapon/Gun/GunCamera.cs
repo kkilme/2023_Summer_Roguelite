@@ -48,4 +48,38 @@ public class GunCamera : MonoBehaviour
     {
         _camera.m_Lens.FieldOfView = Mathf.Lerp(_camera.m_Lens.FieldOfView, _targetFOV, Time.deltaTime * _zoomspeed);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player"))
+        {
+            if (other.name.Contains("Collider"))
+            {
+                other.transform.parent.gameObject.layer = 13;
+                Debug.Log(other.transform.parent.gameObject.layer);
+            }
+            else
+            {
+                other.gameObject.layer = 13;
+                Debug.Log(other.gameObject.layer);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("Player"))
+        {
+            if (other.name.Contains("Collider"))
+            {
+                other.transform.parent.gameObject.layer = 0;
+                Debug.Log(other.transform.parent.gameObject.layer);
+            }
+            else
+            {
+                other.gameObject.layer = 0;
+                Debug.Log(other.gameObject.layer);
+            }
+        }
+    }
 }
